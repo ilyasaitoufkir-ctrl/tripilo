@@ -10,7 +10,8 @@ export interface TripInput {
   destination: string;
   budget: number;
   days: number;
-  travelType: TravelType;
+  travelTypes: TravelType[];
+  travelType?: TravelType; // legacy compat for old saved trips
   persons: number;
 }
 
@@ -69,9 +70,20 @@ export interface SavedTrip {
   savedAt: string;
 }
 
+export interface TripRating {
+  id: string;
+  tripId: string;
+  destination: string;
+  rating: number;
+  liked: string;
+  improved: string;
+  ratedAt: string;
+}
+
 export type Screen =
   | 'welcome'
   | 'input'
   | 'loading'
   | 'plan'
-  | 'saved';
+  | 'saved'
+  | 'rating';

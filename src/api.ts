@@ -16,7 +16,14 @@ export async function generateTripPlan(input: TripInput): Promise<TripPlan> {
     throw new Error('VITE_ANTHROPIC_KEY ist nicht gesetzt. Bitte .env Datei prüfen.');
   }
 
-  const travelLabel = travelTypeLabels[input.travelType] || input.travelType;
+  // Support both legacy travelType (single) and new travelTypes (array)
+  const types = input.travelTypes?.length
+    ? input.travelTypes
+    : input.travelType
+      ? [input.travelType]
+      : ['strand'];
+
+  const travelLabel = types.map(t => travelTypeLabels[t] || t).join(', ');
 
   const prompt = `Erstelle einen detaillierten Reiseplan auf Deutsch:
 
@@ -85,12 +92,7 @@ Nur JSON zurückgeben, kein Text davor oder danach!`;
     body: JSON.stringify({
       model: 'claude-haiku-4-5-20251001',
       max_tokens: 4000,
-      messages: [
-        {
-          role: 'user',
-          content: prompt,
-        },
-      ],
+      messages: [{ role: 'user', content: prompt }],
     }),
   });
 
@@ -102,11 +104,8 @@ Nur JSON zurückgeben, kein Text davor oder danach!`;
   const data = await response.json();
   const text: string = data.content[0].text;
 
-  // Extract JSON from the response (sometimes Claude wraps it in markdown)
   const jsonMatch = text.match(/\{[\s\S]*\}/);
-  if (!jsonMatch) {
-    throw new Error('Kein JSON in der Antwort gefunden.');
-  }
+  if (!jsonMatch) throw new Error('Kein JSON in der Antwort gefunden.');
 
   return JSON.parse(jsonMatch[0]) as TripPlan;
 }

@@ -1,104 +1,82 @@
-import { Plane, Sparkles, MapPin, Star } from 'lucide-react';
+import { Sparkles, MapPin, Star, Plane } from 'lucide-react';
 
 interface Props {
   onStart: () => void;
 }
 
+const features = [
+  { icon: Sparkles, label: 'KI-gestützt', color: '#5b4fff' },
+  { icon: MapPin,   label: 'Personalisiert', color: '#ff6584' },
+  { icon: Star,     label: 'Geheimtipps', color: '#f59e0b' },
+];
+
 export function WelcomeScreen({ onStart }: Props) {
   return (
-    <div className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden">
-      {/* Background gradient orbs */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div
-          className="absolute -top-40 -left-40 w-96 h-96 rounded-full opacity-20 blur-3xl"
-          style={{ background: 'radial-gradient(circle, #6c63ff, transparent)' }}
-        />
-        <div
-          className="absolute -bottom-40 -right-40 w-96 h-96 rounded-full opacity-20 blur-3xl"
-          style={{ background: 'radial-gradient(circle, #ff6584, transparent)' }}
-        />
-        <div
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full opacity-5 blur-3xl"
-          style={{ background: 'radial-gradient(circle, #6c63ff, #ff6584)' }}
-        />
+    <div
+      className="min-h-screen flex flex-col items-center justify-center px-6 pb-8"
+      style={{ background: 'linear-gradient(160deg, #ede9ff 0%, #f8f9ff 45%, #fff0f3 100%)' }}
+    >
+      {/* Decorative blobs */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden">
+        <div className="absolute -top-32 -left-32 w-80 h-80 rounded-full opacity-30 blur-3xl"
+             style={{ background: '#8b5cf6' }} />
+        <div className="absolute -bottom-32 -right-32 w-80 h-80 rounded-full opacity-20 blur-3xl"
+             style={{ background: '#ff6584' }} />
       </div>
 
-      {/* Stars decoration */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {[...Array(20)].map((_, i) => (
+      <div className="relative z-10 w-full max-w-sm text-center">
+        {/* Logo */}
+        <div className="mb-8 inline-block animate-float">
           <div
-            key={i}
-            className="absolute w-1 h-1 bg-white rounded-full opacity-30"
+            className="w-28 h-28 rounded-[2rem] flex items-center justify-center mx-auto animate-pulse-ring"
             style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 3}s`,
+              background: 'linear-gradient(135deg, #5b4fff, #8b5cf6)',
+              boxShadow: '0 16px 48px rgba(91,79,255,0.35)',
             }}
-          />
-        ))}
-      </div>
-
-      {/* Content */}
-      <div className="relative z-10 flex flex-col items-center text-center px-6 max-w-2xl mx-auto">
-        {/* Logo Icon */}
-        <div className="relative mb-8 animate-float">
-          <div
-            className="w-24 h-24 rounded-3xl flex items-center justify-center animate-pulse-glow"
-            style={{ background: 'linear-gradient(135deg, #6c63ff, #ff6584)' }}
           >
-            <Plane size={48} className="text-white" strokeWidth={1.5} />
-          </div>
-          <div className="absolute -top-2 -right-2 w-8 h-8 bg-yellow-400 rounded-full flex items-center justify-center">
-            <Sparkles size={16} className="text-yellow-900" />
+            <Plane size={56} className="text-white" strokeWidth={1.5} />
           </div>
         </div>
 
-        {/* Title */}
-        <h1 className="text-7xl font-black mb-3 gradient-text tracking-tight">
-          Tripilo
+        {/* Brand */}
+        <h1 className="text-7xl font-black mb-2 tracking-tight" style={{ color: '#1a1a2e' }}>
+          Tri<span className="gradient-text">pilo</span>
         </h1>
-        <p className="text-xl font-light mb-2" style={{ color: '#8888aa' }}>
-          Dein KI Reiseplaner
+        <p className="text-base font-medium mb-10" style={{ color: '#6b7280' }}>
+          Dein KI-Reiseplaner
         </p>
 
-        {/* Features */}
-        <div className="flex gap-6 mt-8 mb-12 flex-wrap justify-center">
-          {[
-            { icon: Sparkles, text: 'KI-gestützt' },
-            { icon: MapPin, text: 'Personalisiert' },
-            { icon: Star, text: 'Geheimtipps' },
-          ].map(({ icon: Icon, text }) => (
+        {/* Feature chips */}
+        <div className="flex flex-wrap justify-center gap-3 mb-10">
+          {features.map(({ icon: Icon, label, color }) => (
             <div
-              key={text}
-              className="flex items-center gap-2 px-4 py-2 rounded-full glass-card text-sm"
-              style={{ color: '#8888aa' }}
+              key={label}
+              className="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium animate-fade-in"
+              style={{ background: '#ffffff', border: '1px solid #e5e7eb', color: '#1a1a2e', boxShadow: '0 2px 8px rgba(91,79,255,0.06)' }}
             >
-              <Icon size={14} style={{ color: '#6c63ff' }} />
-              {text}
+              <Icon size={14} style={{ color }} />
+              {label}
             </div>
           ))}
         </div>
 
-        {/* CTA Button */}
+        {/* CTA */}
         <button
           onClick={onStart}
-          className="relative group px-10 py-5 rounded-2xl text-xl font-bold text-white transition-all duration-300 hover:scale-105 active:scale-95"
+          className="w-full py-5 rounded-2xl text-lg font-bold text-white transition-all hover:scale-[1.02] active:scale-[0.97] animate-fade-in"
           style={{
-            background: 'linear-gradient(135deg, #6c63ff, #ff6584)',
-            boxShadow: '0 0 30px rgba(108, 99, 255, 0.4)',
+            background: 'linear-gradient(135deg, #5b4fff, #8b5cf6)',
+            boxShadow: '0 8px 28px rgba(91,79,255,0.4)',
+            animationDelay: '0.2s',
           }}
         >
-          <span className="relative z-10 flex items-center gap-3">
+          <span className="flex items-center justify-center gap-3">
             <Plane size={22} />
             Reise planen
           </span>
-          <div
-            className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-            style={{ background: 'linear-gradient(135deg, #7c74ff, #ff7894)' }}
-          />
         </button>
 
-        <p className="mt-8 text-sm" style={{ color: '#8888aa' }}>
+        <p className="mt-6 text-xs" style={{ color: '#9ca3af' }}>
           Powered by Claude AI ✨
         </p>
       </div>
