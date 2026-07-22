@@ -1,18 +1,16 @@
-export type TravelType =
-  | 'strand'
-  | 'natur'
-  | 'kultur'
-  | 'party'
-  | 'food'
-  | 'familie';
+export type TravelType = string; // extended to support all travel type keys
 
 export interface TripInput {
   destination: string;
   budget: number;
   days: number;
-  travelTypes: TravelType[];
-  travelType?: TravelType; // legacy compat for old saved trips
+  travelTypes: string[];
+  travelType?: string; // legacy compat for old saved trips
   persons: number;
+  ageGroup?: string;
+  cuisines?: string[];
+  accommodation?: string;
+  avoid?: string[];
 }
 
 export interface DayActivity {

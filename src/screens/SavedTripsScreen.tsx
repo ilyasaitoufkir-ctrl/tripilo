@@ -1,5 +1,10 @@
-import { Bookmark, Trash2, Calendar, Euro, Plane, Star, Waves, Mountain, Landmark, Music2, UtensilsCrossed, Users } from 'lucide-react';
-import type { SavedTrip, TravelType } from '../types';
+import {
+  Bookmark, Trash2, Calendar, Euro, Plane, Star,
+  Waves, Mountain, Landmark, Music2, UtensilsCrossed, Users,
+  Zap, Sparkles, Trophy, ShoppingBag, Heart, Car, Backpack, Gem,
+  Compass, Building2, Snowflake, Ship, Camera, Leaf,
+} from 'lucide-react';
+import type { SavedTrip } from '../types';
 
 interface Props {
   savedTrips: SavedTrip[];
@@ -8,18 +13,50 @@ interface Props {
   onRate: (trip: SavedTrip) => void;
 }
 
-const typeIcons: Record<TravelType, React.ElementType> = {
-  strand: Waves,
-  natur: Mountain,
-  kultur: Landmark,
-  party: Music2,
-  food: UtensilsCrossed,
-  familie: Users,
+const typeIcons: Record<string, React.ElementType> = {
+  strand:      Waves,
+  natur:       Mountain,
+  kultur:      Landmark,
+  staedte:     Building2,
+  food:        UtensilsCrossed,
+  party:       Music2,
+  abenteuer:   Zap,
+  wellness:    Sparkles,
+  sport:       Trophy,
+  shopping:    ShoppingBag,
+  romantik:    Heart,
+  roadtrip:    Car,
+  backpacking: Backpack,
+  luxus:       Gem,
+  trekking:    Compass,
+  familie:     Users,
+  winter:      Snowflake,
+  kreuzfahrt:  Ship,
+  fotografie:  Camera,
+  yoga:        Leaf,
 };
 
-const typeLabels: Record<TravelType, string> = {
-  strand: 'Strand', natur: 'Natur', kultur: 'Kultur',
-  party: 'Party', food: 'Food', familie: 'Familie',
+const typeLabels: Record<string, string> = {
+  strand:      'Strand',
+  natur:       'Natur',
+  kultur:      'Kultur',
+  staedte:     'Städtetrip',
+  food:        'Food',
+  party:       'Party',
+  abenteuer:   'Abenteuer',
+  wellness:    'Wellness',
+  sport:       'Sport',
+  shopping:    'Shopping',
+  romantik:    'Romantik',
+  roadtrip:    'Road Trip',
+  backpacking: 'Backpacking',
+  luxus:       'Luxus',
+  trekking:    'Trekking',
+  familie:     'Familie',
+  winter:      'Winter',
+  kreuzfahrt:  'Kreuzfahrt',
+  fotografie:  'Fotografie',
+  yoga:        'Yoga',
 };
 
 export function SavedTripsScreen({ savedTrips, onSelect, onDelete, onRate }: Props) {
@@ -57,7 +94,11 @@ export function SavedTripsScreen({ savedTrips, onSelect, onDelete, onRate }: Pro
         ) : (
           <div className="space-y-3">
             {savedTrips.map((trip, idx) => {
-              const types = (trip.input.travelTypes ?? (trip.input.travelType ? [trip.input.travelType] : [])) as TravelType[];
+              const types = (trip.input.travelTypes?.length
+                ? trip.input.travelTypes
+                : trip.input.travelType
+                  ? [trip.input.travelType]
+                  : []) as string[];
               return (
                 <div
                   key={trip.id}
@@ -65,7 +106,6 @@ export function SavedTripsScreen({ savedTrips, onSelect, onDelete, onRate }: Pro
                   style={{ animationDelay: `${idx * 0.05}s` }}
                 >
                   <button onClick={() => onSelect(trip)} className="w-full p-5 text-left">
-                    {/* Destination */}
                     <div className="flex items-start justify-between mb-1">
                       <h2 style={{ fontSize: '20px', fontWeight: 500, color: '#1c1c1e', letterSpacing: '-0.3px' }}>
                         {trip.plan.destination}
@@ -76,7 +116,6 @@ export function SavedTripsScreen({ savedTrips, onSelect, onDelete, onRate }: Pro
                       {trip.plan.country}
                     </p>
 
-                    {/* Meta */}
                     <div className="flex flex-wrap gap-2 mb-3">
                       <span
                         className="flex items-center gap-1 px-2.5 py-1 rounded-lg"
@@ -101,7 +140,7 @@ export function SavedTripsScreen({ savedTrips, onSelect, onDelete, onRate }: Pro
                             style={{ background: '#f0eeff', fontSize: '12px', color: '#8b7cf8' }}
                           >
                             {Icon && <Icon size={11} strokeWidth={1.5} />}
-                            {typeLabels[t]}
+                            {typeLabels[t] || t}
                           </span>
                         );
                       })}
@@ -112,7 +151,6 @@ export function SavedTripsScreen({ savedTrips, onSelect, onDelete, onRate }: Pro
                     </p>
                   </button>
 
-                  {/* Actions */}
                   <div
                     className="flex gap-2 px-5 pb-4"
                     style={{ borderTop: '1px solid #f5f5f7', paddingTop: '12px' }}

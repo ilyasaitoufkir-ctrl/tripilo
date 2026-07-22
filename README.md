@@ -1,10 +1,12 @@
-# Tripsilo — KI Reiseplaner
+# Tripsilo — Dein Reiseplaner
 
-Tripsilo ist ein KI-gestützter Reiseplaner powered by Claude AI. Gib Reiseziel, Budget, Dauer und Reiseart ein — Tripsilo generiert einen vollständigen Tagesplan inkl. Restaurants, Aktivitäten, Geheimtipps und Hotelempfehlung.
+Tripsilo ist ein personalisierter Reiseplaner. Gib Reiseziel, Budget, Dauer, Reiseart, Altersgruppe und Präferenzen ein — Tripsilo generiert einen vollständigen Tagesplan inkl. Restaurants, Aktivitäten, Geheimtipps und Hotelempfehlung.
 
 ## Features
 
-- KI-Reiseplan via Claude Haiku
+- Personalisierter Reiseplan
+- 20 Reisearten (multi-select)
+- Altersgruppe, Küchenpräferenzen, Unterkunftstyp, Avoid-Optionen
 - Google Places API — echte Orte, Fotos, Bewertungen
 - Interaktive Karte + Tages-Route
 - Plan teilen (Native Share / Clipboard)
@@ -31,4 +33,4 @@ npm run dev
 
 ## Tech Stack
 
-React · TypeScript · Vite · Tailwind CSS v4 · Lucide Icons · Claude Haiku · Google Places API · PWA
+React · TypeScript · Vite · Tailwind CSS v4 · Lucide Icons · Google Places API · PWA

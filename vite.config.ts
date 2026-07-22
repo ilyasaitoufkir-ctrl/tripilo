@@ -9,9 +9,9 @@ export default defineConfig({
     VitePWA({
       registerType: 'autoUpdate',
       manifest: {
-        name: 'Tripsilo - KI Reiseplaner',
+        name: 'Tripsilo - Dein Reiseplaner',
         short_name: 'Tripsilo',
-        description: 'Dein KI-gestützter Reiseplaner powered by Claude AI',
+        description: 'Dein persönlicher Reiseplaner — individuell, inspirierend, detailliert.',
         theme_color: '#6c63ff',
         background_color: '#0f1117',
         display: 'standalone',

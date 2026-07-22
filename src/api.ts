@@ -1,12 +1,26 @@
 import type { TripInput, TripPlan } from './types';
 
 const travelTypeLabels: Record<string, string> = {
-  strand: '🏖️ Strand & Meer',
-  natur: '🏔️ Natur & Abenteuer',
-  kultur: '🏛️ Kultur & Geschichte',
-  party: '🎉 Party & Nightlife',
-  food: '🍽️ Food & Genuss',
-  familie: '👨‍👩‍👧 Familie',
+  strand:      'Strand & Meer',
+  natur:       'Natur & Landschaft',
+  kultur:      'Kultur & Geschichte',
+  staedte:     'Städtetrip',
+  food:        'Food & Genuss',
+  party:       'Party & Nightlife',
+  abenteuer:   'Abenteuer & Outdoor',
+  wellness:    'Wellness & Erholung',
+  sport:       'Sport & Aktivitäten',
+  shopping:    'Shopping',
+  romantik:    'Romantik',
+  roadtrip:    'Road Trip',
+  backpacking: 'Backpacking',
+  luxus:       'Luxusreise',
+  trekking:    'Trekking & Wandern',
+  familie:     'Familienurlaub',
+  winter:      'Winterurlaub',
+  kreuzfahrt:  'Kreuzfahrt',
+  fotografie:  'Fotografie & Natur',
+  yoga:        'Yoga & Retreat',
 };
 
 export async function generateTripPlan(input: TripInput): Promise<TripPlan> {
@@ -16,21 +30,28 @@ export async function generateTripPlan(input: TripInput): Promise<TripPlan> {
     throw new Error('VITE_ANTHROPIC_KEY ist nicht gesetzt. Bitte .env Datei prüfen.');
   }
 
-  // Support both legacy travelType (single) and new travelTypes (array)
   const types = input.travelTypes?.length
     ? input.travelTypes
     : input.travelType
       ? [input.travelType]
       : ['strand'];
 
-  const travelLabel = types.map(t => travelTypeLabels[t] || t).join(', ');
+  const travelLabel = types.map((t) => travelTypeLabels[t] || t).join(', ');
 
-  const prompt = `Erstelle einen detaillierten Reiseplan auf Deutsch:
+  const lines = [
+    `Ziel: ${input.destination}`,
+    `Budget: ${input.budget}€ für ${input.persons} Person(en)`,
+    `Dauer: ${input.days} Tage`,
+    `Reisearten: ${travelLabel}`,
+  ];
+  if (input.ageGroup)          lines.push(`Altersgruppe: ${input.ageGroup} Jahre`);
+  if (input.cuisines?.length)  lines.push(`Küchenpräferenzen: ${input.cuisines.join(', ')}`);
+  if (input.accommodation)     lines.push(`Unterkunft: ${input.accommodation}`);
+  if (input.avoid?.length)     lines.push(`Bitte vermeiden: ${input.avoid.join(', ')}`);
 
-Ziel: ${input.destination}
-Budget: ${input.budget}€ für ${input.persons} Person(en)
-Dauer: ${input.days} Tage
-Reiseart: ${travelLabel}
+  const prompt = `Erstelle einen detaillierten, personalisierten Reiseplan auf Deutsch:
+
+${lines.join('\n')}
 
 Erstelle einen Plan als JSON:
 {
@@ -79,6 +100,7 @@ Erstelle einen Plan als JSON:
 }
 
 Erstelle genau ${input.days} Tage im "days" Array. Budget-Breakdown soll zusammen ca. ${input.budget}€ ergeben.
+Passe alle Empfehlungen an die Reisearten, Präferenzen und Altersgruppe an.
 Nur JSON zurückgeben, kein Text davor oder danach!`;
 
   const response = await fetch('https://api.anthropic.com/v1/messages', {

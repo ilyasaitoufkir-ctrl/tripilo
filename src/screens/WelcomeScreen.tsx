@@ -1,13 +1,13 @@
-import { Plane, Cpu, MapPin, Star } from 'lucide-react';
+import { Plane, MapPin, Star } from 'lucide-react';
 
 interface Props {
   onStart: () => void;
 }
 
 const features = [
-  { icon: Cpu,   label: 'KI-gestützt' },
   { icon: MapPin, label: 'Personalisiert' },
-  { icon: Star,  label: 'Geheimtipps' },
+  { icon: Star,   label: 'Geheimtipps' },
+  { icon: Plane,  label: 'Tagesplanung' },
 ];
 
 export function WelcomeScreen({ onStart }: Props) {
@@ -35,7 +35,7 @@ export function WelcomeScreen({ onStart }: Props) {
           Tripsilo
         </h1>
         <p className="mb-10" style={{ fontSize: '15px', color: '#6e6e73', fontWeight: 400 }}>
-          Dein KI-Reiseplaner
+          Dein persönlicher Reiseplaner
         </p>
 
         {/* Feature tags */}
@@ -78,7 +78,7 @@ export function WelcomeScreen({ onStart }: Props) {
         </button>
 
         <p className="mt-6" style={{ fontSize: '12px', color: '#aeaeb2' }}>
-          Powered by Claude AI
+          Tripsilo — Entdecke die Welt
         </p>
       </div>
     </div>
