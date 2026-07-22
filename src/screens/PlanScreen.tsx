@@ -233,10 +233,29 @@ export function PlanScreen({ plan, input, onSave, onNew, onRate, isSaved }: Prop
   const totalBudget = Object.values(plan.budget_breakdown).reduce((a, b) => a + b, 0);
   const dest = plan.destination;
 
-  // Booking URLs
-  const flightUrl = `https://www.google.com/travel/flights?q=${encodeURIComponent(`Flüge nach ${dest}`)}&adults=${input.persons}`;
-  const bookingUrl = `https://www.booking.com/search.html?ss=${encodeURIComponent(dest)}&group_adults=${input.persons}&selected_currency=EUR&order=price`;
-  const check24Url = `https://www.check24.de/hotel/?destination=${encodeURIComponent(dest)}&adults=${input.persons}`;
+  // Booking URLs — with dates when available
+  const from = input.departureCity;
+  const checkin = input.departureDate;
+  const checkout = input.returnDate;
+
+  const flightUrl = from && checkin && checkout
+    ? `https://www.google.com/travel/flights?q=${encodeURIComponent(`Flüge von ${from} nach ${dest}`)}&adults=${input.persons}`
+    : `https://www.google.com/travel/flights?q=${encodeURIComponent(`Flüge nach ${dest}`)}&adults=${input.persons}`;
+
+  const skyscannerUrl = from && checkin && checkout
+    ? `https://www.skyscanner.de/transport/fluge/${encodeURIComponent(from.toLowerCase())}/${encodeURIComponent(dest.toLowerCase())}/${checkin.replace(/-/g, '')}/${checkout.replace(/-/g, '')}/?adults=${input.persons}`
+    : `https://www.skyscanner.de/transport/fluge/de/${encodeURIComponent(dest.toLowerCase())}/?adults=${input.persons}`;
+
+  const bookingUrl = checkin && checkout
+    ? `https://www.booking.com/search.html?ss=${encodeURIComponent(dest)}&checkin=${checkin}&checkout=${checkout}&group_adults=${input.persons}&selected_currency=EUR`
+    : `https://www.booking.com/search.html?ss=${encodeURIComponent(dest)}&group_adults=${input.persons}&selected_currency=EUR`;
+
+  const hotelsUrl = checkin && checkout
+    ? `https://de.hotels.com/search.do?q-destination=${encodeURIComponent(dest)}&q-check-in=${checkin}&q-check-out=${checkout}&q-rooms=1&q-room-0-adults=${input.persons}`
+    : `https://de.hotels.com/search.do?q-destination=${encodeURIComponent(dest)}&q-rooms=1&q-room-0-adults=${input.persons}`;
+
+  const formatDate = (iso: string) =>
+    new Date(iso).toLocaleDateString('de-DE', { day: 'numeric', month: 'long' });
 
   useEffect(() => {
     const queries: { key: SlotKey; query: string }[] = [];
@@ -540,12 +559,55 @@ export function PlanScreen({ plan, input, onSave, onNew, onRate, isSaved }: Prop
         {/* Booking summary */}
         <div className="card p-5">
           <p className="section-label mb-4">Reise buchen</p>
-          <div className="space-y-2">
-            <BookingLink href={flightUrl} label={`Flüge nach ${dest} suchen`} icon={Plane} />
-            <BookingLink href={bookingUrl} label={`Hotel auf Booking.com`} icon={Hotel} />
-            <BookingLink href={check24Url} label={`Preisvergleich auf Check24`} icon={Building2} />
+
+          {/* Flights */}
+          <div className="mb-4">
+            <div className="flex items-center gap-2 mb-1">
+              <Plane size={13} strokeWidth={1.5} style={{ color: '#8b7cf8' }} />
+              <p style={{ fontSize: '13px', fontWeight: 500, color: '#1c1c1e' }}>Flüge</p>
+            </div>
+            {from && (
+              <p style={{ fontSize: '13px', color: '#6e6e73', marginBottom: '2px' }}>
+                {from} → {dest}
+              </p>
+            )}
+            {checkin && checkout && (
+              <p style={{ fontSize: '12px', color: '#aeaeb2', marginBottom: '10px' }}>
+                {formatDate(checkin)} – {formatDate(checkout)} · {input.persons} {input.persons === 1 ? 'Person' : 'Personen'}
+              </p>
+            )}
+            <div className="space-y-2">
+              <BookingLink href={flightUrl} label="Google Flights öffnen" icon={Plane} />
+              <BookingLink href={skyscannerUrl} label="Skyscanner öffnen" icon={Compass} />
+            </div>
           </div>
+
           <Divider />
+
+          {/* Hotel */}
+          <div className="mb-4">
+            <div className="flex items-center gap-2 mb-1">
+              <Hotel size={13} strokeWidth={1.5} style={{ color: '#8b7cf8' }} />
+              <p style={{ fontSize: '13px', fontWeight: 500, color: '#1c1c1e' }}>Hotel</p>
+            </div>
+            <p style={{ fontSize: '13px', color: '#6e6e73', marginBottom: '2px' }}>
+              {dest}
+              {checkin && checkout && ` · ${input.days} ${input.days === 1 ? 'Nacht' : 'Nächte'}`}
+              {` · ${input.persons} ${input.persons === 1 ? 'Person' : 'Personen'}`}
+            </p>
+            {checkin && checkout && (
+              <p style={{ fontSize: '12px', color: '#aeaeb2', marginBottom: '10px' }}>
+                {formatDate(checkin)} – {formatDate(checkout)}
+              </p>
+            )}
+            <div className="space-y-2">
+              <BookingLink href={bookingUrl} label="Booking.com öffnen" icon={Hotel} />
+              <BookingLink href={hotelsUrl} label="Hotels.com öffnen" icon={Building2} />
+            </div>
+          </div>
+
+          <Divider />
+
           <div className="flex gap-2">
             <button
               onClick={onSave}

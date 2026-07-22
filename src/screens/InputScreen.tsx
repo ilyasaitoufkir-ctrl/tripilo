@@ -2,7 +2,7 @@ import { useState } from 'react';
 import {
   MapPin, Plane, Waves, Mountain, Landmark, Music2, UtensilsCrossed, Users,
   Zap, Sparkles, Trophy, ShoppingBag, Heart, Car, Backpack, Gem,
-  Compass, Building2, Snowflake, Ship, Camera, Leaf,
+  Compass, Building2, Snowflake, Ship, Camera, Leaf, CalendarDays,
 } from 'lucide-react';
 import type { TripInput } from '../types';
 
@@ -98,6 +98,13 @@ export function InputScreen({ onSubmit }: Props) {
   const [cuisines, setCuisines] = useState<string[]>([]);
   const [accommodation, setAccommodation] = useState('');
   const [avoid, setAvoid] = useState<string[]>([]);
+  const [departureCity, setDepartureCity] = useState('');
+  const [customCity, setCustomCity] = useState('');
+  const [departureDate, setDepartureDate] = useState('');
+  const [returnDate, setReturnDate] = useState('');
+
+  const today = new Date().toISOString().split('T')[0];
+  const departureCities = ['Hamburg', 'Berlin', 'München', 'Frankfurt', 'Köln', 'Wien', 'Zürich'];
 
   const toggleMulti = (arr: string[], val: string, set: (v: string[]) => void) =>
     set(arr.includes(val) ? arr.filter((x) => x !== val) : [...arr, val]);
@@ -116,6 +123,9 @@ export function InputScreen({ onSubmit }: Props) {
       cuisines: cuisines.length ? cuisines : undefined,
       accommodation: accommodation || undefined,
       avoid: avoid.length ? avoid : undefined,
+      departureCity: (departureCity === 'Andere' ? customCity : departureCity) || undefined,
+      departureDate: departureDate || undefined,
+      returnDate: returnDate || undefined,
     });
   };
 
@@ -304,6 +314,74 @@ export function InputScreen({ onSubmit }: Props) {
               />
             ))}
           </ChipGrid>
+        </SectionCard>
+
+        {/* Departure city */}
+        <SectionCard>
+          <div className="flex items-center gap-2 mb-3">
+            <Plane size={13} strokeWidth={1.5} style={{ color: '#8b7cf8' }} />
+            <SectionLabel text="Abflugstadt (optional)" />
+          </div>
+          <ChipGrid>
+            {departureCities.map((c) => (
+              <Chip
+                key={c}
+                label={c}
+                active={departureCity === c}
+                onClick={() => { setDepartureCity(departureCity === c ? '' : c); setCustomCity(''); }}
+              />
+            ))}
+            <Chip
+              label="Andere"
+              active={departureCity === 'Andere'}
+              onClick={() => setDepartureCity(departureCity === 'Andere' ? '' : 'Andere')}
+            />
+          </ChipGrid>
+          {departureCity === 'Andere' && (
+            <input
+              type="text"
+              value={customCity}
+              onChange={(e) => setCustomCity(e.target.value)}
+              placeholder="z.B. Stuttgart, Hannover..."
+              className="w-full outline-none mt-3"
+              style={{ fontSize: '15px', color: '#1c1c1e', background: 'transparent', border: 'none', borderBottom: '1px solid #e8e8ed', paddingBottom: '6px' }}
+            />
+          )}
+        </SectionCard>
+
+        {/* Travel dates */}
+        <SectionCard>
+          <div className="flex items-center gap-2 mb-3">
+            <CalendarDays size={13} strokeWidth={1.5} style={{ color: '#8b7cf8' }} />
+            <SectionLabel text="Reisedaten (optional)" />
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <p style={{ fontSize: '11px', color: '#aeaeb2', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Hinflug</p>
+              <input
+                type="date"
+                value={departureDate}
+                min={today}
+                onChange={(e) => {
+                  setDepartureDate(e.target.value);
+                  if (returnDate && returnDate < e.target.value) setReturnDate('');
+                }}
+                className="w-full outline-none"
+                style={{ fontSize: '14px', color: '#1c1c1e', background: 'transparent', border: '1px solid #e8e8ed', borderRadius: '10px', padding: '8px 10px' }}
+              />
+            </div>
+            <div>
+              <p style={{ fontSize: '11px', color: '#aeaeb2', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Rückflug</p>
+              <input
+                type="date"
+                value={returnDate}
+                min={departureDate || today}
+                onChange={(e) => setReturnDate(e.target.value)}
+                className="w-full outline-none"
+                style={{ fontSize: '14px', color: '#1c1c1e', background: 'transparent', border: '1px solid #e8e8ed', borderRadius: '10px', padding: '8px 10px' }}
+              />
+            </div>
+          </div>
         </SectionCard>
 
         {/* Submit */}

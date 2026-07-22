@@ -11,6 +11,9 @@ export interface TripInput {
   cuisines?: string[];
   accommodation?: string;
   avoid?: string[];
+  departureCity?: string;
+  departureDate?: string;
+  returnDate?: string;
 }
 
 export interface DayActivity {
