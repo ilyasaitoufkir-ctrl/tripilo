@@ -3,7 +3,8 @@ import {
   Euro, Calendar, Lightbulb, AlertCircle,
   Sun, Coffee, Moon, Bookmark, RefreshCw, ChevronDown, ChevronUp,
   Train, ExternalLink, Star, Share2, Check, Hotel,
-  Building2, UtensilsCrossed, Compass, Plane
+  Building2, UtensilsCrossed, Compass, Plane,
+  Phone, Globe, Navigation, MapPin,
 } from 'lucide-react';
 import type { TripPlan, TripInput, DayPlan } from '../types';
 import { searchPlace, priceLevelLabel, type PlaceInfo } from '../services/places';
@@ -23,13 +24,18 @@ const placeKey = (day: number, slot: 'morning' | 'lunch' | 'evening') => `${day}
 const slotQuery = (day: DayPlan, slot: 'morning' | 'lunch' | 'evening', dest: string) =>
   slot === 'lunch' ? `${day.lunch.restaurant} ${dest}` : `${day[slot].activity} ${dest}`;
 
-// ── Divider ───────────────────────────────────────────────────────────────────
 function Divider() {
   return <div style={{ height: '1px', background: '#f5f5f7', margin: '12px 0' }} />;
 }
 
-// ── Place card ────────────────────────────────────────────────────────────────
-function PlaceCard({ place, loading }: { place: PlaceInfo | null | undefined; loading: boolean }) {
+// ── Place card ─────────────────────────────────────────────────────────────────
+function PlaceCard({
+  place, loading, showActions = false,
+}: {
+  place: PlaceInfo | null | undefined;
+  loading: boolean;
+  showActions?: boolean;
+}) {
   if (loading) {
     return (
       <div className="mt-3 rounded-xl overflow-hidden">
@@ -43,28 +49,28 @@ function PlaceCard({ place, loading }: { place: PlaceInfo | null | undefined; lo
   }
   if (!place) return null;
 
+  const todayText = place.opening_hours?.[new Date().getDay() === 0 ? 6 : new Date().getDay() - 1];
+
   return (
-    <div
-      className="mt-3 rounded-xl overflow-hidden"
-      style={{ border: '1px solid #e8e8ed' }}
-    >
+    <div className="mt-3 rounded-xl overflow-hidden" style={{ border: '1px solid #e8e8ed' }}>
       {place.photo && (
         <img
           src={place.photo}
           alt={place.name}
-          className="w-full h-28 object-cover"
+          className="w-full h-32 object-cover"
           onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
         />
       )}
-      <div className="p-3 space-y-1">
-        <div className="flex items-center justify-between gap-2">
+      <div className="p-3 space-y-1.5">
+        <div className="flex items-start justify-between gap-2">
           <p style={{ fontSize: '13px', fontWeight: 500, color: '#1c1c1e' }}>{place.name}</p>
           {place.price_level !== null && (
-            <span style={{ fontSize: '12px', color: '#8b7cf8', fontWeight: 500 }}>
+            <span style={{ fontSize: '12px', color: '#8b7cf8', fontWeight: 500, flexShrink: 0 }}>
               {priceLevelLabel(place.price_level)}
             </span>
           )}
         </div>
+
         {place.rating !== null && (
           <div className="flex items-center gap-1">
             <Star size={11} fill="#f59e0b" style={{ color: '#f59e0b' }} strokeWidth={0} />
@@ -73,36 +79,101 @@ function PlaceCard({ place, loading }: { place: PlaceInfo | null | undefined; lo
             </span>
             {place.total_ratings !== null && (
               <span style={{ fontSize: '12px', color: '#aeaeb2' }}>
-                ({place.total_ratings.toLocaleString('de-DE')})
+                ({place.total_ratings.toLocaleString('de-DE')} Bewertungen)
               </span>
             )}
           </div>
         )}
+
         {place.address && (
-          <p style={{ fontSize: '12px', color: '#6e6e73' }}>{place.address}</p>
+          <div className="flex items-start gap-1">
+            <MapPin size={11} strokeWidth={1.5} style={{ color: '#aeaeb2', flexShrink: 0, marginTop: '2px' }} />
+            <p style={{ fontSize: '12px', color: '#6e6e73' }}>{place.address}</p>
+          </div>
         )}
-        <a
-          href={place.maps_url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center gap-1 mt-1"
-          style={{ fontSize: '12px', fontWeight: 500, color: '#8b7cf8', textDecoration: 'none' }}
-        >
-          <ExternalLink size={11} strokeWidth={1.5} />
-          In Google Maps öffnen
-        </a>
+
+        {place.phone && (
+          <div className="flex items-center gap-1">
+            <Phone size={11} strokeWidth={1.5} style={{ color: '#aeaeb2' }} />
+            <a
+              href={`tel:${place.phone}`}
+              style={{ fontSize: '12px', color: '#6e6e73', textDecoration: 'none' }}
+            >
+              {place.phone}
+            </a>
+          </div>
+        )}
+
+        {todayText && (
+          <div className="flex items-center gap-1">
+            <span style={{ fontSize: '11px', color: '#aeaeb2' }}>Heute:</span>
+            <span style={{ fontSize: '11px', color: '#6e6e73' }}>
+              {todayText.replace(/^[^:]+:\s*/, '')}
+            </span>
+          </div>
+        )}
+
+        {/* Action buttons */}
+        {showActions ? (
+          <div className="flex gap-2 pt-1">
+            <a
+              href={place.navigation_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg transition-all active:scale-95"
+              style={{ background: '#f0eeff', border: '1px solid #c4b5fd', color: '#8b7cf8', fontSize: '12px', fontWeight: 500, textDecoration: 'none' }}
+            >
+              <Navigation size={12} strokeWidth={1.5} />
+              Navigation
+            </a>
+            {place.phone && (
+              <a
+                href={`tel:${place.phone}`}
+                className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg transition-all active:scale-95"
+                style={{ background: '#f5f5f7', border: '1px solid #e8e8ed', color: '#6e6e73', fontSize: '12px', fontWeight: 500, textDecoration: 'none' }}
+              >
+                <Phone size={12} strokeWidth={1.5} />
+                Anrufen
+              </a>
+            )}
+            {place.website && (
+              <a
+                href={place.website}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg transition-all active:scale-95"
+                style={{ background: '#f5f5f7', border: '1px solid #e8e8ed', color: '#6e6e73', fontSize: '12px', fontWeight: 500, textDecoration: 'none' }}
+              >
+                <Globe size={12} strokeWidth={1.5} />
+                Website
+              </a>
+            )}
+          </div>
+        ) : (
+          <a
+            href={place.maps_url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1 mt-0.5"
+            style={{ fontSize: '12px', fontWeight: 500, color: '#8b7cf8', textDecoration: 'none' }}
+          >
+            <ExternalLink size={11} strokeWidth={1.5} />
+            In Google Maps öffnen
+          </a>
+        )}
       </div>
     </div>
   );
 }
 
-// ── Activity slot ─────────────────────────────────────────────────────────────
+// ── Activity slot ──────────────────────────────────────────────────────────────
 function SlotBlock({
-  icon: Icon, label, labelColor, cost, name, description, tip, placeData, placeLoading, bg,
+  icon: Icon, label, labelColor, cost, name, description, tip, placeData, placeLoading, bg, isRestaurant,
 }: {
   icon: React.ElementType; label: string; labelColor: string; cost: number;
   name: string; description: string; tip?: string;
   placeData: PlaceInfo | null | undefined; placeLoading: boolean; bg: string;
+  isRestaurant?: boolean;
 }) {
   return (
     <div className="p-4 rounded-2xl" style={{ background: bg }}>
@@ -115,7 +186,7 @@ function SlotBlock({
       </div>
       <p style={{ fontSize: '15px', fontWeight: 500, color: '#1c1c1e', marginBottom: '2px' }}>{name}</p>
       <p style={{ fontSize: '13px', color: '#6e6e73', lineHeight: 1.5 }}>{description}</p>
-      <PlaceCard place={placeData} loading={placeLoading} />
+      <PlaceCard place={placeData} loading={placeLoading} showActions={isRestaurant} />
       {tip && (
         <div
           className="flex items-start gap-2 mt-3 p-2.5 rounded-xl"
@@ -129,7 +200,30 @@ function SlotBlock({
   );
 }
 
-// ── Main ──────────────────────────────────────────────────────────────────────
+// ── Booking link button ────────────────────────────────────────────────────────
+function BookingLink({
+  href, label, icon: Icon,
+}: {
+  href: string; label: string; icon: React.ElementType;
+}) {
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="flex items-center justify-between px-4 py-3 rounded-xl transition-all active:scale-[0.98]"
+      style={{ background: '#fafafa', border: '1px solid #e8e8ed', textDecoration: 'none' }}
+    >
+      <div className="flex items-center gap-2.5">
+        <Icon size={15} strokeWidth={1.5} style={{ color: '#8b7cf8' }} />
+        <span style={{ fontSize: '14px', color: '#1c1c1e', fontWeight: 400 }}>{label}</span>
+      </div>
+      <ExternalLink size={13} strokeWidth={1.5} style={{ color: '#aeaeb2' }} />
+    </a>
+  );
+}
+
+// ── Main ───────────────────────────────────────────────────────────────────────
 export function PlanScreen({ plan, input, onSave, onNew, onRate, isSaved }: Props) {
   const [expandedDay, setExpandedDay] = useState<number | null>(0);
   const [placesData, setPlacesData] = useState<Record<SlotKey, PlaceInfo | null>>({});
@@ -138,6 +232,11 @@ export function PlanScreen({ plan, input, onSave, onNew, onRate, isSaved }: Prop
 
   const totalBudget = Object.values(plan.budget_breakdown).reduce((a, b) => a + b, 0);
   const dest = plan.destination;
+
+  // Booking URLs
+  const flightUrl = `https://www.google.com/travel/flights?q=${encodeURIComponent(`Flüge nach ${dest}`)}&adults=${input.persons}`;
+  const bookingUrl = `https://www.booking.com/search.html?ss=${encodeURIComponent(dest)}&group_adults=${input.persons}&selected_currency=EUR&order=price`;
+  const check24Url = `https://www.check24.de/hotel/?destination=${encodeURIComponent(dest)}&adults=${input.persons}`;
 
   useEffect(() => {
     const queries: { key: SlotKey; query: string }[] = [];
@@ -185,19 +284,16 @@ export function PlanScreen({ plan, input, onSave, onNew, onRate, isSaved }: Prop
 
   return (
     <div className="min-h-screen pb-28" style={{ background: '#fafafa' }}>
-      {/* Hero photo — no text overlay */}
+      {/* Hero photo */}
       <img
         src={`https://source.unsplash.com/1600x700/?${encodeURIComponent(dest)},travel`}
         alt={dest}
         className="w-full object-cover"
         style={{ height: '220px' }}
-        onError={(e) => {
-          const el = e.currentTarget as HTMLImageElement;
-          el.style.display = 'none';
-        }}
+        onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
       />
 
-      {/* Destination info below photo */}
+      {/* Destination info */}
       <div className="px-5 py-5" style={{ borderBottom: '1px solid #e8e8ed' }}>
         <p style={{ fontSize: '13px', color: '#aeaeb2', marginBottom: '2px' }}>{plan.country}</p>
         <h1 style={{ fontSize: '28px', fontWeight: 500, color: '#1c1c1e', letterSpacing: '-0.5px', marginBottom: '10px' }}>
@@ -263,14 +359,7 @@ export function PlanScreen({ plan, input, onSave, onNew, onRate, isSaved }: Prop
               onClick={onClick}
               disabled={disabled}
               className="flex-1 py-3 rounded-xl flex items-center justify-center gap-1.5 transition-all active:scale-95 disabled:opacity-60"
-              style={{
-                background: bg,
-                border: `1px solid ${border}`,
-                color,
-                fontSize: '13px',
-                fontWeight: 400,
-                cursor: disabled ? 'default' : 'pointer',
-              }}
+              style={{ background: bg, border: `1px solid ${border}`, color, fontSize: '13px', fontWeight: 400, cursor: disabled ? 'default' : 'pointer' }}
             >
               <Icon size={15} strokeWidth={1.5} />
               {label}
@@ -317,17 +406,12 @@ export function PlanScreen({ plan, input, onSave, onNew, onRate, isSaved }: Prop
                   onClick={() => setExpandedDay(expandedDay === idx ? null : idx)}
                   className="w-full flex items-center gap-3 p-4 text-left"
                 >
-                  <div
-                    className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0"
-                    style={{ background: '#f0eeff' }}
-                  >
+                  <div className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0" style={{ background: '#f0eeff' }}>
                     <span style={{ fontSize: '13px', fontWeight: 500, color: '#8b7cf8' }}>{day.day}</span>
                   </div>
                   <div className="flex-1 min-w-0">
                     <p style={{ fontSize: '11px', color: '#aeaeb2', marginBottom: '1px' }}>Tag {day.day}</p>
-                    <p style={{ fontSize: '14px', fontWeight: 500, color: '#1c1c1e' }} className="truncate">
-                      {day.title}
-                    </p>
+                    <p style={{ fontSize: '14px', fontWeight: 500, color: '#1c1c1e' }} className="truncate">{day.title}</p>
                   </div>
                   {expandedDay === idx
                     ? <ChevronUp size={16} strokeWidth={1.5} style={{ color: '#aeaeb2', flexShrink: 0 }} />
@@ -337,16 +421,16 @@ export function PlanScreen({ plan, input, onSave, onNew, onRate, isSaved }: Prop
 
                 {expandedDay === idx && (
                   <div className="px-4 pb-4 space-y-2">
-                    {/* Route button */}
+                    {/* Tagesroute */}
                     <button
                       onClick={() => openDayRoute(getDayActivities(day), dest)}
                       className="w-full flex items-center justify-between p-3 rounded-xl transition-all active:scale-[0.98]"
                       style={{ background: '#fafafa', border: '1px solid #e8e8ed' }}
                     >
-                      <span style={{ fontSize: '13px', color: '#6e6e73' }}>Route für Tag {day.day}</span>
+                      <span style={{ fontSize: '13px', color: '#6e6e73' }}>Tagesroute öffnen</span>
                       <span className="flex items-center gap-1.5" style={{ fontSize: '12px', fontWeight: 500, color: '#8b7cf8' }}>
-                        <ExternalLink size={12} strokeWidth={1.5} />
-                        In Maps öffnen
+                        <Navigation size={12} strokeWidth={1.5} />
+                        Google Maps
                       </span>
                     </button>
 
@@ -363,6 +447,7 @@ export function PlanScreen({ plan, input, onSave, onNew, onRate, isSaved }: Prop
                       description={day.lunch.description} tip={day.lunch.tip}
                       placeData={placesData[placeKey(day.day, 'lunch')]}
                       placeLoading={isLoading(placeKey(day.day, 'lunch'))}
+                      isRestaurant
                     />
                     <SlotBlock
                       icon={Moon} label="Abend" labelColor="#6e6e73" bg="#f5f5f7"
@@ -387,23 +472,23 @@ export function PlanScreen({ plan, input, onSave, onNew, onRate, isSaved }: Prop
           <div className="flex items-start justify-between mb-1">
             <p style={{ fontSize: '16px', fontWeight: 500, color: '#1c1c1e' }}>{plan.hotel_empfehlung.name}</p>
             <div className="text-right">
-              <p style={{ fontSize: '18px', fontWeight: 500, color: '#8b7cf8' }}>
-                {plan.hotel_empfehlung.preis_pro_nacht}€
-              </p>
+              <p style={{ fontSize: '18px', fontWeight: 500, color: '#8b7cf8' }}>{plan.hotel_empfehlung.preis_pro_nacht}€</p>
               <p style={{ fontSize: '11px', color: '#aeaeb2' }}>/ Nacht</p>
             </div>
           </div>
           <p style={{ fontSize: '13px', color: '#6e6e73', lineHeight: 1.5 }}>{plan.hotel_empfehlung.beschreibung}</p>
-          <PlaceCard place={placesData['hotel']} loading={isLoading('hotel')} />
+          <PlaceCard place={placesData['hotel']} loading={isLoading('hotel')} showActions />
           {plan.hotel_empfehlung.tipp && (
-            <div
-              className="flex items-start gap-2 mt-3 p-2.5 rounded-xl"
-              style={{ background: '#f0eeff' }}
-            >
+            <div className="flex items-start gap-2 mt-3 p-2.5 rounded-xl" style={{ background: '#f0eeff' }}>
               <Lightbulb size={13} strokeWidth={1.5} style={{ color: '#8b7cf8', flexShrink: 0, marginTop: '1px' }} />
               <p style={{ fontSize: '13px', color: '#6e6e73' }}>{plan.hotel_empfehlung.tipp}</p>
             </div>
           )}
+          {/* Booking links */}
+          <div className="space-y-2 mt-3">
+            <BookingLink href={bookingUrl} label={`Hotel in ${dest} auf Booking.com`} icon={Hotel} />
+            <BookingLink href={check24Url} label={`Preisvergleich auf Check24`} icon={Building2} />
+          </div>
         </div>
 
         {/* Geheimtipps */}
@@ -413,9 +498,7 @@ export function PlanScreen({ plan, input, onSave, onNew, onRate, isSaved }: Prop
             <div className="space-y-3">
               {plan.geheimtipps.map((tip, i) => (
                 <div key={i} className="flex items-start gap-3">
-                  <span
-                    style={{ fontSize: '12px', fontWeight: 500, color: '#8b7cf8', flexShrink: 0, marginTop: '2px', width: '14px' }}
-                  >
+                  <span style={{ fontSize: '12px', fontWeight: 500, color: '#8b7cf8', flexShrink: 0, marginTop: '2px', width: '14px' }}>
                     {i + 1}
                   </span>
                   <p style={{ fontSize: '14px', color: '#374151', lineHeight: 1.6 }}>{tip}</p>
@@ -445,10 +528,7 @@ export function PlanScreen({ plan, input, onSave, onNew, onRate, isSaved }: Prop
 
         {/* Warning */}
         {plan.warnung && (
-          <div
-            className="flex items-start gap-3 p-4 rounded-2xl"
-            style={{ background: '#fce7f3', border: '1px solid #fbcfe8' }}
-          >
+          <div className="flex items-start gap-3 p-4 rounded-2xl" style={{ background: '#fce7f3', border: '1px solid #fbcfe8' }}>
             <AlertCircle size={16} strokeWidth={1.5} style={{ color: '#f472b6', flexShrink: 0, marginTop: '2px' }} />
             <div>
               <p style={{ fontSize: '12px', fontWeight: 500, color: '#f472b6', marginBottom: '2px' }}>Hinweis</p>
@@ -457,22 +537,43 @@ export function PlanScreen({ plan, input, onSave, onNew, onRate, isSaved }: Prop
           </div>
         )}
 
+        {/* Booking summary */}
+        <div className="card p-5">
+          <p className="section-label mb-4">Reise buchen</p>
+          <div className="space-y-2">
+            <BookingLink href={flightUrl} label={`Flüge nach ${dest} suchen`} icon={Plane} />
+            <BookingLink href={bookingUrl} label={`Hotel auf Booking.com`} icon={Hotel} />
+            <BookingLink href={check24Url} label={`Preisvergleich auf Check24`} icon={Building2} />
+          </div>
+          <Divider />
+          <div className="flex gap-2">
+            <button
+              onClick={onSave}
+              disabled={isSaved}
+              className="flex-1 py-3 rounded-xl flex items-center justify-center gap-1.5 transition-all active:scale-95 disabled:opacity-50"
+              style={{ background: isSaved ? '#f0eeff' : '#fafafa', border: '1px solid #c4b5fd', color: '#8b7cf8', fontSize: '13px', fontWeight: 400, cursor: isSaved ? 'default' : 'pointer' }}
+            >
+              <Bookmark size={14} strokeWidth={1.5} />
+              {isSaved ? 'Gespeichert' : 'Speichern'}
+            </button>
+            <button
+              onClick={handleShare}
+              className="flex-1 py-3 rounded-xl flex items-center justify-center gap-1.5 transition-all active:scale-95"
+              style={{ background: '#fafafa', border: '1px solid #e8e8ed', color: '#6e6e73', fontSize: '13px', fontWeight: 400, cursor: 'pointer' }}
+            >
+              {shareState === 'copied' ? <Check size={14} strokeWidth={1.5} /> : <Share2 size={14} strokeWidth={1.5} />}
+              {shareState === 'copied' ? 'Kopiert' : 'Teilen'}
+            </button>
+          </div>
+        </div>
+
         <Divider />
 
         {/* New trip */}
         <button
           onClick={onNew}
           className="w-full flex items-center justify-center gap-2 transition-all active:scale-[0.98]"
-          style={{
-            background: '#fafafa',
-            border: '1px solid #e8e8ed',
-            borderRadius: '12px',
-            padding: '14px',
-            fontSize: '14px',
-            fontWeight: 400,
-            color: '#6e6e73',
-            cursor: 'pointer',
-          }}
+          style={{ background: '#fafafa', border: '1px solid #e8e8ed', borderRadius: '12px', padding: '14px', fontSize: '14px', fontWeight: 400, color: '#6e6e73', cursor: 'pointer' }}
         >
           <RefreshCw size={15} strokeWidth={1.5} />
           Neue Reise planen
