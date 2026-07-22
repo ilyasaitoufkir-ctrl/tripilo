@@ -1,19 +1,18 @@
 import { useEffect, useState } from 'react';
-import { Plane } from 'lucide-react';
 
 const steps = [
-  { text: 'Reiseziel analysieren...', pct: 15 },
-  { text: 'Geheimtipps suchen...', pct: 30 },
-  { text: 'Tagesplan erstellen...', pct: 50 },
-  { text: 'Budget optimieren...', pct: 65 },
-  { text: 'Hotel auswählen...', pct: 78 },
-  { text: 'Lokale Empfehlungen...', pct: 88 },
-  { text: 'Fast fertig...', pct: 95 },
+  { text: 'Reiseziel analysieren', pct: 12 },
+  { text: 'Geheimtipps suchen', pct: 28 },
+  { text: 'Tagesplan erstellen', pct: 46 },
+  { text: 'Budget optimieren', pct: 62 },
+  { text: 'Hotel auswählen', pct: 75 },
+  { text: 'Lokale Empfehlungen', pct: 88 },
+  { text: 'Plan wird fertiggestellt', pct: 96 },
 ];
 
 export function LoadingScreen() {
   const [stepIdx, setStepIdx] = useState(0);
-  const [progress, setProgress] = useState(0);
+  const [progress, setProgress] = useState(steps[0].pct);
 
   useEffect(() => {
     const t = setInterval(() => {
@@ -23,73 +22,55 @@ export function LoadingScreen() {
         return next;
       });
     }, 1800);
-    setProgress(steps[0].pct);
     return () => clearInterval(t);
   }, []);
 
   return (
     <div
-      className="min-h-screen flex flex-col items-center justify-center px-6"
-      style={{ background: 'linear-gradient(160deg, #ede9ff 0%, #f8f9ff 60%)' }}
+      className="min-h-screen flex flex-col items-center justify-center px-8"
+      style={{ background: '#fafafa' }}
     >
-      <div className="w-full max-w-sm text-center">
-        {/* Logo animation */}
-        <div className="relative inline-block mb-12">
-          {/* Outer ring */}
-          <div
-            className="absolute inset-0 rounded-[2.5rem] animate-spin-slow"
-            style={{
-              margin: '-12px',
-              border: '2px dashed rgba(91,79,255,0.25)',
-              borderRadius: '2.5rem',
-            }}
-          />
-          {/* Card */}
-          <div
-            className="w-32 h-32 rounded-[2rem] flex items-center justify-center animate-pulse-ring"
-            style={{
-              background: 'linear-gradient(135deg, #5b4fff, #8b5cf6)',
-              boxShadow: '0 20px 60px rgba(91,79,255,0.35)',
-            }}
-          >
-            <Plane size={60} className="text-white animate-float" strokeWidth={1.5} />
-          </div>
-        </div>
+      <div className="w-full max-w-xs text-center">
+        {/* Word mark */}
+        <p
+          className="mb-12"
+          style={{ fontSize: '22px', fontWeight: 300, color: '#1c1c1e', letterSpacing: '-0.5px' }}
+        >
+          Tripilo
+        </p>
 
-        <h2 className="text-3xl font-black mb-1" style={{ color: '#1a1a2e' }}>
-          KI plant deine
-        </h2>
-        <p className="text-3xl font-black mb-8 gradient-text">Traumreise</p>
-
-        {/* Progress track */}
+        {/* Progress bar */}
         <div
-          className="w-full h-2.5 rounded-full overflow-hidden mb-3"
-          style={{ background: '#e5e7eb' }}
+          className="w-full rounded-full overflow-hidden mb-4"
+          style={{ height: '3px', background: '#e8e8ed' }}
         >
           <div
             className="h-full rounded-full transition-all duration-700 ease-out"
-            style={{
-              width: `${progress}%`,
-              background: 'linear-gradient(90deg, #5b4fff, #8b5cf6)',
-              boxShadow: '0 0 12px rgba(91,79,255,0.5)',
-            }}
+            style={{ width: `${progress}%`, background: '#8b7cf8' }}
           />
         </div>
 
-        <p className="text-sm font-medium transition-all duration-500" style={{ color: '#5b4fff' }}>
+        {/* Status */}
+        <p
+          className="mb-1 transition-all duration-500"
+          style={{ fontSize: '15px', fontWeight: 400, color: '#1c1c1e' }}
+        >
           {steps[stepIdx].text}
         </p>
+        <p style={{ fontSize: '13px', color: '#aeaeb2' }}>
+          Bitte einen Moment Geduld
+        </p>
 
-        {/* Bouncing dots */}
-        <div className="flex justify-center gap-2 mt-8">
-          {[0, 1, 2].map((i) => (
+        {/* Dot indicator */}
+        <div className="flex justify-center gap-1.5 mt-10">
+          {steps.map((_, i) => (
             <div
               key={i}
-              className="w-2 h-2 rounded-full"
+              className="rounded-full transition-all duration-300"
               style={{
-                background: '#5b4fff',
-                animation: `float 1.2s ease-in-out ${i * 0.15}s infinite`,
-                opacity: 0.7,
+                width: i === stepIdx ? '20px' : '6px',
+                height: '6px',
+                background: i <= stepIdx ? '#8b7cf8' : '#e8e8ed',
               }}
             />
           ))}

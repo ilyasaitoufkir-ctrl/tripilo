@@ -1,60 +1,58 @@
-import { Sparkles, MapPin, Star, Plane } from 'lucide-react';
+import { Plane, Cpu, MapPin, Star } from 'lucide-react';
 
 interface Props {
   onStart: () => void;
 }
 
 const features = [
-  { icon: Sparkles, label: 'KI-gestützt', color: '#5b4fff' },
-  { icon: MapPin,   label: 'Personalisiert', color: '#ff6584' },
-  { icon: Star,     label: 'Geheimtipps', color: '#f59e0b' },
+  { icon: Cpu,   label: 'KI-gestützt' },
+  { icon: MapPin, label: 'Personalisiert' },
+  { icon: Star,  label: 'Geheimtipps' },
 ];
 
 export function WelcomeScreen({ onStart }: Props) {
   return (
     <div
-      className="min-h-screen flex flex-col items-center justify-center px-6 pb-8"
-      style={{ background: 'linear-gradient(160deg, #ede9ff 0%, #f8f9ff 45%, #fff0f3 100%)' }}
+      className="min-h-screen flex flex-col items-center justify-center px-8"
+      style={{ background: '#fafafa' }}
     >
-      {/* Decorative blobs */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute -top-32 -left-32 w-80 h-80 rounded-full opacity-30 blur-3xl"
-             style={{ background: '#8b5cf6' }} />
-        <div className="absolute -bottom-32 -right-32 w-80 h-80 rounded-full opacity-20 blur-3xl"
-             style={{ background: '#ff6584' }} />
-      </div>
-
-      <div className="relative z-10 w-full max-w-sm text-center">
-        {/* Logo */}
-        <div className="mb-8 inline-block animate-float">
+      <div className="w-full max-w-xs text-center">
+        {/* Icon */}
+        <div className="mb-10 animate-float inline-flex">
           <div
-            className="w-28 h-28 rounded-[2rem] flex items-center justify-center mx-auto animate-pulse-ring"
-            style={{
-              background: 'linear-gradient(135deg, #5b4fff, #8b5cf6)',
-              boxShadow: '0 16px 48px rgba(91,79,255,0.35)',
-            }}
+            className="w-16 h-16 rounded-2xl flex items-center justify-center"
+            style={{ background: '#f0eeff' }}
           >
-            <Plane size={56} className="text-white" strokeWidth={1.5} />
+            <Plane size={28} style={{ color: '#8b7cf8' }} strokeWidth={1.5} />
           </div>
         </div>
 
         {/* Brand */}
-        <h1 className="text-7xl font-black mb-2 tracking-tight" style={{ color: '#1a1a2e' }}>
-          Tri<span className="gradient-text">pilo</span>
+        <h1
+          className="mb-2 tracking-tight"
+          style={{ fontSize: '48px', fontWeight: 300, color: '#1c1c1e', letterSpacing: '-1px', lineHeight: 1.1 }}
+        >
+          Tripilo
         </h1>
-        <p className="text-base font-medium mb-10" style={{ color: '#6b7280' }}>
+        <p className="mb-10" style={{ fontSize: '15px', color: '#6e6e73', fontWeight: 400 }}>
           Dein KI-Reiseplaner
         </p>
 
-        {/* Feature chips */}
-        <div className="flex flex-wrap justify-center gap-3 mb-10">
-          {features.map(({ icon: Icon, label, color }) => (
+        {/* Feature tags */}
+        <div className="flex flex-wrap justify-center gap-2 mb-12">
+          {features.map(({ icon: Icon, label }) => (
             <div
               key={label}
-              className="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium animate-fade-in"
-              style={{ background: '#ffffff', border: '1px solid #e5e7eb', color: '#1a1a2e', boxShadow: '0 2px 8px rgba(91,79,255,0.06)' }}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full"
+              style={{
+                background: '#ffffff',
+                border: '1px solid #e8e8ed',
+                color: '#6e6e73',
+                fontSize: '13px',
+                fontWeight: 400,
+              }}
             >
-              <Icon size={14} style={{ color }} />
+              <Icon size={13} strokeWidth={1.5} style={{ color: '#8b7cf8' }} />
               {label}
             </div>
           ))}
@@ -63,21 +61,24 @@ export function WelcomeScreen({ onStart }: Props) {
         {/* CTA */}
         <button
           onClick={onStart}
-          className="w-full py-5 rounded-2xl text-lg font-bold text-white transition-all hover:scale-[1.02] active:scale-[0.97] animate-fade-in"
+          className="w-full transition-all active:scale-[0.98]"
           style={{
-            background: 'linear-gradient(135deg, #5b4fff, #8b5cf6)',
-            boxShadow: '0 8px 28px rgba(91,79,255,0.4)',
-            animationDelay: '0.2s',
+            background: '#8b7cf8',
+            color: '#ffffff',
+            borderRadius: '12px',
+            padding: '15px',
+            fontSize: '15px',
+            fontWeight: 500,
+            border: 'none',
+            cursor: 'pointer',
+            letterSpacing: '-0.1px',
           }}
         >
-          <span className="flex items-center justify-center gap-3">
-            <Plane size={22} />
-            Reise planen
-          </span>
+          Reise planen
         </button>
 
-        <p className="mt-6 text-xs" style={{ color: '#9ca3af' }}>
-          Powered by Claude AI ✨
+        <p className="mt-6" style={{ fontSize: '12px', color: '#aeaeb2' }}>
+          Powered by Claude AI
         </p>
       </div>
     </div>
