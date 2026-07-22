@@ -21,8 +21,8 @@ interface Props {
 
 type SlotKey = string;
 const placeKey = (day: number, slot: 'morning' | 'lunch' | 'evening') => `${day}-${slot}`;
-const slotQuery = (day: DayPlan, slot: 'morning' | 'lunch' | 'evening', dest: string) =>
-  slot === 'lunch' ? `${day.lunch.restaurant} ${dest}` : `${day[slot].activity} ${dest}`;
+const slotQuery = (day: DayPlan, slot: 'morning' | 'lunch' | 'evening') =>
+  slot === 'lunch' ? day.lunch.restaurant : day[slot].activity;
 
 function Divider() {
   return <div style={{ height: '1px', background: '#f5f5f7', margin: '12px 0' }} />;
@@ -241,13 +241,13 @@ export function PlanScreen({ plan, input, onSave, onNew, onRate, isSaved }: Prop
   useEffect(() => {
     const queries: { key: SlotKey; query: string }[] = [];
     plan.days.forEach((day) => {
-      queries.push({ key: placeKey(day.day, 'morning'), query: slotQuery(day, 'morning', dest) });
-      queries.push({ key: placeKey(day.day, 'lunch'),   query: slotQuery(day, 'lunch',   dest) });
-      queries.push({ key: placeKey(day.day, 'evening'), query: slotQuery(day, 'evening', dest) });
+      queries.push({ key: placeKey(day.day, 'morning'), query: slotQuery(day, 'morning') });
+      queries.push({ key: placeKey(day.day, 'lunch'),   query: slotQuery(day, 'lunch') });
+      queries.push({ key: placeKey(day.day, 'evening'), query: slotQuery(day, 'evening') });
     });
-    queries.push({ key: 'hotel', query: `${plan.hotel_empfehlung.name} ${dest}` });
+    queries.push({ key: 'hotel', query: plan.hotel_empfehlung.name });
     Promise.allSettled(
-      queries.map(({ key, query }) => searchPlace(query).then((r) => ({ key, result: r })))
+      queries.map(({ key, query }) => searchPlace(query, dest).then((r) => ({ key, result: r })))
     ).then((results) => {
       const map: Record<SlotKey, PlaceInfo | null> = {};
       results.forEach((r) => { if (r.status === 'fulfilled') map[r.value.key] = r.value.result; });

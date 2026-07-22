@@ -15,15 +15,28 @@ export interface PlaceInfo {
   opening_hours?: string[];
 }
 
-export const searchPlace = async (query: string): Promise<PlaceInfo | null> => {
+export const searchPlace = async (query: string, destination: string): Promise<PlaceInfo | null> => {
   try {
-    const searchUrl = `https://maps.googleapis.com/maps/api/place/textsearch/json?query=${encodeURIComponent(query)}&key=${API_KEY}&language=de`;
-    const res = await fetch(PROXY + encodeURIComponent(searchUrl));
+    // Always append destination to force correct city context
+    const searchQuery = `${query} in ${destination}`;
+
+    const url = `https://maps.googleapis.com/maps/api/place/textsearch/json?query=${encodeURIComponent(searchQuery)}&key=${API_KEY}&language=de`;
+    const res = await fetch(PROXY + encodeURIComponent(url));
     const data = await res.json();
-    const place = data.results?.[0];
+
+    console.log('Search query:', searchQuery);
+    console.log('Results:', data.results?.length);
+    console.log('First result:', data.results?.[0]?.name, data.results?.[0]?.formatted_address);
+
+    // Prefer a result whose address contains the destination city
+    const place =
+      data.results?.find((r: { formatted_address?: string }) =>
+        r.formatted_address?.toLowerCase().includes(destination.toLowerCase())
+      ) ?? data.results?.[0];
+
     if (!place) return null;
 
-    const mapsQuery = encodeURIComponent(query);
+    const mapsQuery = encodeURIComponent(searchQuery);
     const info: PlaceInfo = {
       name: place.name,
       address: place.formatted_address,
