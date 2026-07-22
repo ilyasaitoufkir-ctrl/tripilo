@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import type { TripPlan, TripInput, DayPlan } from '../types';
 import { searchPlace, priceLevelLabel, type PlaceInfo } from '../services/places';
+import { getFlightLinks, getHotelLinks, getFlightFallback, getHotelFallback } from '../services/booking';
 import { openDayRoute } from '../components/MapView';
 
 interface Props {
@@ -233,26 +234,19 @@ export function PlanScreen({ plan, input, onSave, onNew, onRate, isSaved }: Prop
   const totalBudget = Object.values(plan.budget_breakdown).reduce((a, b) => a + b, 0);
   const dest = plan.destination;
 
-  // Booking URLs — with dates when available
+  // Booking links — use service with full dates when available, fallback otherwise
   const from = input.departureCity;
   const checkin = input.departureDate;
   const checkout = input.returnDate;
+  const hasDates = !!(from && checkin && checkout);
+  const hasHotelDates = !!(checkin && checkout);
 
-  const flightUrl = from && checkin && checkout
-    ? `https://www.google.com/travel/flights?q=${encodeURIComponent(`Flüge von ${from} nach ${dest}`)}&adults=${input.persons}`
-    : `https://www.google.com/travel/flights?q=${encodeURIComponent(`Flüge nach ${dest}`)}&adults=${input.persons}`;
-
-  const skyscannerUrl = from && checkin && checkout
-    ? `https://www.skyscanner.de/transport/fluge/${encodeURIComponent(from.toLowerCase())}/${encodeURIComponent(dest.toLowerCase())}/${checkin.replace(/-/g, '')}/${checkout.replace(/-/g, '')}/?adults=${input.persons}`
-    : `https://www.skyscanner.de/transport/fluge/de/${encodeURIComponent(dest.toLowerCase())}/?adults=${input.persons}`;
-
-  const bookingUrl = checkin && checkout
-    ? `https://www.booking.com/search.html?ss=${encodeURIComponent(dest)}&checkin=${checkin}&checkout=${checkout}&group_adults=${input.persons}&selected_currency=EUR`
-    : `https://www.booking.com/search.html?ss=${encodeURIComponent(dest)}&group_adults=${input.persons}&selected_currency=EUR`;
-
-  const hotelsUrl = checkin && checkout
-    ? `https://de.hotels.com/search.do?q-destination=${encodeURIComponent(dest)}&q-check-in=${checkin}&q-check-out=${checkout}&q-rooms=1&q-room-0-adults=${input.persons}`
-    : `https://de.hotels.com/search.do?q-destination=${encodeURIComponent(dest)}&q-rooms=1&q-room-0-adults=${input.persons}`;
+  const flightLinks = hasDates
+    ? getFlightLinks(from!, dest, checkin!, checkout!, input.persons)
+    : null;
+  const hotelLinks = hasHotelDates
+    ? getHotelLinks(dest, checkin!, checkout!, input.persons)
+    : null;
 
   const formatDate = (iso: string) =>
     new Date(iso).toLocaleDateString('de-DE', { day: 'numeric', month: 'long' });
@@ -505,8 +499,17 @@ export function PlanScreen({ plan, input, onSave, onNew, onRate, isSaved }: Prop
           )}
           {/* Booking links */}
           <div className="space-y-2 mt-3">
-            <BookingLink href={bookingUrl} label={`Hotel in ${dest} auf Booking.com`} icon={Hotel} />
-            <BookingLink href={check24Url} label={`Preisvergleich auf Check24`} icon={Building2} />
+            <BookingLink
+              href={hotelLinks?.booking ?? getHotelFallback(dest, input.persons)}
+              label="Auf Booking.com suchen"
+              icon={Hotel}
+            />
+            {hotelLinks && (
+              <>
+                <BookingLink href={hotelLinks.hotels} label="Auf Hotels.com suchen" icon={Building2} />
+                <BookingLink href={hotelLinks.trivago} label="Auf Trivago vergleichen" icon={Compass} />
+              </>
+            )}
           </div>
         </div>
 
@@ -577,8 +580,21 @@ export function PlanScreen({ plan, input, onSave, onNew, onRate, isSaved }: Prop
               </p>
             )}
             <div className="space-y-2">
-              <BookingLink href={flightUrl} label="Google Flights öffnen" icon={Plane} />
-              <BookingLink href={skyscannerUrl} label="Skyscanner öffnen" icon={Compass} />
+              <BookingLink
+                href={flightLinks?.google ?? getFlightFallback(dest, input.persons)}
+                label="Google Flights"
+                icon={Plane}
+              />
+              {flightLinks ? (
+                <>
+                  <BookingLink href={flightLinks.skyscanner} label="Skyscanner" icon={Compass} />
+                  <BookingLink href={flightLinks.kayak} label="Kayak" icon={Navigation} />
+                </>
+              ) : (
+                <p style={{ fontSize: '12px', color: '#aeaeb2', paddingTop: '4px' }}>
+                  Abflugstadt und Reisedaten eingeben für mehr Optionen
+                </p>
+              )}
             </div>
           </div>
 
@@ -588,7 +604,7 @@ export function PlanScreen({ plan, input, onSave, onNew, onRate, isSaved }: Prop
           <div className="mb-4">
             <div className="flex items-center gap-2 mb-1">
               <Hotel size={13} strokeWidth={1.5} style={{ color: '#8b7cf8' }} />
-              <p style={{ fontSize: '13px', fontWeight: 500, color: '#1c1c1e' }}>Hotel</p>
+              <p style={{ fontSize: '13px', fontWeight: 500, color: '#1c1c1e' }}>Hotels</p>
             </div>
             <p style={{ fontSize: '13px', color: '#6e6e73', marginBottom: '2px' }}>
               {dest}
@@ -601,8 +617,17 @@ export function PlanScreen({ plan, input, onSave, onNew, onRate, isSaved }: Prop
               </p>
             )}
             <div className="space-y-2">
-              <BookingLink href={bookingUrl} label="Booking.com öffnen" icon={Hotel} />
-              <BookingLink href={hotelsUrl} label="Hotels.com öffnen" icon={Building2} />
+              <BookingLink
+                href={hotelLinks?.booking ?? getHotelFallback(dest, input.persons)}
+                label="Booking.com"
+                icon={Hotel}
+              />
+              {hotelLinks && (
+                <>
+                  <BookingLink href={hotelLinks.hotels} label="Hotels.com" icon={Building2} />
+                  <BookingLink href={hotelLinks.trivago} label="Trivago" icon={Compass} />
+                </>
+              )}
             </div>
           </div>
 
