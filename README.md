@@ -1,32 +1,34 @@
-# React + TypeScript + Vite
+# Tripsilo — KI Reiseplaner
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+Tripsilo ist ein KI-gestützter Reiseplaner powered by Claude AI. Gib Reiseziel, Budget, Dauer und Reiseart ein — Tripsilo generiert einen vollständigen Tagesplan inkl. Restaurants, Aktivitäten, Geheimtipps und Hotelempfehlung.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- KI-Reiseplan via Claude Haiku
+- Google Places API — echte Orte, Fotos, Bewertungen
+- Interaktive Karte + Tages-Route
+- Plan teilen (Native Share / Clipboard)
+- Reisen speichern & bewerten
+- PWA — installierbar, offline lesbar
+- Minimales helles Design
 
-## React Compiler
+## Setup
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the Oxlint configuration
-
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
-
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+```bash
+npm install
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+`.env` erstellen:
+
+```
+VITE_ANTHROPIC_KEY=sk-ant-...
+VITE_GOOGLE_PLACES_KEY=...
+```
+
+```bash
+npm run dev
+```
+
+## Tech Stack
+
+React · TypeScript · Vite · Tailwind CSS v4 · Lucide Icons · Claude Haiku · Google Places API · PWA

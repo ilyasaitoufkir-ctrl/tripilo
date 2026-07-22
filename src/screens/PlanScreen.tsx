@@ -164,7 +164,7 @@ export function PlanScreen({ plan, input, onSave, onNew, onRate, isSaved }: Prop
       const encoded = btoa(encodeURIComponent(JSON.stringify({ plan, input })));
       const url = `${window.location.origin}${window.location.pathname}#share/${encoded}`;
       if (navigator.share) {
-        await navigator.share({ title: `Reiseplan: ${dest}`, text: `Mein Tripilo-Plan für ${dest}`, url });
+        await navigator.share({ title: `Reiseplan: ${dest}`, text: `Mein Tripsilo-Plan für ${dest}`, url });
       } else {
         await navigator.clipboard.writeText(url);
         setShareState('copied');

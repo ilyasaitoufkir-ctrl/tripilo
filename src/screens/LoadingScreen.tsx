@@ -36,7 +36,7 @@ export function LoadingScreen() {
           className="mb-12"
           style={{ fontSize: '22px', fontWeight: 300, color: '#1c1c1e', letterSpacing: '-0.5px' }}
         >
-          Tripilo
+          Tripsilo
         </p>
 
         {/* Progress bar */}

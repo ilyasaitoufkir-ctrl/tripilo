@@ -32,7 +32,7 @@ export function WelcomeScreen({ onStart }: Props) {
           className="mb-2 tracking-tight"
           style={{ fontSize: '48px', fontWeight: 300, color: '#1c1c1e', letterSpacing: '-1px', lineHeight: 1.1 }}
         >
-          Tripilo
+          Tripsilo
         </h1>
         <p className="mb-10" style={{ fontSize: '15px', color: '#6e6e73', fontWeight: 400 }}>
           Dein KI-Reiseplaner

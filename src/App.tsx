@@ -9,8 +9,8 @@ import { BottomNav } from './components/BottomNav';
 import { generateTripPlan } from './api';
 import type { Screen, TripInput, TripPlan, SavedTrip, TripRating } from './types';
 
-const TRIPS_KEY   = 'tripilo_saved_trips';
-const RATINGS_KEY = 'tripilo_ratings';
+const TRIPS_KEY   = 'tripsilo_saved_trips';
+const RATINGS_KEY = 'tripsilo_ratings';
 
 const load = <T,>(key: string, fallback: T): T => {
   try { return JSON.parse(localStorage.getItem(key) || 'null') ?? fallback; }

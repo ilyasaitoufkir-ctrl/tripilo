@@ -85,7 +85,7 @@ export function RatingScreen({ target, ratings, onSubmit }: Props) {
     <div className="min-h-screen pb-28" style={{ background: '#fafafa' }}>
       {/* Header */}
       <div className="px-5 pt-14 pb-5" style={{ borderBottom: '1px solid #e8e8ed' }}>
-        <p className="section-label mb-1">Tripilo</p>
+        <p className="section-label mb-1">Tripsilo</p>
         <h1 style={{ fontSize: '28px', fontWeight: 500, color: '#1c1c1e', letterSpacing: '-0.5px' }}>
           Bewertungen
         </h1>
