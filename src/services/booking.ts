@@ -38,9 +38,9 @@ export const getHotelLinks = (
   const dest = encodeURIComponent(destination);
 
   return {
-    booking: `https://www.booking.com/search.html?ss=${dest}&checkin=${checkin}&checkout=${checkout}&group_adults=${persons}&selected_currency=EUR&order=price`,
-    hotels: `https://de.hotels.com/search.do?q-destination=${dest}&q-check-in=${checkin}&q-check-out=${checkout}&q-rooms=1&q-room-0-adults=${persons}`,
-    trivago: `https://www.trivago.de/?aDateRange[arr]=${checkin}&aDateRange[dep]=${checkout}&iRoomType=7&iPersons=${persons}&sQuery=${dest}`,
+    booking: `https://www.booking.com/search.html?ss=${dest}&checkin=${checkin}&checkout=${checkout}&group_adults=${persons}&selected_currency=EUR&order=price&lang=de`,
+    hotels: `https://de.hotels.com/search.do?destination-id=&q-destination=${dest}&q-check-in=${checkin}&q-check-out=${checkout}&q-rooms=1&q-room-0-adults=${persons}&sort-order=RECOMMENDED`,
+    trivago: `https://www.trivago.de/?aDateRange[arr]=${checkin}&aDateRange[dep]=${checkout}&iRoomType=7&iPersons=${persons}&sQuery=${dest}&iPathId=61`,
   };
 };
 

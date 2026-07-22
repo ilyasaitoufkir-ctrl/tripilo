@@ -234,18 +234,19 @@ export function PlanScreen({ plan, input, onSave, onNew, onRate, isSaved }: Prop
   const totalBudget = Object.values(plan.budget_breakdown).reduce((a, b) => a + b, 0);
   const dest = plan.destination;
 
-  // Booking links — use service with full dates when available, fallback otherwise
+  // Booking — always compute dates; fall back to today + trip length when not entered
   const from = input.departureCity;
-  const checkin = input.departureDate;
-  const checkout = input.returnDate;
-  const hasDates = !!(from && checkin && checkout);
-  const hasHotelDates = !!(checkin && checkout);
+  const checkin = input.departureDate || new Date().toISOString().split('T')[0];
+  const checkout = input.returnDate || (() => {
+    const d = new Date(checkin);
+    d.setDate(d.getDate() + input.days);
+    return d.toISOString().split('T')[0];
+  })();
 
-  const flightLinks = hasDates
-    ? getFlightLinks(from!, dest, checkin!, checkout!, input.persons)
-    : null;
-  const hotelLinks = hasHotelDates
-    ? getHotelLinks(dest, checkin!, checkout!, input.persons)
+  // Hotels always have dates; flights need a departure city
+  const hotelLinks = getHotelLinks(dest, checkin, checkout, input.persons);
+  const flightLinks = from
+    ? getFlightLinks(from, dest, checkin, checkout, input.persons)
     : null;
 
   const formatDate = (iso: string) =>
@@ -499,17 +500,9 @@ export function PlanScreen({ plan, input, onSave, onNew, onRate, isSaved }: Prop
           )}
           {/* Booking links */}
           <div className="space-y-2 mt-3">
-            <BookingLink
-              href={hotelLinks?.booking ?? getHotelFallback(dest, input.persons)}
-              label="Auf Booking.com suchen"
-              icon={Hotel}
-            />
-            {hotelLinks && (
-              <>
-                <BookingLink href={hotelLinks.hotels} label="Auf Hotels.com suchen" icon={Building2} />
-                <BookingLink href={hotelLinks.trivago} label="Auf Trivago vergleichen" icon={Compass} />
-              </>
-            )}
+            <BookingLink href={hotelLinks.booking} label="Auf Booking.com suchen" icon={Hotel} />
+            <BookingLink href={hotelLinks.hotels} label="Auf Hotels.com suchen" icon={Building2} />
+            <BookingLink href={hotelLinks.trivago} label="Auf Trivago vergleichen" icon={Compass} />
           </div>
         </div>
 
@@ -617,17 +610,9 @@ export function PlanScreen({ plan, input, onSave, onNew, onRate, isSaved }: Prop
               </p>
             )}
             <div className="space-y-2">
-              <BookingLink
-                href={hotelLinks?.booking ?? getHotelFallback(dest, input.persons)}
-                label="Booking.com"
-                icon={Hotel}
-              />
-              {hotelLinks && (
-                <>
-                  <BookingLink href={hotelLinks.hotels} label="Hotels.com" icon={Building2} />
-                  <BookingLink href={hotelLinks.trivago} label="Trivago" icon={Compass} />
-                </>
-              )}
+              <BookingLink href={hotelLinks.booking} label="Booking.com" icon={Hotel} />
+              <BookingLink href={hotelLinks.hotels} label="Hotels.com" icon={Building2} />
+              <BookingLink href={hotelLinks.trivago} label="Trivago" icon={Compass} />
             </div>
           </div>
 
