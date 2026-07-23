@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useLanguage } from './context/LanguageContext';
 import { WelcomeScreen } from './screens/WelcomeScreen';
 import { InputScreen } from './screens/InputScreen';
 import { LoadingScreen } from './screens/LoadingScreen';
@@ -28,6 +29,7 @@ const BOTTOM_NAV_SCREENS: Screen[] = [
 ];
 
 export default function App() {
+  const { lang } = useLanguage();
   const [screen, setScreen] = useState<Screen>('welcome');
   const [currentInput, setCurrentInput]     = useState<TripInput | null>(null);
   const [currentPlan, setCurrentPlan]       = useState<TripPlan | null>(null);
@@ -67,7 +69,7 @@ export default function App() {
     setError(null);
     setScreen('loading');
     try {
-      const plan = await generateTripPlan(input);
+      const plan = await generateTripPlan(input, lang);
       setCurrentPlan(plan);
       setScreen('plan');
     } catch (err) {

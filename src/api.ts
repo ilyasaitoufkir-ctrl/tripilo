@@ -1,4 +1,5 @@
 import type { TripInput, TripPlan } from './types';
+import type { Language } from './i18n/translations';
 
 const travelTypeLabels: Record<string, string> = {
   strand:      'Strand & Meer',
@@ -23,7 +24,7 @@ const travelTypeLabels: Record<string, string> = {
   yoga:        'Yoga & Retreat',
 };
 
-export async function generateTripPlan(input: TripInput): Promise<TripPlan> {
+export async function generateTripPlan(input: TripInput, language: Language = 'de'): Promise<TripPlan> {
   const apiKey = import.meta.env.VITE_ANTHROPIC_KEY;
 
   if (!apiKey) {
@@ -60,7 +61,13 @@ Fitness-Integration (Pflicht da Sporturlaub gewählt):
 - Abendaktivitäten sportlich halten (Yoga, Stretching, leichte Wanderung)
 - Beispiele Morgen: "Laufen entlang der Promenade (8km)", "Outdoor CrossFit am Strand", "Schwimmen im Meer"` : '';
 
-  const prompt = `Erstelle einen detaillierten, personalisierten Reiseplan auf Deutsch:
+  const langInstruction = language === 'en'
+    ? 'Respond entirely in English.'
+    : 'Antworte vollständig auf Deutsch.';
+
+  const prompt = `${langInstruction}
+
+Erstelle einen detaillierten, personalisierten Reiseplan:
 
 ${lines.join('\n')}${fitnessContext}
 

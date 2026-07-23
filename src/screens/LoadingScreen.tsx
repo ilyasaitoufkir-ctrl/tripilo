@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
+import { useLanguage } from '../context/LanguageContext';
 
-const steps = [
+const stepsDE = [
   { text: 'Reiseziel analysieren', pct: 12 },
   { text: 'Geheimtipps suchen', pct: 28 },
   { text: 'Tagesplan erstellen', pct: 46 },
@@ -9,8 +10,19 @@ const steps = [
   { text: 'Lokale Empfehlungen', pct: 88 },
   { text: 'Plan wird fertiggestellt', pct: 96 },
 ];
+const stepsEN = [
+  { text: 'Analyzing destination', pct: 12 },
+  { text: 'Finding hidden gems', pct: 28 },
+  { text: 'Creating daily plan', pct: 46 },
+  { text: 'Optimizing budget', pct: 62 },
+  { text: 'Selecting hotel', pct: 75 },
+  { text: 'Local recommendations', pct: 88 },
+  { text: 'Finalizing your plan', pct: 96 },
+];
 
 export function LoadingScreen() {
+  const { lang, t } = useLanguage();
+  const steps = lang === 'en' ? stepsEN : stepsDE;
   const [stepIdx, setStepIdx] = useState(0);
   const [progress, setProgress] = useState(steps[0].pct);
 
@@ -32,7 +44,7 @@ export function LoadingScreen() {
           Tripsilo
         </p>
         <p className="mb-10" style={{ fontSize: '22px', fontWeight: 700, color: '#1a2e2b', letterSpacing: '-0.3px' }}>
-          Dein Plan wird erstellt
+          {t.loading}
         </p>
 
         {/* SVG progress ring */}

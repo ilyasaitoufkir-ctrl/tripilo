@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { Plane, ChevronLeft, Shuffle, CalendarDays, Loader, Search, Star } from 'lucide-react';
 import type { TripInput } from '../types';
 import { getDestinationImage } from '../services/images';
+import { useLanguage } from '../context/LanguageContext';
+import { LangToggle } from '../components/LangToggle';
 
 interface Props {
   onSubmit: (input: TripInput) => void;
@@ -133,6 +135,7 @@ interface Suggestion {
 
 // ── Main component ─────────────────────────────────────────────────────────────
 export function InputScreen({ onSubmit }: Props) {
+  const { t, lang } = useLanguage();
   const [step, setStep]           = useState(1);
   const [dir, setDir]             = useState<'fwd' | 'back'>('fwd');
 
@@ -227,24 +230,22 @@ export function InputScreen({ onSubmit }: Props) {
         return (
           <div style={{ margin: '-28px -16px 0', paddingBottom: '140px' }}>
             {/* ── Header ── */}
-            <div
-              className="px-5 pt-14 pb-5"
-              style={{ background: '#f0f7f6' }}
-            >
+            <div className="px-5 pt-14 pb-5" style={{ background: '#f0f7f6' }}>
               <div className="flex items-center justify-between mb-5">
                 <div>
                   <p style={{ fontSize: '11px', color: '#6b8a85', textTransform: 'uppercase', letterSpacing: '0.5px', fontWeight: 500 }}>
-                    Dein Standort
+                    {t.yourLocation}
                   </p>
                   <p style={{ fontSize: '16px', fontWeight: 600, color: '#1a2e2b' }}>Hamburg, DE</p>
                 </div>
-                <div className="avatar">
-                  <span>IL</span>
+                <div className="flex items-center gap-3">
+                  <LangToggle />
+                  <div className="avatar"><span>IL</span></div>
                 </div>
               </div>
 
               <h2 style={{ fontSize: '28px', fontWeight: 700, color: '#1a2e2b', lineHeight: 1.2, letterSpacing: '-0.5px', marginBottom: '20px' }}>
-                Find Your<br />Favorite Place
+                {t.findPlace.split(' ').slice(0, 2).join(' ')}<br />{t.findPlace.split(' ').slice(2).join(' ')}
               </h2>
 
               {/* Search bar */}
@@ -255,7 +256,7 @@ export function InputScreen({ onSubmit }: Props) {
                   value={destination}
                   onChange={(e) => setDestination(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && canProceed() && go('fwd')}
-                  placeholder="Reiseziel suchen..."
+                  placeholder={t.searchPlaceholder}
                   className="w-full outline-none"
                   style={{ fontSize: '15px', color: '#1a2e2b', background: 'transparent', border: 'none' }}
                   autoFocus
@@ -304,7 +305,7 @@ export function InputScreen({ onSubmit }: Props) {
             {/* ── Popular destinations ── */}
             <div className="px-4 pt-5 pb-2" style={{ background: '#f0f7f6' }}>
               <div className="flex items-center justify-between mb-3">
-                <p style={{ fontSize: '16px', fontWeight: 700, color: '#1a2e2b' }}>Für dich</p>
+                <p style={{ fontSize: '16px', fontWeight: 700, color: '#1a2e2b' }}>{t.forYou}</p>
                 <button
                   onClick={handleSurpriseMe}
                   disabled={loadingSugg}
@@ -315,7 +316,7 @@ export function InputScreen({ onSubmit }: Props) {
                     ? <Loader size={13} strokeWidth={1.5} className="animate-spin" />
                     : <Shuffle size={13} strokeWidth={1.5} />
                   }
-                  {loadingSugg ? 'Lädt...' : 'Überrasch mich'}
+                  {loadingSugg ? t.searching : t.surpriseMe}
                 </button>
               </div>
 
@@ -361,7 +362,7 @@ export function InputScreen({ onSubmit }: Props) {
       case 2:
         return (
           <>
-            <StepTitle>Wann reist du?</StepTitle>
+            <StepTitle>{t.whenTravel}</StepTitle>
 
             {/* Departure city */}
             <div className="card p-5 mb-3">
@@ -429,7 +430,7 @@ export function InputScreen({ onSubmit }: Props) {
       case 3:
         return (
           <>
-            <StepTitle>Wer reist mit?</StepTitle>
+            <StepTitle>{t.whoTravels}</StepTitle>
             <div className="space-y-3">
               <Stepper value={persons} min={1} max={20} onChange={setPersons} label="Personen" unit={persons === 1 ? 'Person' : 'Personen'} />
               <Stepper value={age} min={16} max={99} onChange={setAge} label="Dein Alter" unit="Jahre" />
@@ -440,8 +441,8 @@ export function InputScreen({ onSubmit }: Props) {
       case 4:
         return (
           <>
-            <StepTitle>Was für eine Reise?</StepTitle>
-            <p style={{ fontSize: '13px', color: '#9bb5b0', marginBottom: '16px', marginTop: '-16px' }}>Mehrere möglich</p>
+            <StepTitle>{t.tripType}</StepTitle>
+            <p style={{ fontSize: '13px', color: '#9bb5b0', marginBottom: '16px', marginTop: '-16px' }}>{lang === 'en' ? 'Multiple allowed' : 'Mehrere möglich'}</p>
             <div className="grid grid-cols-2 gap-2">
               {travelTypeOptions.map(({ key, label }) => (
                 <Chip
@@ -463,7 +464,7 @@ export function InputScreen({ onSubmit }: Props) {
       case 5:
         return (
           <>
-            <StepTitle>Essen & Unterkunft</StepTitle>
+            <StepTitle>{t.foodAccom}</StepTitle>
 
             <div className="card p-5 mb-3">
               <p className="section-label mb-3">Was magst du essen?</p>
@@ -488,7 +489,7 @@ export function InputScreen({ onSubmit }: Props) {
       case 6:
         return (
           <>
-            <StepTitle>Budget & Präferenzen</StepTitle>
+            <StepTitle>{t.budgetPrefs}</StepTitle>
 
             <div className="card p-5 mb-3">
               <p className="section-label mb-4">Dein Budget</p>
@@ -548,7 +549,7 @@ export function InputScreen({ onSubmit }: Props) {
             />
           </div>
           <p style={{ fontSize: '12px', color: '#9bb5b0', paddingBottom: '12px' }}>
-            Schritt {step} von {TOTAL_STEPS}
+            {t.stepOf} {step} {t.of} {TOTAL_STEPS}
           </p>
         </div>
       )}
@@ -599,10 +600,10 @@ export function InputScreen({ onSubmit }: Props) {
             {step === TOTAL_STEPS ? (
               <>
                 <Plane size={16} strokeWidth={1.5} />
-                Plan erstellen
+                {t.createPlan}
               </>
             ) : (
-              'Weiter'
+              t.next
             )}
           </button>
         </div>
