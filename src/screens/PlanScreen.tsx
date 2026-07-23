@@ -4,13 +4,20 @@ import {
   Sun, Coffee, Moon, Bookmark, RefreshCw, ChevronDown, ChevronUp,
   Train, ExternalLink, Star, Share2, Check, Hotel,
   Building2, UtensilsCrossed, Compass, Plane,
-  Phone, Globe, Navigation, MapPin,
+  Phone, Globe, Navigation, MapPin, Package, Download,
 } from 'lucide-react';
 import type { TripPlan, TripInput, DayPlan } from '../types';
 import { searchPlace, priceLevelLabel, type PlaceInfo } from '../services/places';
 import { getFlightLinks, getHotelLinks, getFlightFallback } from '../services/booking';
-import { getActivityImage, getDestinationImage, getRestaurantImage, getHotelImage } from '../services/images';
+import { getActivityImage, getDestinationImage, getDestinationImageAsync, getRestaurantImage, getHotelImage } from '../services/images';
 import { openDayRoute } from '../components/MapView';
+
+interface Weather {
+  temp: number;
+  desc: string;
+  icon: string;
+  wind: number;
+}
 
 interface Props {
   plan: TripPlan;
@@ -18,6 +25,7 @@ interface Props {
   onSave: () => void;
   onNew: () => void;
   onRate: () => void;
+  onPacking: () => void;
   isSaved: boolean;
 }
 
@@ -239,11 +247,13 @@ function BookingLink({
 }
 
 // ── Main ───────────────────────────────────────────────────────────────────────
-export function PlanScreen({ plan, input, onSave, onNew, onRate, isSaved }: Props) {
+export function PlanScreen({ plan, input, onSave, onNew, onRate, onPacking, isSaved }: Props) {
   const [expandedDay, setExpandedDay] = useState<number | null>(0);
   const [placesData, setPlacesData] = useState<Record<SlotKey, PlaceInfo | null>>({});
   const [placesLoading, setPlacesLoading] = useState(true);
   const [shareState, setShareState] = useState<'idle' | 'copied'>('idle');
+  const [heroImage, setHeroImage] = useState<string>(() => getDestinationImage(plan.destination));
+  const [weather, setWeather] = useState<Weather | null>(null);
 
   const totalBudget = Object.values(plan.budget_breakdown).reduce((a, b) => a + b, 0);
   const dest = plan.destination;
@@ -265,6 +275,92 @@ export function PlanScreen({ plan, input, onSave, onNew, onRate, isSaved }: Prop
 
   const formatDate = (iso: string) =>
     new Date(iso).toLocaleDateString('de-DE', { day: 'numeric', month: 'long' });
+
+  // Load async hero image (Unsplash API if key set)
+  useEffect(() => {
+    getDestinationImageAsync(dest).then(setHeroImage);
+  }, [dest]);
+
+  // Load weather
+  useEffect(() => {
+    const key = import.meta.env.VITE_WEATHER_KEY as string;
+    if (!key) return;
+    fetch(`https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(dest)}&appid=${key}&units=metric&lang=de`)
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.weather?.[0]) {
+          setWeather({
+            temp: Math.round(data.main.temp),
+            desc: data.weather[0].description,
+            icon: `https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`,
+            wind: Math.round(data.wind.speed),
+          });
+        }
+      })
+      .catch(() => {});
+  }, [dest]);
+
+  // Story export
+  const exportAsStory = () => {
+    const canvas = document.createElement('canvas');
+    canvas.width = 1080;
+    canvas.height = 1920;
+    const ctx = canvas.getContext('2d')!;
+
+    const draw = () => {
+      // Overlay
+      ctx.fillStyle = 'rgba(0,0,0,0.55)';
+      ctx.fillRect(0, 0, 1080, 1920);
+      // Logo
+      ctx.fillStyle = 'rgba(255,255,255,0.6)';
+      ctx.font = '400 36px Arial, sans-serif';
+      ctx.fillText('Tripsilo', 80, 120);
+      // Destination
+      ctx.fillStyle = '#ffffff';
+      ctx.font = `700 ${dest.length > 10 ? '80' : '100'}px Arial, sans-serif`;
+      ctx.fillText(dest, 80, 360);
+      // Country
+      ctx.font = '400 44px Arial, sans-serif';
+      ctx.fillStyle = 'rgba(255,255,255,0.75)';
+      ctx.fillText(plan.country, 80, 430);
+      // Highlights
+      ctx.font = '400 38px Arial, sans-serif';
+      ctx.fillStyle = 'rgba(255,255,255,0.9)';
+      plan.days.slice(0, 4).forEach((day, i) => {
+        ctx.fillText(`→ ${day.morning.activity}`, 80, 600 + i * 90);
+      });
+      // Budget badge
+      ctx.fillStyle = '#8b7cf8';
+      ctx.beginPath();
+      ctx.roundRect(80, 1680, 500, 80, 40);
+      ctx.fill();
+      ctx.fillStyle = '#ffffff';
+      ctx.font = '600 36px Arial, sans-serif';
+      ctx.fillText(`${input.budget.toLocaleString('de-DE')}€ · ${input.days} Tage`, 110, 1730);
+      // Download
+      const link = document.createElement('a');
+      link.download = `tripsilo-${dest.toLowerCase().replace(/\s+/g, '-')}.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    };
+
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = () => {
+      // Scale + center crop
+      const scale = Math.max(1080 / img.width, 1920 / img.height);
+      const sw = img.width * scale;
+      const sh = img.height * scale;
+      ctx.drawImage(img, (1080 - sw) / 2, (1920 - sh) / 2, sw, sh);
+      draw();
+    };
+    img.onerror = () => {
+      ctx.fillStyle = '#1c1c1e';
+      ctx.fillRect(0, 0, 1080, 1920);
+      draw();
+    };
+    img.src = heroImage;
+  };
 
   useEffect(() => {
     const queries: { key: SlotKey; query: string }[] = [];
@@ -314,7 +410,7 @@ export function PlanScreen({ plan, input, onSave, onNew, onRate, isSaved }: Prop
     <div className="min-h-screen pb-28" style={{ background: '#fafafa' }}>
       {/* Hero photo */}
       <img
-        src={getDestinationImage(dest)}
+        src={heroImage}
         alt={dest}
         className="w-full object-cover"
         style={{ height: '220px' }}
@@ -324,9 +420,20 @@ export function PlanScreen({ plan, input, onSave, onNew, onRate, isSaved }: Prop
       {/* Destination info */}
       <div className="px-5 py-5" style={{ borderBottom: '1px solid #e8e8ed' }}>
         <p style={{ fontSize: '13px', color: '#aeaeb2', marginBottom: '2px' }}>{plan.country}</p>
-        <h1 style={{ fontSize: '28px', fontWeight: 500, color: '#1c1c1e', letterSpacing: '-0.5px', marginBottom: '10px' }}>
-          {plan.destination}
-        </h1>
+        <div className="flex items-start justify-between gap-3">
+          <h1 style={{ fontSize: '28px', fontWeight: 500, color: '#1c1c1e', letterSpacing: '-0.5px', marginBottom: '10px' }}>
+            {plan.destination}
+          </h1>
+          {weather && (
+            <div className="flex items-center gap-1.5 flex-shrink-0 pt-1">
+              <img src={weather.icon} alt={weather.desc} style={{ width: '36px', height: '36px' }} />
+              <div>
+                <p style={{ fontSize: '18px', fontWeight: 500, color: '#1c1c1e', lineHeight: 1 }}>{weather.temp}°</p>
+                <p style={{ fontSize: '11px', color: '#aeaeb2', marginTop: '1px' }}>{weather.desc}</p>
+              </div>
+            </div>
+          )}
+        </div>
         <div className="flex flex-wrap gap-2">
           {[
             { icon: Calendar, text: `${input.days} ${input.days === 1 ? 'Tag' : 'Tage'}` },
@@ -351,7 +458,7 @@ export function PlanScreen({ plan, input, onSave, onNew, onRate, isSaved }: Prop
       </div>
 
       <div className="px-4 pt-4 space-y-3">
-        {/* Actions */}
+        {/* Actions row 1 */}
         <div className="flex gap-2">
           {[
             {
@@ -393,6 +500,26 @@ export function PlanScreen({ plan, input, onSave, onNew, onRate, isSaved }: Prop
               {label}
             </button>
           ))}
+        </div>
+
+        {/* Actions row 2 */}
+        <div className="flex gap-2">
+          <button
+            onClick={onPacking}
+            className="flex-1 py-3 rounded-xl flex items-center justify-center gap-1.5 transition-all active:scale-95"
+            style={{ background: '#f0eeff', border: '1px solid #c4b5fd', color: '#8b7cf8', fontSize: '13px', fontWeight: 400, cursor: 'pointer' }}
+          >
+            <Package size={15} strokeWidth={1.5} />
+            Packliste
+          </button>
+          <button
+            onClick={exportAsStory}
+            className="flex-1 py-3 rounded-xl flex items-center justify-center gap-1.5 transition-all active:scale-95"
+            style={{ background: '#fafafa', border: '1px solid #e8e8ed', color: '#6e6e73', fontSize: '13px', fontWeight: 400, cursor: 'pointer' }}
+          >
+            <Download size={15} strokeWidth={1.5} />
+            Story Export
+          </button>
         </div>
 
         {/* Budget */}

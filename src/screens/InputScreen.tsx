@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { MapPin, Plane, ChevronLeft, Shuffle, CalendarDays } from 'lucide-react';
+import { MapPin, Plane, ChevronLeft, Shuffle, CalendarDays, Loader } from 'lucide-react';
 import type { TripInput } from '../types';
+import { getDestinationImage } from '../services/images';
 
 interface Props {
   onSubmit: (input: TripInput) => void;
@@ -113,6 +114,14 @@ function Stepper({
   );
 }
 
+interface Suggestion {
+  city: string;
+  country: string;
+  reason: string;
+  highlight: string;
+  estimated_cost: number;
+}
+
 // ── Main component ─────────────────────────────────────────────────────────────
 export function InputScreen({ onSubmit }: Props) {
   const [step, setStep]           = useState(1);
@@ -132,8 +141,44 @@ export function InputScreen({ onSubmit }: Props) {
   const [accommodation, setAccommodation] = useState('');
   const [budget, setBudget]               = useState(2000);
   const [avoid, setAvoid]                 = useState<string[]>([]);
+  const [suggestions, setSuggestions]     = useState<Suggestion[]>([]);
+  const [loadingSugg, setLoadingSugg]     = useState(false);
 
   const today = new Date().toISOString().split('T')[0];
+
+  const handleSurpriseMe = async () => {
+    setLoadingSugg(true);
+    setSuggestions([]);
+    try {
+      const res = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': import.meta.env.VITE_ANTHROPIC_KEY,
+          'anthropic-version': '2023-06-01',
+          'anthropic-dangerous-direct-browser-access': 'true',
+        },
+        body: JSON.stringify({
+          model: 'claude-haiku-4-5-20251001',
+          max_tokens: 600,
+          messages: [{
+            role: 'user',
+            content: `Schlage 3 perfekte Reiseziele vor. Budget: ${budget}€, Dauer: ${days} Tage, Personen: ${persons}, Reiseart: ${selectedTypes.join(', ') || 'allgemein'}, Abflug: ${departureCity}. Antworte NUR als JSON ohne Markdown:\n{"destinations":[{"city":"Porto","country":"Portugal","reason":"Perfekt für dein Budget","highlight":"Douro Tal Weinprobe","estimated_cost":450}]}`,
+          }],
+        }),
+      });
+      const data = await res.json();
+      const text = data.content?.[0]?.text ?? '{}';
+      const parsed = JSON.parse(text.replace(/```json|```/g, '').trim());
+      setSuggestions(parsed.destinations ?? []);
+    } catch {
+      // silently fall through to random fallback
+      const r = surpriseDestinations[Math.floor(Math.random() * surpriseDestinations.length)];
+      setDestination(r);
+    } finally {
+      setLoadingSugg(false);
+    }
+  };
 
   const toggleMulti = (arr: string[], val: string, set: (v: string[]) => void) =>
     set(arr.includes(val) ? arr.filter((x) => x !== val) : [...arr, val]);
@@ -189,16 +234,53 @@ export function InputScreen({ onSubmit }: Props) {
               </div>
             </div>
             <button
-              onClick={() => {
-                const r = surpriseDestinations[Math.floor(Math.random() * surpriseDestinations.length)];
-                setDestination(r);
-              }}
-              className="w-full flex items-center justify-center gap-2 py-3 rounded-xl transition-all active:scale-95"
-              style={{ background: '#fafafa', border: '1px solid #e8e8ed', color: '#6e6e73', fontSize: '14px', cursor: 'pointer' }}
+              onClick={handleSurpriseMe}
+              disabled={loadingSugg}
+              className="w-full flex items-center justify-center gap-2 py-3 rounded-xl transition-all active:scale-95 disabled:opacity-60"
+              style={{ background: '#fafafa', border: '1px solid #e8e8ed', color: '#6e6e73', fontSize: '14px', cursor: loadingSugg ? 'default' : 'pointer' }}
             >
-              <Shuffle size={15} strokeWidth={1.5} />
-              Überrasch mich!
+              {loadingSugg
+                ? <Loader size={15} strokeWidth={1.5} className="animate-spin" />
+                : <Shuffle size={15} strokeWidth={1.5} />
+              }
+              {loadingSugg ? 'Suche Ziele...' : 'Überrasch mich!'}
             </button>
+
+            {/* AI Suggestion cards */}
+            {suggestions.length > 0 && (
+              <div className="space-y-2 mt-1">
+                <p className="section-label px-1">Vorschläge für dich</p>
+                {suggestions.map((s) => (
+                  <button
+                    key={s.city}
+                    onClick={() => { setDestination(`${s.city}, ${s.country}`); setSuggestions([]); }}
+                    className="w-full text-left rounded-2xl overflow-hidden transition-all active:scale-[0.98]"
+                    style={{ border: '1.5px solid #e8e8ed' }}
+                  >
+                    <img
+                      src={getDestinationImage(s.city)}
+                      alt={s.city}
+                      className="w-full object-cover"
+                      style={{ height: '100px' }}
+                      onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
+                    />
+                    <div className="p-3">
+                      <div className="flex items-start justify-between gap-2">
+                        <div>
+                          <p style={{ fontSize: '15px', fontWeight: 500, color: '#1c1c1e' }}>{s.city}</p>
+                          <p style={{ fontSize: '12px', color: '#aeaeb2' }}>{s.country}</p>
+                        </div>
+                        <span style={{ fontSize: '13px', fontWeight: 500, color: '#8b7cf8', flexShrink: 0 }}>
+                          ca. {s.estimated_cost}€
+                        </span>
+                      </div>
+                      <p style={{ fontSize: '13px', color: '#6e6e73', marginTop: '4px' }}>{s.reason}</p>
+                      <p style={{ fontSize: '12px', color: '#8b7cf8', marginTop: '2px' }}>✦ {s.highlight}</p>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            )}
           </>
         );
 

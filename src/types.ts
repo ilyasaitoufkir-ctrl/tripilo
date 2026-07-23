@@ -81,10 +81,23 @@ export interface TripRating {
   ratedAt: string;
 }
 
+export interface PackingItem {
+  item: string;
+  quantity: number;
+  essential: boolean;
+  packed: boolean;
+}
+
+export interface PackingCategory {
+  name: string;
+  items: PackingItem[];
+}
+
 export type Screen =
   | 'welcome'
   | 'input'
   | 'loading'
   | 'plan'
   | 'saved'
-  | 'rating';
+  | 'rating'
+  | 'packing';

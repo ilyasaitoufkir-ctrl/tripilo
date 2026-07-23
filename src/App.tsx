@@ -3,6 +3,7 @@ import { WelcomeScreen } from './screens/WelcomeScreen';
 import { InputScreen } from './screens/InputScreen';
 import { LoadingScreen } from './screens/LoadingScreen';
 import { PlanScreen } from './screens/PlanScreen';
+import { PackingListScreen } from './screens/PackingListScreen';
 import { SavedTripsScreen } from './screens/SavedTripsScreen';
 import { RatingScreen } from './screens/RatingScreen';
 import { BottomNav } from './components/BottomNav';
@@ -138,7 +139,6 @@ export default function App() {
           onSave={handleSave}
           onNew={() => setScreen('input')}
           onRate={() => {
-            // Create a temporary SavedTrip for rating if not yet saved
             const trip: SavedTrip = {
               id: 'temp-' + Date.now(),
               input: currentInput,
@@ -147,7 +147,16 @@ export default function App() {
             };
             handleRateTrip(trip);
           }}
+          onPacking={() => setScreen('packing')}
           isSaved={isCurrentSaved}
+        />
+      )}
+
+      {screen === 'packing' && currentPlan && currentInput && (
+        <PackingListScreen
+          plan={currentPlan}
+          input={currentInput}
+          onBack={() => setScreen('plan')}
         />
       )}
 
