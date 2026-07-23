@@ -50,6 +50,9 @@ const getTimeSuggestion = (): { text: string; type: string } => {
 export function EntdeckenScreen() {
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [locationError, setLocationError] = useState('');
+  const [locationLoading, setLocationLoading] = useState(true);
+  const [cityQuery, setCityQuery] = useState('');
+  const [cityLoading, setCityLoading] = useState(false);
   const [selectedType, setSelectedType] = useState<string | null>(null);
   const [places, setPlaces] = useState<NearbyPlace[]>([]);
   const [loading, setLoading] = useState(false);
@@ -57,12 +60,63 @@ export function EntdeckenScreen() {
 
   const timeSuggestion = getTimeSuggestion();
 
-  useEffect(() => {
+  const getLocation = () => {
+    setLocationLoading(true);
+    setLocationError('');
+
+    if (!navigator.geolocation) {
+      setLocationError('GPS wird von diesem Browser nicht unterstützt. Bitte Stadt eingeben.');
+      setLocationLoading(false);
+      return;
+    }
+
     navigator.geolocation.getCurrentPosition(
-      (pos) => setUserLocation({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
-      () => setLocationError('GPS nicht verfügbar. Bitte Standortzugriff erlauben.')
+      (pos) => {
+        setUserLocation({ lat: pos.coords.latitude, lng: pos.coords.longitude });
+        setLocationLoading(false);
+      },
+      (error) => {
+        switch (error.code) {
+          case error.PERMISSION_DENIED:
+            setLocationError('Standortzugriff verweigert – bitte in den Browser-Einstellungen erlauben, oder Stadt eingeben.');
+            break;
+          case error.POSITION_UNAVAILABLE:
+            setLocationError('Standort nicht gefunden – bitte Stadt eingeben.');
+            break;
+          case error.TIMEOUT:
+            setLocationError('GPS-Anfrage abgelaufen – bitte nochmal versuchen.');
+            break;
+          default:
+            setLocationError('GPS nicht verfügbar. Bitte Standortzugriff erlauben oder Stadt eingeben.');
+        }
+        setLocationLoading(false);
+      },
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
     );
-  }, []);
+  };
+
+  useEffect(() => { getLocation(); }, []);
+
+  const searchByCity = async () => {
+    if (cityQuery.trim().length < 3) return;
+    setCityLoading(true);
+    try {
+      const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(cityQuery)}&key=${API_KEY}`;
+      const res = await fetch(PROXY + encodeURIComponent(url));
+      const data = await res.json();
+      const loc = data.results?.[0]?.geometry?.location;
+      if (loc) {
+        setUserLocation({ lat: loc.lat, lng: loc.lng });
+        setLocationError('');
+      } else {
+        setLocationError('Stadt nicht gefunden. Bitte anders schreiben.');
+      }
+    } catch {
+      setLocationError('Stadtsuche fehlgeschlagen. Bitte nochmal versuchen.');
+    } finally {
+      setCityLoading(false);
+    }
+  };
 
   const searchNearby = async (type: string, hiddenGems = false) => {
     if (!userLocation) return;
@@ -122,7 +176,7 @@ export function EntdeckenScreen() {
               Dein Standort
             </p>
             <p style={{ fontSize: '16px', fontWeight: 600, color: '#1a2e2b' }}>
-              {userLocation ? 'GPS aktiv ✓' : locationError ? 'Kein GPS' : 'Suche…'}
+              {userLocation ? '✓ Standort gefunden' : locationError ? 'Kein GPS' : 'GPS wird ermittelt…'}
             </p>
           </div>
           <div className="avatar"><span>IL</span></div>
@@ -133,9 +187,42 @@ export function EntdeckenScreen() {
       </div>
 
       <div className="px-4 pt-4 space-y-3">
+        {locationLoading && !userLocation && !locationError && (
+          <div className="card p-4 flex items-center gap-3">
+            <div className="skeleton w-4 h-4 rounded-full" />
+            <p style={{ fontSize: '13px', color: '#9bb5b0' }}>GPS wird ermittelt…</p>
+          </div>
+        )}
+
         {locationError && (
-          <div className="p-4 rounded-2xl" style={{ background: '#fce7f3', border: '1px solid #fbcfe8' }}>
+          <div className="p-4 rounded-2xl space-y-3" style={{ background: '#fce7f3', border: '1px solid #fbcfe8' }}>
             <p style={{ fontSize: '14px', color: '#f472b6' }}>{locationError}</p>
+            <button
+              onClick={getLocation}
+              className="px-3 py-1.5 rounded-lg transition-all active:scale-95"
+              style={{ background: '#ffffff', border: '1px solid #fbcfe8', color: '#f472b6', fontSize: '12px', fontWeight: 500, cursor: 'pointer' }}
+            >
+              Nochmal versuchen
+            </button>
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={cityQuery}
+                onChange={(e) => setCityQuery(e.target.value)}
+                onKeyDown={(e) => { if (e.key === 'Enter') searchByCity(); }}
+                placeholder="z.B. Hamburg"
+                className="flex-1 px-3 py-2 rounded-lg"
+                style={{ border: '1px solid #fbcfe8', fontSize: '13px', outline: 'none' }}
+              />
+              <button
+                onClick={searchByCity}
+                disabled={cityLoading || cityQuery.trim().length < 3}
+                className="px-3 py-2 rounded-lg transition-all active:scale-95 disabled:opacity-50"
+                style={{ background: '#f472b6', color: '#ffffff', fontSize: '12px', fontWeight: 500, border: 'none', cursor: 'pointer' }}
+              >
+                {cityLoading ? '…' : 'Suchen'}
+              </button>
+            </div>
           </div>
         )}
 

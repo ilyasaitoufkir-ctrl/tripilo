@@ -5,48 +5,80 @@ interface Props {
   destination: string;
 }
 
+const MAX_SOURCE_BYTES = 20 * 1024 * 1024; // reject absurdly large files before we even try to decode them
+const MAX_EDGE_PX = 1568; // Claude's optimal long-edge resolution; larger images are downscaled server-side anyway
+
+const compressImage = (file: File): Promise<{ base64: string; preview: string; mimeType: 'image/jpeg' }> => {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => {
+      let { width, height } = img;
+      if (width > MAX_EDGE_PX || height > MAX_EDGE_PX) {
+        if (width > height) { height = Math.round((height / width) * MAX_EDGE_PX); width = MAX_EDGE_PX; }
+        else { width = Math.round((width / height) * MAX_EDGE_PX); height = MAX_EDGE_PX; }
+      }
+
+      const canvas = document.createElement('canvas');
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) { reject(new Error('Canvas nicht verfügbar')); return; }
+      ctx.drawImage(img, 0, 0, width, height);
+
+      const preview = canvas.toDataURL('image/jpeg', 0.85);
+      const base64 = preview.split(',')[1];
+      URL.revokeObjectURL(img.src);
+      resolve({ base64, preview, mimeType: 'image/jpeg' });
+    };
+    img.onerror = () => { URL.revokeObjectURL(img.src); reject(new Error('Bild konnte nicht geladen werden')); };
+    img.src = URL.createObjectURL(file);
+  });
+};
+
 export function TranslatorScreen({ destination }: Props) {
   const [preview, setPreview] = useState<string | null>(null);
   const [translation, setTranslation] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const handleFile = async (file: File) => {
     if (!file.type.startsWith('image/')) return;
+    if (file.size > MAX_SOURCE_BYTES) {
+      setError('Bild zu groß – bitte ein kleineres Foto wählen.');
+      return;
+    }
+
     setLoading(true);
     setTranslation(null);
+    setError(null);
 
-    const reader = new FileReader();
-    reader.onload = async () => {
-      const dataUrl = reader.result as string;
-      const base64 = dataUrl.split(',')[1];
-      setPreview(dataUrl);
+    try {
+      const { base64, preview: compressedPreview, mimeType } = await compressImage(file);
+      setPreview(compressedPreview);
 
-      const mediaType = file.type as 'image/jpeg' | 'image/png' | 'image/gif' | 'image/webp';
-
-      try {
-        const res = await fetch('https://api.anthropic.com/v1/messages', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'x-api-key': import.meta.env.VITE_ANTHROPIC_KEY,
-            'anthropic-version': '2023-06-01',
-            'anthropic-dangerous-direct-browser-access': 'true',
-          },
-          body: JSON.stringify({
-            model: 'claude-haiku-4-5-20251001',
-            max_tokens: 1200,
-            messages: [
-              {
-                role: 'user',
-                content: [
-                  {
-                    type: 'image',
-                    source: { type: 'base64', media_type: mediaType, data: base64 },
-                  },
-                  {
-                    type: 'text',
-                    text: `Du bist ein Reise-Übersetzer${destination ? ` spezialisiert auf ${destination}` : ''}.
+      const res = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': import.meta.env.VITE_ANTHROPIC_KEY,
+          'anthropic-version': '2023-06-01',
+          'anthropic-dangerous-direct-browser-access': 'true',
+        },
+        body: JSON.stringify({
+          model: 'claude-haiku-4-5-20251001',
+          max_tokens: 1200,
+          messages: [
+            {
+              role: 'user',
+              content: [
+                {
+                  type: 'image',
+                  source: { type: 'base64', media_type: mimeType, data: base64 },
+                },
+                {
+                  type: 'text',
+                  text: `Du bist ein Reise-Übersetzer${destination ? ` spezialisiert auf ${destination}` : ''}.
 
 Erkenne alle Texte in diesem Bild (Speisekarte, Schild, Menü, Beschriftung o.ä.) und übersetze alles vollständig ins Deutsche.
 
@@ -58,22 +90,28 @@ Format:
 [Kurze Erklärung falls nötig]
 
 Falls kein Text erkennbar ist, schreibe: "Kein lesbarer Text im Bild gefunden."`,
-                  },
-                ],
-              },
-            ],
-          }),
-        });
+                },
+              ],
+            },
+          ],
+        }),
+      });
 
-        const data = await res.json();
-        setTranslation(data.content?.[0]?.text ?? 'Übersetzung fehlgeschlagen.');
-      } catch {
-        setTranslation('Fehler beim Übersetzen. Bitte nochmal versuchen.');
-      } finally {
-        setLoading(false);
+      if (!res.ok) {
+        const errBody = await res.json().catch(() => null);
+        throw new Error(errBody?.error?.message || `Fehler ${res.status}`);
       }
-    };
-    reader.readAsDataURL(file);
+
+      const data = await res.json();
+      if (data.stop_reason === 'refusal' || !data.content?.length) {
+        throw new Error('Keine Übersetzung erhalten. Bitte nochmal versuchen.');
+      }
+      setTranslation(data.content[0]?.text ?? 'Übersetzung fehlgeschlagen.');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Fehler beim Übersetzen. Bitte nochmal versuchen.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const triggerCamera = () => {
@@ -91,6 +129,7 @@ Falls kein Text erkennbar ist, schreibe: "Kein lesbarer Text im Bild gefunden."`
   const reset = () => {
     setPreview(null);
     setTranslation(null);
+    setError(null);
     if (inputRef.current) inputRef.current.value = '';
   };
 
@@ -111,7 +150,7 @@ Falls kein Text erkennbar ist, schreibe: "Kein lesbarer Text im Bild gefunden."`
               {destination && <p style={{ fontSize: '13px', color: '#9bb5b0' }}>{destination}</p>}
             </div>
           </div>
-          {(preview || translation) && (
+          {(preview || translation || error) && (
             <button
               onClick={reset}
               className="flex items-center gap-1.5 px-3 py-2 rounded-xl transition-all active:scale-95"
@@ -204,6 +243,20 @@ Falls kein Text erkennbar ist, schreibe: "Kein lesbarer Text im Bild gefunden."`
             <div className="skeleton h-3 w-4/5 rounded" />
             <div className="skeleton h-3 w-3/5 rounded" />
             <div className="skeleton h-3 w-4/6 rounded" />
+          </div>
+        )}
+
+        {/* Error */}
+        {error && !loading && (
+          <div className="card p-5" style={{ background: '#fce7f3', border: '1px solid #fbcfe8' }}>
+            <p style={{ fontSize: '14px', color: '#f472b6', marginBottom: '10px' }}>{error}</p>
+            <button
+              onClick={() => inputRef.current?.click()}
+              className="px-3 py-1.5 rounded-lg transition-all active:scale-95"
+              style={{ background: '#ffffff', border: '1px solid #fbcfe8', color: '#f472b6', fontSize: '12px', fontWeight: 500, cursor: 'pointer' }}
+            >
+              Nochmal versuchen
+            </button>
           </div>
         )}
 
