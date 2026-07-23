@@ -267,10 +267,10 @@ export function InputScreen({ onSubmit }: Props) {
               </div>
             </div>
 
-            {/* ── AI Suggestion cards ── */}
+            {/* ── Suggestion cards ── */}
             {suggestions.length > 0 && (
               <div className="px-4 py-3 space-y-2" style={{ background: '#f0f7f6' }}>
-                <p className="section-label px-1">KI-Vorschläge für dich</p>
+                <p className="section-label px-1">Vorschläge für dich</p>
                 {suggestions.map((s) => (
                   <button
                     key={s.city}
