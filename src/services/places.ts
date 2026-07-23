@@ -15,32 +15,60 @@ export interface PlaceInfo {
   opening_hours?: string[];
 }
 
+// Cache city coords so geocoding only runs once per city per session
+const coordsCache: Record<string, { lat: number; lng: number }> = {};
+
+const getCityCoords = async (city: string): Promise<{ lat: number; lng: number } | null> => {
+  if (coordsCache[city]) return coordsCache[city];
+  try {
+    const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(city)}&key=${API_KEY}`;
+    const res = await fetch(PROXY + encodeURIComponent(url));
+    const data = await res.json();
+    const loc = data.results?.[0]?.geometry?.location;
+    if (!loc) return null;
+    coordsCache[city] = { lat: loc.lat, lng: loc.lng };
+    return coordsCache[city];
+  } catch {
+    return null;
+  }
+};
+
 export const searchPlace = async (query: string, destination: string): Promise<PlaceInfo | null> => {
   try {
-    // Always append destination to force correct city context
-    const searchQuery = `${query} in ${destination}`;
+    // Get city coordinates for location-biased search
+    const coords = await getCityCoords(destination);
 
-    const url = `https://maps.googleapis.com/maps/api/place/textsearch/json?query=${encodeURIComponent(searchQuery)}&key=${API_KEY}&language=de`;
+    const params = new URLSearchParams({
+      query: `${query} ${destination}`,
+      key: API_KEY,
+      language: 'de',
+    });
+    if (coords) {
+      params.set('location', `${coords.lat},${coords.lng}`);
+      params.set('radius', '20000');
+    }
+
+    const url = `https://maps.googleapis.com/maps/api/place/textsearch/json?${params}`;
     const res = await fetch(PROXY + encodeURIComponent(url));
     const data = await res.json();
 
-    console.log('Search query:', searchQuery);
-    console.log('Results:', data.results?.length);
-    console.log('First result:', data.results?.[0]?.name, data.results?.[0]?.formatted_address);
-
-    // Only accept results whose address contains the destination city
     const cityLower = destination.toLowerCase();
-    const place = data.results?.find((r: { formatted_address?: string; name?: string }) =>
-      r.formatted_address?.toLowerCase().includes(cityLower) ||
-      r.name?.toLowerCase().includes(cityLower)
+
+    // Prefer results whose address contains the city
+    const place = data.results?.find(
+      (r: { formatted_address?: string }) =>
+        r.formatted_address?.toLowerCase().includes(cityLower)
     );
 
+    // If nothing matches the city, reject
     if (!place) {
-      console.log(`No place found in ${destination} for: ${searchQuery}`);
+      console.log(`❌ No place in ${destination} for: ${query}`);
       return null;
     }
 
-    const mapsQuery = encodeURIComponent(searchQuery);
+    console.log(`✅ Found in ${destination}: ${place.name}`);
+
+    const mapsQuery = encodeURIComponent(`${place.name} ${destination}`);
     const info: PlaceInfo = {
       name: place.name,
       address: place.formatted_address,
@@ -67,7 +95,7 @@ export const searchPlace = async (query: string, destination: string): Promise<P
           if (d.opening_hours?.weekday_text) info.opening_hours = d.opening_hours.weekday_text;
         }
       } catch {
-        // Details are optional — ignore errors
+        // Details are optional
       }
     }
 
@@ -76,10 +104,6 @@ export const searchPlace = async (query: string, destination: string): Promise<P
     console.error('Places error:', error);
     return null;
   }
-};
-
-export const getDestinationImage = (destination: string): string => {
-  return `https://source.unsplash.com/1600x900/?${encodeURIComponent(destination)},travel`;
 };
 
 export const priceLevelLabel = (level: number | null): string => {

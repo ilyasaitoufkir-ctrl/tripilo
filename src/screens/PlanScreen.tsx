@@ -9,7 +9,7 @@ import {
 import type { TripPlan, TripInput, DayPlan } from '../types';
 import { searchPlace, priceLevelLabel, type PlaceInfo } from '../services/places';
 import { getFlightLinks, getHotelLinks, getFlightFallback } from '../services/booking';
-import { getActivityImage, getDestinationImage, getDestinationImageAsync, getActivityImageAsync, getRestaurantImage, getHotelImage } from '../services/images';
+import { getActivityImage, getDestinationImage, getMatchingImage, getRestaurantImage, getHotelImage } from '../services/images';
 import { openDayRoute } from '../components/MapView';
 
 interface Weather {
@@ -277,24 +277,28 @@ export function PlanScreen({ plan, input, onSave, onNew, onRate, onPacking, isSa
   const formatDate = (iso: string) =>
     new Date(iso).toLocaleDateString('de-DE', { day: 'numeric', month: 'long' });
 
-  // Load async hero image (Unsplash API if key set)
+  // Load async hero image via Unsplash search
   useEffect(() => {
-    getDestinationImageAsync(dest).then(setHeroImage);
+    getMatchingImage(dest, dest, 'city').then(setHeroImage);
   }, [dest]);
 
-  // Load activity images async (Unsplash API if key set)
+  // Load all slot images in parallel via Unsplash search
   useEffect(() => {
-    const entries: { key: string; activity: string }[] = [];
+    type Entry = { key: string; subject: string; type: 'activity' | 'restaurant' | 'hotel' | 'city' };
+    const entries: Entry[] = [];
     plan.days.forEach((day) => {
-      entries.push({ key: `morning-${day.day}`, activity: day.morning.activity });
-      entries.push({ key: `evening-${day.day}`, activity: day.evening.activity });
+      entries.push({ key: `morning-${day.day}`, subject: day.morning.activity, type: 'activity' });
+      entries.push({ key: `lunch-${day.day}`,   subject: day.lunch.restaurant,  type: 'restaurant' });
+      entries.push({ key: `evening-${day.day}`, subject: day.evening.activity,  type: 'activity' });
     });
     plan.geheimtipps.forEach((tip, i) => {
-      entries.push({ key: `geheimtipp-${i}`, activity: tip });
+      entries.push({ key: `geheimtipp-${i}`, subject: tip, type: 'activity' });
     });
+    entries.push({ key: 'hotel', subject: plan.hotel_empfehlung.name, type: 'hotel' });
+
     Promise.all(
-      entries.map(({ key, activity }) =>
-        getActivityImageAsync(activity, dest).then((url) => ({ key, url }))
+      entries.map(({ key, subject, type }) =>
+        getMatchingImage(subject, dest, type).then((url) => ({ key, url }))
       )
     ).then((results) => {
       setSlotImages(Object.fromEntries(results.map(({ key, url }) => [key, url])));
@@ -624,7 +628,7 @@ export function PlanScreen({ plan, input, onSave, onNew, onRate, onPacking, isSa
                       placeData={placesData[placeKey(day.day, 'lunch')]}
                       placeLoading={isLoading(placeKey(day.day, 'lunch'))}
                       isRestaurant
-                      placeFallbackSrc={getRestaurantImage(day.lunch.restaurant, dest)}
+                      placeFallbackSrc={slotImages[`lunch-${day.day}`] ?? getRestaurantImage(day.lunch.restaurant, dest)}
                     />
                     <SlotBlock
                       icon={Moon} label="Abend" labelColor="#6e6e73" bg="#f5f5f7"
@@ -655,7 +659,7 @@ export function PlanScreen({ plan, input, onSave, onNew, onRate, onPacking, isSa
             </div>
           </div>
           <p style={{ fontSize: '13px', color: '#6e6e73', lineHeight: 1.5 }}>{plan.hotel_empfehlung.beschreibung}</p>
-          <PlaceCard place={placesData['hotel']} loading={isLoading('hotel')} showActions fallbackSrc={getHotelImage(dest)} />
+          <PlaceCard place={placesData['hotel']} loading={isLoading('hotel')} showActions fallbackSrc={slotImages['hotel'] ?? getHotelImage(dest)} />
           {plan.hotel_empfehlung.tipp && (
             <div className="flex items-start gap-2 mt-3 p-2.5 rounded-xl" style={{ background: '#f0eeff' }}>
               <Lightbulb size={13} strokeWidth={1.5} style={{ color: '#8b7cf8', flexShrink: 0, marginTop: '1px' }} />
