@@ -12,8 +12,8 @@ export default defineConfig({
         name: 'Tripsilo - Dein Reiseplaner',
         short_name: 'Tripsilo',
         description: 'Dein persönlicher Reiseplaner — individuell, inspirierend, detailliert.',
-        theme_color: '#6c63ff',
-        background_color: '#0f1117',
+        theme_color: '#2d8b7a',
+        background_color: '#2d8b7a',
         display: 'standalone',
         icons: [
           {
@@ -25,6 +25,11 @@ export default defineConfig({
             src: '/icons/icon-512.png',
             sizes: '512x512',
             type: 'image/png',
+          },
+          {
+            src: '/icon.svg',
+            sizes: 'any',
+            type: 'image/svg+xml',
           },
         ],
       },
