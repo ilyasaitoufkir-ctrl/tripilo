@@ -84,12 +84,12 @@ Antworte NUR als reines JSON-Objekt (kein Markdown, kein Text davor/danach):
 
   const getAnswerStyle = (i: number): React.CSSProperties => {
     if (answered === null)
-      return { background: '#ffffff', border: '1.5px solid #e8e8ed', color: '#1c1c1e' };
+      return { background: '#ffffff', border: '1.5px solid #e0eeec', color: '#1a2e2b' };
     if (i === questions[currentQ]?.correct)
       return { background: '#dcfce7', border: '1.5px solid #22c55e', color: '#15803d' };
     if (i === answered)
       return { background: '#fce7f3', border: '1.5px solid #f472b6', color: '#be185d' };
-    return { background: '#f9f9f9', border: '1.5px solid #e8e8ed', color: '#aeaeb2' };
+    return { background: '#f9f9f9', border: '1.5px solid #e0eeec', color: '#9bb5b0' };
   };
 
   const getResultEmoji = () => {
@@ -105,19 +105,19 @@ Antworte NUR als reines JSON-Objekt (kein Markdown, kein Text davor/danach):
   };
 
   return (
-    <div className="min-h-screen pb-28" style={{ background: '#fafafa' }}>
+    <div className="min-h-screen pb-28" style={{ background: '#f0f7f6' }}>
       {/* Header */}
-      <div className="px-5 pt-14 pb-5" style={{ borderBottom: '1px solid #e8e8ed' }}>
+      <div className="px-5 pt-14 pb-5" style={{ borderBottom: '1px solid #e0eeec' }}>
         <p className="section-label mb-1">Tripsilo</p>
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: '#f0eeff' }}>
-            <HelpCircle size={20} strokeWidth={1.5} style={{ color: '#8b7cf8' }} />
+          <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: '#e8f5f3' }}>
+            <HelpCircle size={20} strokeWidth={1.5} style={{ color: '#2d8b7a' }} />
           </div>
           <div>
-            <h1 style={{ fontSize: '22px', fontWeight: 500, color: '#1c1c1e', letterSpacing: '-0.3px' }}>
+            <h1 style={{ fontSize: '22px', fontWeight: 500, color: '#1a2e2b', letterSpacing: '-0.3px' }}>
               Stadt Quiz
             </h1>
-            {destination && <p style={{ fontSize: '13px', color: '#aeaeb2' }}>{destination}</p>}
+            {destination && <p style={{ fontSize: '13px', color: '#9bb5b0' }}>{destination}</p>}
           </div>
         </div>
       </div>
@@ -127,8 +127,8 @@ Antworte NUR als reines JSON-Objekt (kein Markdown, kein Text davor/danach):
         {!destination && (
           <div className="card p-7 text-center space-y-3">
             <div style={{ fontSize: '48px' }}>🗺️</div>
-            <p style={{ fontSize: '16px', fontWeight: 500, color: '#1c1c1e' }}>Kein Reiseziel gewählt</p>
-            <p style={{ fontSize: '14px', color: '#aeaeb2', lineHeight: 1.6 }}>
+            <p style={{ fontSize: '16px', fontWeight: 500, color: '#1a2e2b' }}>Kein Reiseziel gewählt</p>
+            <p style={{ fontSize: '14px', color: '#9bb5b0', lineHeight: 1.6 }}>
               Plane zuerst eine Reise — das Quiz wird dann automatisch für dein Reiseziel erstellt.
             </p>
           </div>
@@ -141,7 +141,7 @@ Antworte NUR als reines JSON-Objekt (kein Markdown, kein Text davor/danach):
             <button
               onClick={generateQuiz}
               className="flex items-center gap-2 mx-auto px-5 py-3 rounded-xl transition-all active:scale-95"
-              style={{ background: '#8b7cf8', color: '#ffffff', fontSize: '14px', border: 'none', cursor: 'pointer' }}
+              style={{ background: '#2d8b7a', color: '#ffffff', fontSize: '14px', border: 'none', cursor: 'pointer' }}
             >
               <RefreshCw size={14} strokeWidth={1.5} />
               Erneut versuchen
@@ -153,7 +153,7 @@ Antworte NUR als reines JSON-Objekt (kein Markdown, kein Text davor/danach):
         {loading && (
           <div className="card p-8 flex flex-col items-center gap-4">
             <div className="skeleton w-12 h-12 rounded-full" />
-            <p style={{ fontSize: '14px', color: '#aeaeb2' }}>Quiz wird erstellt für {destination}…</p>
+            <p style={{ fontSize: '14px', color: '#9bb5b0' }}>Quiz wird erstellt für {destination}…</p>
           </div>
         )}
 
@@ -162,19 +162,19 @@ Antworte NUR als reines JSON-Objekt (kein Markdown, kein Text davor/danach):
           <div className="card p-8 text-center space-y-5">
             <div style={{ fontSize: '72px' }}>{getResultEmoji()}</div>
             <div>
-              <h2 style={{ fontSize: '36px', fontWeight: 600, color: '#1c1c1e', letterSpacing: '-1px' }}>
+              <h2 style={{ fontSize: '36px', fontWeight: 600, color: '#1a2e2b', letterSpacing: '-1px' }}>
                 {score}/{questions.length}
               </h2>
-              <p style={{ fontSize: '17px', color: '#8b7cf8', fontWeight: 500, marginTop: '4px' }}>
+              <p style={{ fontSize: '17px', color: '#2d8b7a', fontWeight: 500, marginTop: '4px' }}>
                 richtige Antworten
               </p>
             </div>
-            <p style={{ fontSize: '15px', color: '#6e6e73', lineHeight: 1.5 }}>{getResultText()}</p>
+            <p style={{ fontSize: '15px', color: '#6b8a85', lineHeight: 1.5 }}>{getResultText()}</p>
             <button
               onClick={generateQuiz}
               className="flex items-center gap-2 mx-auto px-6 py-3 rounded-xl transition-all active:scale-95"
               style={{
-                background: '#8b7cf8',
+                background: '#2d8b7a',
                 color: '#ffffff',
                 fontSize: '14px',
                 fontWeight: 500,
@@ -196,19 +196,19 @@ Antworte NUR als reines JSON-Objekt (kein Markdown, kein Text davor/danach):
               {/* Progress bar */}
               <div>
                 <div className="flex justify-between items-center mb-2">
-                  <span style={{ fontSize: '13px', color: '#6e6e73' }}>
+                  <span style={{ fontSize: '13px', color: '#6b8a85' }}>
                     Frage {currentQ + 1} von {questions.length}
                   </span>
-                  <span style={{ fontSize: '13px', fontWeight: 500, color: '#8b7cf8' }}>
+                  <span style={{ fontSize: '13px', fontWeight: 500, color: '#2d8b7a' }}>
                     {score} Punkte
                   </span>
                 </div>
-                <div className="rounded-full overflow-hidden" style={{ height: '4px', background: '#e8e8ed' }}>
+                <div className="rounded-full overflow-hidden" style={{ height: '4px', background: '#e0eeec' }}>
                   <div
                     style={{
                       height: '100%',
                       width: `${((currentQ) / questions.length) * 100}%`,
-                      background: 'linear-gradient(90deg, #8b7cf8, #a78bfa)',
+                      background: 'linear-gradient(90deg, #2d8b7a, #4db8a4)',
                       transition: 'width 0.4s ease',
                       borderRadius: '2px',
                     }}
@@ -218,7 +218,7 @@ Antworte NUR als reines JSON-Objekt (kein Markdown, kein Text davor/danach):
 
               {/* Question card */}
               <div className="card p-5">
-                <p style={{ fontSize: '18px', fontWeight: 500, color: '#1c1c1e', lineHeight: 1.45 }}>
+                <p style={{ fontSize: '18px', fontWeight: 500, color: '#1a2e2b', lineHeight: 1.45 }}>
                   {q.question}
                 </p>
               </div>
@@ -245,7 +245,7 @@ Antworte NUR als reines JSON-Objekt (kein Markdown, kein Text davor/danach):
               {answered !== null && (
                 <div
                   className="p-4 rounded-2xl"
-                  style={{ background: '#f0eeff', border: '1px solid #c4b5fd', animation: 'fadeIn 0.3s ease' }}
+                  style={{ background: '#e8f5f3', border: '1px solid #a3d4ce', animation: 'fadeIn 0.3s ease' }}
                 >
                   <p style={{ fontSize: '13px', color: '#7c3aed', lineHeight: 1.65 }}>
                     💡 {q.fact}

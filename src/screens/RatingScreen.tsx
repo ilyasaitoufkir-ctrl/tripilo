@@ -26,7 +26,7 @@ function StarRow({ value, onChange }: { value: number; onChange: (v: number) => 
           <Star
             size={36}
             fill={s <= active ? '#f59e0b' : 'none'}
-            style={{ color: s <= active ? '#f59e0b' : '#e8e8ed' }}
+            style={{ color: s <= active ? '#f59e0b' : '#e0eeec' }}
             strokeWidth={1.5}
           />
         </button>
@@ -50,14 +50,14 @@ function Textarea({
         rows={3}
         className="w-full rounded-xl p-3 resize-none outline-none transition-all"
         style={{
-          background: '#fafafa',
-          border: '1px solid #e8e8ed',
+          background: '#f0f7f6',
+          border: '1px solid #e0eeec',
           fontSize: '14px',
-          color: '#1c1c1e',
+          color: '#1a2e2b',
           lineHeight: 1.6,
         }}
-        onFocus={(e) => { e.target.style.borderColor = '#8b7cf8'; }}
-        onBlur={(e) => { e.target.style.borderColor = '#e8e8ed'; }}
+        onFocus={(e) => { e.target.style.borderColor = '#2d8b7a'; }}
+        onBlur={(e) => { e.target.style.borderColor = '#e0eeec'; }}
       />
     </div>
   );
@@ -82,11 +82,11 @@ export function RatingScreen({ target, ratings, onSubmit }: Props) {
   };
 
   return (
-    <div className="min-h-screen pb-28" style={{ background: '#fafafa' }}>
+    <div className="min-h-screen pb-28" style={{ background: '#f0f7f6' }}>
       {/* Header */}
-      <div className="px-5 pt-14 pb-5" style={{ borderBottom: '1px solid #e8e8ed' }}>
+      <div className="px-5 pt-14 pb-5" style={{ borderBottom: '1px solid #e0eeec' }}>
         <p className="section-label mb-1">Tripsilo</p>
-        <h1 style={{ fontSize: '28px', fontWeight: 500, color: '#1c1c1e', letterSpacing: '-0.5px' }}>
+        <h1 style={{ fontSize: '28px', fontWeight: 500, color: '#1a2e2b', letterSpacing: '-0.5px' }}>
           Bewertungen
         </h1>
       </div>
@@ -96,17 +96,17 @@ export function RatingScreen({ target, ratings, onSubmit }: Props) {
         {target && !submitted ? (
           <div className="card p-6 space-y-5">
             <div className="text-center pb-2">
-              <p style={{ fontSize: '14px', color: '#6e6e73', marginBottom: '4px' }}>
+              <p style={{ fontSize: '14px', color: '#6b8a85', marginBottom: '4px' }}>
                 Wie war deine Reise nach
               </p>
-              <h2 style={{ fontSize: '22px', fontWeight: 500, color: '#1c1c1e', letterSpacing: '-0.3px' }}>
+              <h2 style={{ fontSize: '22px', fontWeight: 500, color: '#1a2e2b', letterSpacing: '-0.3px' }}>
                 {target.plan.destination}
               </h2>
             </div>
 
             <div>
               <StarRow value={rating} onChange={setRating} />
-              <p className="text-center mt-1 transition-all" style={{ fontSize: '14px', fontWeight: 400, color: '#8b7cf8', minHeight: '20px' }}>
+              <p className="text-center mt-1 transition-all" style={{ fontSize: '14px', fontWeight: 400, color: '#2d8b7a', minHeight: '20px' }}>
                 {ratingLabels[rating]}
               </p>
             </div>
@@ -129,8 +129,8 @@ export function RatingScreen({ target, ratings, onSubmit }: Props) {
               disabled={rating === 0}
               className="w-full transition-all active:scale-[0.98]"
               style={{
-                background: rating > 0 ? '#8b7cf8' : '#e8e8ed',
-                color: rating > 0 ? '#ffffff' : '#aeaeb2',
+                background: rating > 0 ? '#2d8b7a' : '#e0eeec',
+                color: rating > 0 ? '#ffffff' : '#9bb5b0',
                 borderRadius: '12px',
                 padding: '14px',
                 fontSize: '15px',
@@ -145,10 +145,10 @@ export function RatingScreen({ target, ratings, onSubmit }: Props) {
         ) : submitted ? (
           <div className="card p-8 text-center animate-fade-in space-y-3">
             <div className="flex justify-center">
-              <CheckCircle size={40} strokeWidth={1.5} style={{ color: '#8b7cf8' }} />
+              <CheckCircle size={40} strokeWidth={1.5} style={{ color: '#2d8b7a' }} />
             </div>
-            <p style={{ fontSize: '17px', fontWeight: 500, color: '#1c1c1e' }}>Danke für dein Feedback</p>
-            <p style={{ fontSize: '14px', color: '#6e6e73' }}>
+            <p style={{ fontSize: '17px', fontWeight: 500, color: '#1a2e2b' }}>Danke für dein Feedback</p>
+            <p style={{ fontSize: '14px', color: '#6b8a85' }}>
               Deine Bewertung hilft uns, bessere Reisepläne zu erstellen.
             </p>
           </div>
@@ -156,14 +156,14 @@ export function RatingScreen({ target, ratings, onSubmit }: Props) {
           <div className="card p-8 text-center">
             <div
               className="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4"
-              style={{ background: '#f0eeff' }}
+              style={{ background: '#e8f5f3' }}
             >
-              <Star size={22} strokeWidth={1.5} style={{ color: '#8b7cf8' }} />
+              <Star size={22} strokeWidth={1.5} style={{ color: '#2d8b7a' }} />
             </div>
-            <p style={{ fontSize: '16px', fontWeight: 500, color: '#1c1c1e', marginBottom: '6px' }}>
+            <p style={{ fontSize: '16px', fontWeight: 500, color: '#1a2e2b', marginBottom: '6px' }}>
               Reise bewerten
             </p>
-            <p style={{ fontSize: '14px', color: '#aeaeb2' }}>
+            <p style={{ fontSize: '14px', color: '#9bb5b0' }}>
               Öffne eine gespeicherte Reise und tippe auf Bewerten.
             </p>
           </div>
@@ -178,8 +178,8 @@ export function RatingScreen({ target, ratings, onSubmit }: Props) {
                 <div key={r.id} className="card p-4">
                   <div className="flex items-start justify-between mb-2">
                     <div>
-                      <p style={{ fontSize: '15px', fontWeight: 500, color: '#1c1c1e' }}>{r.destination}</p>
-                      <p style={{ fontSize: '12px', color: '#aeaeb2' }}>
+                      <p style={{ fontSize: '15px', fontWeight: 500, color: '#1a2e2b' }}>{r.destination}</p>
+                      <p style={{ fontSize: '12px', color: '#9bb5b0' }}>
                         {new Date(r.ratedAt).toLocaleDateString('de-DE', { day: '2-digit', month: 'long', year: 'numeric' })}
                       </p>
                     </div>
@@ -189,7 +189,7 @@ export function RatingScreen({ target, ratings, onSubmit }: Props) {
                           key={s}
                           size={14}
                           fill={s <= r.rating ? '#f59e0b' : 'none'}
-                          style={{ color: s <= r.rating ? '#f59e0b' : '#e8e8ed' }}
+                          style={{ color: s <= r.rating ? '#f59e0b' : '#e0eeec' }}
                           strokeWidth={1.5}
                         />
                       ))}
@@ -197,12 +197,12 @@ export function RatingScreen({ target, ratings, onSubmit }: Props) {
                   </div>
                   {r.liked && (
                     <p style={{ fontSize: '13px', color: '#374151', marginBottom: '2px' }}>
-                      <span style={{ color: '#6e6e73' }}>Gefallen: </span>{r.liked}
+                      <span style={{ color: '#6b8a85' }}>Gefallen: </span>{r.liked}
                     </p>
                   )}
                   {r.improved && (
                     <p style={{ fontSize: '13px', color: '#374151' }}>
-                      <span style={{ color: '#6e6e73' }}>Verbesserung: </span>{r.improved}
+                      <span style={{ color: '#6b8a85' }}>Verbesserung: </span>{r.improved}
                     </p>
                   )}
                 </div>

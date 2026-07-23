@@ -22,7 +22,7 @@ export function BottomNav({ screen, onNavigate }: Props) {
       className="fixed bottom-0 left-0 right-0 z-50"
       style={{
         background: '#ffffff',
-        borderTop: '1px solid #e8e8ed',
+        borderTop: '1px solid #e0eeec',
         boxShadow: '0 -1px 0 rgba(0,0,0,0.04)',
       }}
     >
@@ -35,8 +35,8 @@ export function BottomNav({ screen, onNavigate }: Props) {
               onClick={() => onNavigate(id)}
               className="flex flex-col items-center gap-0.5 px-2 py-2 rounded-2xl transition-all"
               style={{
-                background: isActive ? '#f0eeff' : 'transparent',
-                color: isActive ? '#8b7cf8' : '#aeaeb2',
+                background: isActive ? '#e8f5f3' : 'transparent',
+                color: isActive ? '#2d8b7a' : '#9bb5b0',
                 minWidth: '56px',
               }}
             >

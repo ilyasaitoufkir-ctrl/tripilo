@@ -26,43 +26,39 @@ export function LoadingScreen() {
   }, []);
 
   return (
-    <div
-      className="min-h-screen flex flex-col items-center justify-center px-8"
-      style={{ background: '#fafafa' }}
-    >
+    <div className="min-h-screen flex flex-col items-center justify-center px-8" style={{ background: '#f0f7f6' }}>
       <div className="w-full max-w-xs text-center">
-        {/* Word mark */}
-        <p
-          className="mb-12"
-          style={{ fontSize: '22px', fontWeight: 300, color: '#1c1c1e', letterSpacing: '-0.5px' }}
-        >
+        <p className="mb-2" style={{ fontSize: '11px', fontWeight: 700, color: '#2d8b7a', letterSpacing: '2.5px', textTransform: 'uppercase' }}>
           Tripsilo
         </p>
+        <p className="mb-10" style={{ fontSize: '22px', fontWeight: 700, color: '#1a2e2b', letterSpacing: '-0.3px' }}>
+          Dein Plan wird erstellt
+        </p>
 
-        {/* Progress bar */}
-        <div
-          className="w-full rounded-full overflow-hidden mb-4"
-          style={{ height: '3px', background: '#e8e8ed' }}
-        >
-          <div
-            className="h-full rounded-full transition-all duration-700 ease-out"
-            style={{ width: `${progress}%`, background: '#8b7cf8' }}
-          />
+        {/* SVG progress ring */}
+        <div className="relative mx-auto mb-8" style={{ width: '88px', height: '88px' }}>
+          <svg viewBox="0 0 88 88" style={{ width: '88px', height: '88px', transform: 'rotate(-90deg)' }}>
+            <circle cx="44" cy="44" r="38" fill="none" stroke="#e0eeec" strokeWidth="6" />
+            <circle
+              cx="44" cy="44" r="38" fill="none"
+              stroke="#2d8b7a" strokeWidth="6"
+              strokeDasharray={`${2 * Math.PI * 38}`}
+              strokeDashoffset={`${2 * Math.PI * 38 * (1 - progress / 100)}`}
+              strokeLinecap="round"
+              style={{ transition: 'stroke-dashoffset 0.7s ease-out' }}
+            />
+          </svg>
+          <div className="absolute inset-0 flex items-center justify-center">
+            <span style={{ fontSize: '16px', fontWeight: 700, color: '#2d8b7a' }}>{progress}%</span>
+          </div>
         </div>
 
-        {/* Status */}
-        <p
-          className="mb-1 transition-all duration-500"
-          style={{ fontSize: '15px', fontWeight: 400, color: '#1c1c1e' }}
-        >
+        <p className="mb-1 transition-all duration-500" style={{ fontSize: '15px', fontWeight: 500, color: '#1a2e2b' }}>
           {steps[stepIdx].text}
         </p>
-        <p style={{ fontSize: '13px', color: '#aeaeb2' }}>
-          Bitte einen Moment Geduld
-        </p>
+        <p style={{ fontSize: '13px', color: '#9bb5b0' }}>Bitte einen Moment Geduld</p>
 
-        {/* Dot indicator */}
-        <div className="flex justify-center gap-1.5 mt-10">
+        <div className="flex justify-center gap-1.5 mt-8">
           {steps.map((_, i) => (
             <div
               key={i}
@@ -70,7 +66,7 @@ export function LoadingScreen() {
               style={{
                 width: i === stepIdx ? '20px' : '6px',
                 height: '6px',
-                background: i <= stepIdx ? '#8b7cf8' : '#e8e8ed',
+                background: i <= stepIdx ? '#2d8b7a' : '#e0eeec',
               }}
             />
           ))}

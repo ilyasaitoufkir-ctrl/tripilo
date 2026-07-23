@@ -91,20 +91,20 @@ export function PackingListScreen({ plan, input, onBack }: Props) {
   };
 
   return (
-    <div className="min-h-screen pb-28" style={{ background: '#fafafa' }}>
+    <div className="min-h-screen pb-28" style={{ background: '#f0f7f6' }}>
       {/* Header */}
-      <div className="px-5 pt-14 pb-5" style={{ borderBottom: '1px solid #e8e8ed' }}>
-        <button onClick={onBack} className="flex items-center gap-1.5 mb-4 -ml-1" style={{ color: '#8b7cf8', fontSize: '14px', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>
+      <div className="px-5 pt-14 pb-5" style={{ borderBottom: '1px solid #e0eeec' }}>
+        <button onClick={onBack} className="flex items-center gap-1.5 mb-4 -ml-1" style={{ color: '#2d8b7a', fontSize: '14px', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>
           <ChevronLeft size={18} strokeWidth={1.5} />
           Zurück
         </button>
         <div className="flex items-center gap-3 mb-4">
-          <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: '#f0eeff' }}>
-            <Package size={20} strokeWidth={1.5} style={{ color: '#8b7cf8' }} />
+          <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: '#e8f5f3' }}>
+            <Package size={20} strokeWidth={1.5} style={{ color: '#2d8b7a' }} />
           </div>
           <div>
             <p className="section-label">Packliste</p>
-            <h1 style={{ fontSize: '22px', fontWeight: 500, color: '#1c1c1e', letterSpacing: '-0.3px' }}>
+            <h1 style={{ fontSize: '22px', fontWeight: 500, color: '#1a2e2b', letterSpacing: '-0.3px' }}>
               {plan.destination}
             </h1>
           </div>
@@ -114,13 +114,13 @@ export function PackingListScreen({ plan, input, onBack }: Props) {
         {totalItems > 0 && (
           <div>
             <div className="flex justify-between items-center mb-2">
-              <span style={{ fontSize: '13px', color: '#6e6e73' }}>{packedItems}/{totalItems} gepackt</span>
-              <span style={{ fontSize: '13px', fontWeight: 500, color: '#8b7cf8' }}>{pct}%</span>
+              <span style={{ fontSize: '13px', color: '#6b8a85' }}>{packedItems}/{totalItems} gepackt</span>
+              <span style={{ fontSize: '13px', fontWeight: 500, color: '#2d8b7a' }}>{pct}%</span>
             </div>
-            <div className="rounded-full overflow-hidden" style={{ height: '6px', background: '#e8e8ed' }}>
+            <div className="rounded-full overflow-hidden" style={{ height: '6px', background: '#e0eeec' }}>
               <div
                 className="h-full rounded-full transition-all"
-                style={{ width: `${pct}%`, background: pct === 100 ? '#22c55e' : '#8b7cf8' }}
+                style={{ width: `${pct}%`, background: pct === 100 ? '#22c55e' : '#2d8b7a' }}
               />
             </div>
             {pct === 100 && (
@@ -136,7 +136,7 @@ export function PackingListScreen({ plan, input, onBack }: Props) {
         {loading && (
           <div className="card p-8 flex flex-col items-center gap-3">
             <div className="skeleton w-8 h-8 rounded-full" />
-            <p style={{ fontSize: '14px', color: '#aeaeb2' }}>Packliste wird erstellt…</p>
+            <p style={{ fontSize: '14px', color: '#9bb5b0' }}>Packliste wird erstellt…</p>
           </div>
         )}
 
@@ -147,31 +147,31 @@ export function PackingListScreen({ plan, input, onBack }: Props) {
               className="w-full flex items-center gap-3 p-4 text-left"
             >
               <div className="flex-1">
-                <p style={{ fontSize: '15px', fontWeight: 500, color: '#1c1c1e' }}>{cat.name}</p>
-                <p style={{ fontSize: '12px', color: '#aeaeb2' }}>
+                <p style={{ fontSize: '15px', fontWeight: 500, color: '#1a2e2b' }}>{cat.name}</p>
+                <p style={{ fontSize: '12px', color: '#9bb5b0' }}>
                   {cat.items.filter((i) => i.packed).length}/{cat.items.length} gepackt
                 </p>
               </div>
               {expanded[ci]
-                ? <ChevronUp size={16} strokeWidth={1.5} style={{ color: '#aeaeb2', flexShrink: 0 }} />
-                : <ChevronDown size={16} strokeWidth={1.5} style={{ color: '#aeaeb2', flexShrink: 0 }} />
+                ? <ChevronUp size={16} strokeWidth={1.5} style={{ color: '#9bb5b0', flexShrink: 0 }} />
+                : <ChevronDown size={16} strokeWidth={1.5} style={{ color: '#9bb5b0', flexShrink: 0 }} />
               }
             </button>
 
             {expanded[ci] && (
-              <div className="px-4 pb-3 space-y-1" style={{ borderTop: '1px solid #f5f5f7' }}>
+              <div className="px-4 pb-3 space-y-1" style={{ borderTop: '1px solid #f0f5f4' }}>
                 {cat.items.map((item, ii) => (
                   <button
                     key={ii}
                     onClick={() => toggle(ci, ii)}
                     className="w-full flex items-center gap-3 py-3 text-left transition-all active:scale-[0.99]"
-                    style={{ borderBottom: ii < cat.items.length - 1 ? '1px solid #f5f5f7' : 'none' }}
+                    style={{ borderBottom: ii < cat.items.length - 1 ? '1px solid #f0f5f4' : 'none' }}
                   >
                     <div
                       className="w-6 h-6 rounded-lg flex items-center justify-center flex-shrink-0 transition-all"
                       style={{
-                        background: item.packed ? '#8b7cf8' : '#ffffff',
-                        border: `1.5px solid ${item.packed ? '#8b7cf8' : '#d1d5db'}`,
+                        background: item.packed ? '#2d8b7a' : '#ffffff',
+                        border: `1.5px solid ${item.packed ? '#2d8b7a' : '#d1d5db'}`,
                       }}
                     >
                       {item.packed && <Check size={13} strokeWidth={2.5} style={{ color: '#ffffff' }} />}
@@ -179,18 +179,18 @@ export function PackingListScreen({ plan, input, onBack }: Props) {
                     <div className="flex-1">
                       <span style={{
                         fontSize: '14px',
-                        color: item.packed ? '#aeaeb2' : '#1c1c1e',
+                        color: item.packed ? '#9bb5b0' : '#1a2e2b',
                         textDecoration: item.packed ? 'line-through' : 'none',
                         fontWeight: item.essential ? 500 : 400,
                       }}>
                         {item.item}
                       </span>
                       {item.quantity > 1 && (
-                        <span style={{ fontSize: '12px', color: '#aeaeb2', marginLeft: '6px' }}>×{item.quantity}</span>
+                        <span style={{ fontSize: '12px', color: '#9bb5b0', marginLeft: '6px' }}>×{item.quantity}</span>
                       )}
                     </div>
                     {item.essential && !item.packed && (
-                      <span className="px-1.5 py-0.5 rounded-md" style={{ fontSize: '10px', background: '#f0eeff', color: '#8b7cf8', fontWeight: 500 }}>
+                      <span className="px-1.5 py-0.5 rounded-md" style={{ fontSize: '10px', background: '#e8f5f3', color: '#2d8b7a', fontWeight: 500 }}>
                         wichtig
                       </span>
                     )}
@@ -205,7 +205,7 @@ export function PackingListScreen({ plan, input, onBack }: Props) {
           <button
             onClick={reset}
             className="w-full py-3 rounded-xl transition-all active:scale-95"
-            style={{ background: '#fafafa', border: '1px solid #e8e8ed', color: '#aeaeb2', fontSize: '13px', cursor: 'pointer' }}
+            style={{ background: '#f0f7f6', border: '1px solid #e0eeec', color: '#9bb5b0', fontSize: '13px', cursor: 'pointer' }}
           >
             Liste zurücksetzen
           </button>

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { MapPin, Plane, ChevronLeft, Shuffle, CalendarDays, Loader } from 'lucide-react';
+import { Plane, ChevronLeft, Shuffle, CalendarDays, Loader, Search, Star } from 'lucide-react';
 import type { TripInput } from '../types';
 import { getDestinationImage } from '../services/images';
 
@@ -53,10 +53,19 @@ const avoidOptions = [
 
 const departureCities = ['Hamburg', 'Berlin', 'München', 'Frankfurt', 'Köln', 'Wien', 'Zürich'];
 
+const POPULAR_DESTINATIONS = [
+  { city: 'Tokyo', country: 'Japan', rating: 4.8 },
+  { city: 'Paris', country: 'Frankreich', rating: 4.7 },
+  { city: 'Bali', country: 'Indonesien', rating: 4.9 },
+  { city: 'Dubai', country: 'VAE', rating: 4.6 },
+  { city: 'Barcelona', country: 'Spanien', rating: 4.8 },
+  { city: 'New York', country: 'USA', rating: 4.7 },
+];
+
 // ── Small helpers ──────────────────────────────────────────────────────────────
 function StepTitle({ children }: { children: React.ReactNode }) {
   return (
-    <h2 style={{ fontSize: '26px', fontWeight: 500, color: '#1c1c1e', letterSpacing: '-0.5px', lineHeight: 1.2, marginBottom: '24px' }}>
+    <h2 style={{ fontSize: '24px', fontWeight: 700, color: '#1a2e2b', letterSpacing: '-0.5px', lineHeight: 1.2, marginBottom: '24px' }}>
       {children}
     </h2>
   );
@@ -68,9 +77,9 @@ function Chip({ label, active, onClick }: { label: string; active: boolean; onCl
       onClick={onClick}
       className="flex items-center justify-center px-3 py-2 rounded-xl transition-all active:scale-95"
       style={{
-        background: active ? '#f0eeff' : '#f5f5f7',
-        border: `1.5px solid ${active ? '#c4b5fd' : '#e8e8ed'}`,
-        color: active ? '#8b7cf8' : '#6e6e73',
+        background: active ? '#e8f5f3' : '#f0f5f4',
+        border: `1.5px solid ${active ? '#a3d4ce' : '#e0eeec'}`,
+        color: active ? '#2d8b7a' : '#6b8a85',
         fontSize: '13px',
         fontWeight: active ? 500 : 400,
         cursor: 'pointer',
@@ -94,18 +103,18 @@ function Stepper({
         <button
           onClick={() => onChange(Math.max(min, value - 1))}
           className="w-12 h-12 rounded-xl flex items-center justify-center transition-all active:scale-90"
-          style={{ background: '#f5f5f7', border: '1px solid #e8e8ed', color: '#1c1c1e', fontSize: '20px', fontWeight: 300 }}
+          style={{ background: '#f0f5f4', border: '1px solid #e0eeec', color: '#1a2e2b', fontSize: '20px', fontWeight: 300 }}
         >
           −
         </button>
         <div className="text-center">
-          <span style={{ fontSize: '44px', fontWeight: 300, color: '#1c1c1e', letterSpacing: '-2px' }}>{value}</span>
-          <span style={{ fontSize: '18px', fontWeight: 300, color: '#6e6e73', marginLeft: '6px' }}>{unit}</span>
+          <span style={{ fontSize: '44px', fontWeight: 300, color: '#1a2e2b', letterSpacing: '-2px' }}>{value}</span>
+          <span style={{ fontSize: '18px', fontWeight: 300, color: '#6b8a85', marginLeft: '6px' }}>{unit}</span>
         </div>
         <button
           onClick={() => onChange(Math.min(max, value + 1))}
           className="w-12 h-12 rounded-xl flex items-center justify-center transition-all active:scale-90"
-          style={{ background: '#f5f5f7', border: '1px solid #e8e8ed', color: '#1c1c1e', fontSize: '20px', fontWeight: 300 }}
+          style={{ background: '#f0f5f4', border: '1px solid #e0eeec', color: '#1a2e2b', fontSize: '20px', fontWeight: 300 }}
         >
           +
         </button>
@@ -216,46 +225,57 @@ export function InputScreen({ onSubmit }: Props) {
     switch (step) {
       case 1:
         return (
-          <>
-            <StepTitle>Wohin möchtest du reisen?</StepTitle>
-            <div className="card p-4 mb-3">
-              <div className="flex items-center gap-3">
-                <MapPin size={18} strokeWidth={1.5} style={{ color: '#8b7cf8', flexShrink: 0 }} />
+          <div style={{ margin: '-28px -16px 0', paddingBottom: '140px' }}>
+            {/* ── Header ── */}
+            <div
+              className="px-5 pt-14 pb-5"
+              style={{ background: '#f0f7f6' }}
+            >
+              <div className="flex items-center justify-between mb-5">
+                <div>
+                  <p style={{ fontSize: '11px', color: '#6b8a85', textTransform: 'uppercase', letterSpacing: '0.5px', fontWeight: 500 }}>
+                    Dein Standort
+                  </p>
+                  <p style={{ fontSize: '16px', fontWeight: 600, color: '#1a2e2b' }}>Hamburg, DE</p>
+                </div>
+                <div className="avatar">
+                  <span>IL</span>
+                </div>
+              </div>
+
+              <h2 style={{ fontSize: '28px', fontWeight: 700, color: '#1a2e2b', lineHeight: 1.2, letterSpacing: '-0.5px', marginBottom: '20px' }}>
+                Find Your<br />Favorite Place
+              </h2>
+
+              {/* Search bar */}
+              <div className="search-bar mb-1">
+                <Search size={18} strokeWidth={1.5} style={{ color: '#9bb5b0', flexShrink: 0 }} />
                 <input
                   type="text"
                   value={destination}
                   onChange={(e) => setDestination(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && canProceed() && go('fwd')}
-                  placeholder="z.B. Barcelona, Bali, New York..."
+                  placeholder="Reiseziel suchen..."
                   className="w-full outline-none"
-                  style={{ fontSize: '16px', color: '#1c1c1e', background: 'transparent', border: 'none' }}
+                  style={{ fontSize: '15px', color: '#1a2e2b', background: 'transparent', border: 'none' }}
                   autoFocus
                 />
+                {destination && (
+                  <button onClick={() => setDestination('')} style={{ color: '#9bb5b0', background: 'none', border: 'none', cursor: 'pointer', padding: '0', fontSize: '18px', lineHeight: 1 }}>×</button>
+                )}
               </div>
             </div>
-            <button
-              onClick={handleSurpriseMe}
-              disabled={loadingSugg}
-              className="w-full flex items-center justify-center gap-2 py-3 rounded-xl transition-all active:scale-95 disabled:opacity-60"
-              style={{ background: '#fafafa', border: '1px solid #e8e8ed', color: '#6e6e73', fontSize: '14px', cursor: loadingSugg ? 'default' : 'pointer' }}
-            >
-              {loadingSugg
-                ? <Loader size={15} strokeWidth={1.5} className="animate-spin" />
-                : <Shuffle size={15} strokeWidth={1.5} />
-              }
-              {loadingSugg ? 'Suche Ziele...' : 'Überrasch mich!'}
-            </button>
 
-            {/* AI Suggestion cards */}
+            {/* ── AI Suggestion cards ── */}
             {suggestions.length > 0 && (
-              <div className="space-y-2 mt-1">
-                <p className="section-label px-1">Vorschläge für dich</p>
+              <div className="px-4 py-3 space-y-2" style={{ background: '#f0f7f6' }}>
+                <p className="section-label px-1">KI-Vorschläge für dich</p>
                 {suggestions.map((s) => (
                   <button
                     key={s.city}
                     onClick={() => { setDestination(`${s.city}, ${s.country}`); setSuggestions([]); }}
                     className="w-full text-left rounded-2xl overflow-hidden transition-all active:scale-[0.98]"
-                    style={{ border: '1.5px solid #e8e8ed' }}
+                    style={{ border: '1.5px solid #e0eeec', background: '#fff' }}
                   >
                     <img
                       src={getDestinationImage(s.city)}
@@ -267,21 +287,75 @@ export function InputScreen({ onSubmit }: Props) {
                     <div className="p-3">
                       <div className="flex items-start justify-between gap-2">
                         <div>
-                          <p style={{ fontSize: '15px', fontWeight: 500, color: '#1c1c1e' }}>{s.city}</p>
-                          <p style={{ fontSize: '12px', color: '#aeaeb2' }}>{s.country}</p>
+                          <p style={{ fontSize: '15px', fontWeight: 600, color: '#1a2e2b' }}>{s.city}</p>
+                          <p style={{ fontSize: '12px', color: '#9bb5b0' }}>{s.country}</p>
                         </div>
-                        <span style={{ fontSize: '13px', fontWeight: 500, color: '#8b7cf8', flexShrink: 0 }}>
+                        <span style={{ fontSize: '13px', fontWeight: 600, color: '#2d8b7a', flexShrink: 0 }}>
                           ca. {s.estimated_cost}€
                         </span>
                       </div>
-                      <p style={{ fontSize: '13px', color: '#6e6e73', marginTop: '4px' }}>{s.reason}</p>
-                      <p style={{ fontSize: '12px', color: '#8b7cf8', marginTop: '2px' }}>✦ {s.highlight}</p>
+                      <p style={{ fontSize: '13px', color: '#6b8a85', marginTop: '4px' }}>{s.reason}</p>
                     </div>
                   </button>
                 ))}
               </div>
             )}
-          </>
+
+            {/* ── Popular destinations ── */}
+            <div className="px-4 pt-5 pb-2" style={{ background: '#f0f7f6' }}>
+              <div className="flex items-center justify-between mb-3">
+                <p style={{ fontSize: '16px', fontWeight: 700, color: '#1a2e2b' }}>Für dich</p>
+                <button
+                  onClick={handleSurpriseMe}
+                  disabled={loadingSugg}
+                  className="flex items-center gap-1.5 transition-all active:scale-95 disabled:opacity-60"
+                  style={{ color: '#2d8b7a', fontSize: '13px', fontWeight: 500, background: 'none', border: 'none', cursor: loadingSugg ? 'default' : 'pointer', padding: 0 }}
+                >
+                  {loadingSugg
+                    ? <Loader size={13} strokeWidth={1.5} className="animate-spin" />
+                    : <Shuffle size={13} strokeWidth={1.5} />
+                  }
+                  {loadingSugg ? 'Lädt...' : 'Überrasch mich'}
+                </button>
+              </div>
+
+              {/* 2-column card grid */}
+              <div className="grid grid-cols-2 gap-3">
+                {POPULAR_DESTINATIONS.map(({ city, country, rating }) => (
+                  <button
+                    key={city}
+                    onClick={() => setDestination(`${city}, ${country}`)}
+                    className="destination-card text-left transition-all active:scale-[0.97]"
+                    style={{ border: 'none', padding: 0, cursor: 'pointer', display: 'block' }}
+                  >
+                    <img
+                      src={getDestinationImage(city)}
+                      alt={city}
+                      onError={(e) => {
+                        (e.currentTarget as HTMLImageElement).src =
+                          'https://images.unsplash.com/photo-1488085061387-422e29b40080?w=400&q=70';
+                      }}
+                    />
+                    <div className="destination-card-overlay">
+                      <p className="destination-card-name">{city}</p>
+                      <div className="destination-card-rating">
+                        <span className="rating-badge">
+                          <Star size={10} fill="white" strokeWidth={0} />
+                          {rating}
+                        </span>
+                      </div>
+                    </div>
+                    {destination === `${city}, ${country}` && (
+                      <div
+                        className="absolute inset-0 rounded-2xl"
+                        style={{ border: '2.5px solid #2d8b7a', borderRadius: '16px' }}
+                      />
+                    )}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
         );
 
       case 2:
@@ -314,7 +388,7 @@ export function InputScreen({ onSubmit }: Props) {
                   onChange={(e) => setCustomCity(e.target.value)}
                   placeholder="Stadt eingeben..."
                   className="w-full outline-none mt-3"
-                  style={{ fontSize: '15px', color: '#1c1c1e', background: 'transparent', border: 'none', borderBottom: '1px solid #e8e8ed', paddingBottom: '6px' }}
+                  style={{ fontSize: '15px', color: '#1a2e2b', background: 'transparent', border: 'none', borderBottom: '1px solid #e0eeec', paddingBottom: '6px' }}
                 />
               )}
             </div>
@@ -322,26 +396,26 @@ export function InputScreen({ onSubmit }: Props) {
             {/* Dates */}
             <div className="card p-5 mb-3">
               <div className="flex items-center gap-2 mb-3">
-                <CalendarDays size={13} strokeWidth={1.5} style={{ color: '#8b7cf8' }} />
+                <CalendarDays size={13} strokeWidth={1.5} style={{ color: '#2d8b7a' }} />
                 <p className="section-label">Reisedaten (optional)</p>
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <p style={{ fontSize: '11px', color: '#aeaeb2', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Hinreise</p>
+                  <p style={{ fontSize: '11px', color: '#9bb5b0', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Hinreise</p>
                   <input
                     type="date" value={departureDate} min={today}
                     onChange={(e) => { setDepartureDate(e.target.value); if (returnDate && returnDate < e.target.value) setReturnDate(''); }}
                     className="w-full outline-none"
-                    style={{ fontSize: '14px', color: '#1c1c1e', background: 'transparent', border: '1px solid #e8e8ed', borderRadius: '10px', padding: '8px 10px' }}
+                    style={{ fontSize: '14px', color: '#1a2e2b', background: 'transparent', border: '1px solid #e0eeec', borderRadius: '10px', padding: '8px 10px' }}
                   />
                 </div>
                 <div>
-                  <p style={{ fontSize: '11px', color: '#aeaeb2', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Rückreise</p>
+                  <p style={{ fontSize: '11px', color: '#9bb5b0', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Rückreise</p>
                   <input
                     type="date" value={returnDate} min={departureDate || today}
                     onChange={(e) => setReturnDate(e.target.value)}
                     className="w-full outline-none"
-                    style={{ fontSize: '14px', color: '#1c1c1e', background: 'transparent', border: '1px solid #e8e8ed', borderRadius: '10px', padding: '8px 10px' }}
+                    style={{ fontSize: '14px', color: '#1a2e2b', background: 'transparent', border: '1px solid #e0eeec', borderRadius: '10px', padding: '8px 10px' }}
                   />
                 </div>
               </div>
@@ -367,7 +441,7 @@ export function InputScreen({ onSubmit }: Props) {
         return (
           <>
             <StepTitle>Was für eine Reise?</StepTitle>
-            <p style={{ fontSize: '13px', color: '#aeaeb2', marginBottom: '16px', marginTop: '-16px' }}>Mehrere möglich</p>
+            <p style={{ fontSize: '13px', color: '#9bb5b0', marginBottom: '16px', marginTop: '-16px' }}>Mehrere möglich</p>
             <div className="grid grid-cols-2 gap-2">
               {travelTypeOptions.map(({ key, label }) => (
                 <Chip
@@ -419,12 +493,12 @@ export function InputScreen({ onSubmit }: Props) {
             <div className="card p-5 mb-3">
               <p className="section-label mb-4">Dein Budget</p>
               <div className="flex items-baseline gap-1 mb-4">
-                <span style={{ fontSize: '40px', fontWeight: 300, color: '#1c1c1e', letterSpacing: '-1px' }}>
+                <span style={{ fontSize: '40px', fontWeight: 300, color: '#1a2e2b', letterSpacing: '-1px' }}>
                   {budget.toLocaleString('de-DE')}
                 </span>
-                <span style={{ fontSize: '20px', fontWeight: 300, color: '#6e6e73' }}>€</span>
+                <span style={{ fontSize: '20px', fontWeight: 300, color: '#6b8a85' }}>€</span>
                 {persons > 1 && (
-                  <span style={{ fontSize: '13px', color: '#aeaeb2', marginLeft: 'auto', paddingBottom: '4px' }}>
+                  <span style={{ fontSize: '13px', color: '#9bb5b0', marginLeft: 'auto', paddingBottom: '4px' }}>
                     ≈ {Math.round(budget / persons).toLocaleString('de-DE')}€ / Person
                   </span>
                 )}
@@ -434,8 +508,8 @@ export function InputScreen({ onSubmit }: Props) {
                 value={budget} onChange={(e) => setBudget(Number(e.target.value))}
               />
               <div className="flex justify-between mt-2">
-                <span style={{ fontSize: '12px', color: '#aeaeb2' }}>100€</span>
-                <span style={{ fontSize: '12px', color: '#aeaeb2' }}>10.000€</span>
+                <span style={{ fontSize: '12px', color: '#9bb5b0' }}>100€</span>
+                <span style={{ fontSize: '12px', color: '#9bb5b0' }}>10.000€</span>
               </div>
             </div>
 
@@ -457,31 +531,33 @@ export function InputScreen({ onSubmit }: Props) {
 
   // ── Render ────────────────────────────────────────────────────────────────────
   return (
-    <div className="min-h-screen" style={{ background: '#fafafa' }}>
-      {/* Header + progress */}
-      <div className="px-5 pt-14 pb-2" style={{ borderBottom: '1px solid #f5f5f7' }}>
-        <p className="section-label mb-3">Tripsilo</p>
-        <div style={{ height: '3px', background: '#e8e8ed', borderRadius: '2px', marginBottom: '8px' }}>
-          <div
-            style={{
-              height: '100%',
-              width: `${(step / TOTAL_STEPS) * 100}%`,
-              background: '#8b7cf8',
-              borderRadius: '2px',
-              transition: 'width 0.3s ease',
-            }}
-          />
+    <div className="min-h-screen" style={{ background: '#f0f7f6' }}>
+      {/* Header + progress — only for steps 2+ */}
+      {step > 1 && (
+        <div className="px-5 pt-14 pb-2" style={{ borderBottom: '1px solid #e0eeec', background: '#ffffff' }}>
+          <p className="section-label mb-3">Tripsilo</p>
+          <div style={{ height: '3px', background: '#e0eeec', borderRadius: '2px', marginBottom: '8px' }}>
+            <div
+              style={{
+                height: '100%',
+                width: `${(step / TOTAL_STEPS) * 100}%`,
+                background: '#2d8b7a',
+                borderRadius: '2px',
+                transition: 'width 0.3s ease',
+              }}
+            />
+          </div>
+          <p style={{ fontSize: '12px', color: '#9bb5b0', paddingBottom: '12px' }}>
+            Schritt {step} von {TOTAL_STEPS}
+          </p>
         </div>
-        <p style={{ fontSize: '12px', color: '#aeaeb2', paddingBottom: '12px' }}>
-          Schritt {step} von {TOTAL_STEPS}
-        </p>
-      </div>
+      )}
 
-      {/* Step content — key forces remount → animation */}
+      {/* Step content */}
       <div
         key={step}
         className={dir === 'fwd' ? 'step-enter' : 'step-enter-back'}
-        style={{ padding: '28px 16px 160px' }}
+        style={{ padding: step === 1 ? '0' : '28px 16px 160px' }}
       >
         {renderStep()}
       </div>
@@ -492,15 +568,15 @@ export function InputScreen({ onSubmit }: Props) {
         style={{
           bottom: '64px',
           padding: '16px 16px 8px',
-          background: 'linear-gradient(to bottom, transparent, #fafafa 40%)',
+          background: 'linear-gradient(to bottom, transparent, #f0f7f6 40%)',
         }}
       >
         <div className="flex gap-2">
           {step > 1 && (
             <button
               onClick={() => go('back')}
-              className="flex items-center justify-center gap-1.5 py-3.5 rounded-xl transition-all active:scale-95"
-              style={{ background: '#f5f5f7', border: '1px solid #e8e8ed', color: '#6e6e73', fontSize: '14px', fontWeight: 400, cursor: 'pointer', width: '52px', flexShrink: 0 }}
+              className="flex items-center justify-center py-3.5 rounded-xl transition-all active:scale-95"
+              style={{ background: '#ffffff', border: '1.5px solid #e0eeec', color: '#6b8a85', cursor: 'pointer', width: '52px', flexShrink: 0, borderRadius: '14px' }}
             >
               <ChevronLeft size={18} strokeWidth={1.5} />
             </button>
@@ -508,15 +584,16 @@ export function InputScreen({ onSubmit }: Props) {
           <button
             onClick={step === TOTAL_STEPS ? handleSubmit : () => go('fwd')}
             disabled={!canProceed()}
-            className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-xl transition-all active:scale-[0.98] disabled:opacity-40"
+            className="flex-1 flex items-center justify-center gap-2 py-3.5 transition-all active:scale-[0.98] disabled:opacity-40"
             style={{
-              background: canProceed() ? '#8b7cf8' : '#e8e8ed',
-              color: canProceed() ? '#ffffff' : '#aeaeb2',
+              background: canProceed() ? '#2d8b7a' : '#e0eeec',
+              color: canProceed() ? '#ffffff' : '#9bb5b0',
               fontSize: '15px',
-              fontWeight: 500,
+              fontWeight: 600,
               border: 'none',
               cursor: canProceed() ? 'pointer' : 'not-allowed',
-              letterSpacing: '-0.1px',
+              borderRadius: '14px',
+              boxShadow: canProceed() ? '0 4px 16px rgba(45,139,122,0.30)' : 'none',
             }}
           >
             {step === TOTAL_STEPS ? (

@@ -1,109 +1,91 @@
-import { Plane, MapPin, Star } from 'lucide-react';
 import { useMemo } from 'react';
 
 interface Props {
   onStart: () => void;
 }
 
-const features = [
-  { icon: MapPin, label: 'Personalisiert' },
-  { icon: Star,   label: 'Geheimtipps' },
-  { icon: Plane,  label: 'Tagesplanung' },
+const HERO_IMAGES = [
+  'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=80',
+  'https://images.unsplash.com/photo-1488085061387-422e29b40080?w=800&q=80',
+  'https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=800&q=80',
+  'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=800&q=80',
+  'https://images.unsplash.com/photo-1530521954074-e64f6810b32d?w=800&q=80',
+  'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=800&q=80',
 ];
 
-const BG_DESTINATIONS = ['paris', 'tokyo', 'bali', 'barcelona', 'new-york', 'santorini', 'dubai', 'rome'];
-
 export function WelcomeScreen({ onStart }: Props) {
-  const bgImage = useMemo(() => {
-    const dest = BG_DESTINATIONS[Math.floor(Math.random() * BG_DESTINATIONS.length)];
-    return `https://source.unsplash.com/1600x900/?${dest},travel,cityscape`;
-  }, []);
+  const hero = useMemo(
+    () => HERO_IMAGES[Math.floor(Math.random() * HERO_IMAGES.length)],
+    []
+  );
 
   return (
-    <div
-      className="min-h-screen flex flex-col items-center justify-center px-8 relative overflow-hidden"
-    >
-      {/* Background image */}
-      <div
-        className="absolute inset-0"
-        style={{
-          backgroundImage: `url(${bgImage})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-        }}
-      />
-      {/* Overlay */}
-      <div
-        className="absolute inset-0"
-        style={{ background: 'linear-gradient(to bottom, rgba(255,255,255,0.85) 0%, rgba(255,255,255,0.92) 60%, rgba(255,255,255,0.97) 100%)' }}
-      />
-
-      <div className="w-full max-w-xs text-center relative z-10">
-        {/* Icon */}
-        <div className="mb-10 animate-float inline-flex">
-          <div
-            className="w-16 h-16 rounded-2xl flex items-center justify-center"
-            style={{ background: '#f0eeff', boxShadow: '0 4px 20px rgba(139,124,248,0.25)' }}
-          >
-            <Plane size={28} style={{ color: '#8b7cf8' }} strokeWidth={1.5} />
-          </div>
-        </div>
-
-        {/* Brand */}
-        <h1
-          className="mb-2 tracking-tight"
-          style={{ fontSize: '48px', fontWeight: 300, color: '#1c1c1e', letterSpacing: '-1px', lineHeight: 1.1 }}
-        >
-          Tripsilo
-        </h1>
-        <p className="mb-10" style={{ fontSize: '15px', color: '#6e6e73', fontWeight: 400 }}>
-          Dein persönlicher Reiseplaner
-        </p>
-
-        {/* Feature tags */}
-        <div className="flex flex-wrap justify-center gap-2 mb-12">
-          {features.map(({ icon: Icon, label }) => (
-            <div
-              key={label}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full"
-              style={{
-                background: 'rgba(255,255,255,0.85)',
-                backdropFilter: 'blur(8px)',
-                border: '1px solid #e8e8ed',
-                color: '#6e6e73',
-                fontSize: '13px',
-                fontWeight: 400,
-              }}
-            >
-              <Icon size={13} strokeWidth={1.5} style={{ color: '#8b7cf8' }} />
-              {label}
-            </div>
-          ))}
-        </div>
-
-        {/* CTA */}
-        <button
-          onClick={onStart}
-          className="w-full transition-all active:scale-[0.98]"
+    <div className="min-h-screen flex flex-col relative overflow-hidden">
+      {/* Hero image */}
+      <div className="relative" style={{ height: '58vh', minHeight: '340px' }}>
+        <img
+          src={hero}
+          alt="Travel"
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+        {/* Teal overlay */}
+        <div
+          className="absolute inset-0"
           style={{
-            background: '#8b7cf8',
-            color: '#ffffff',
-            borderRadius: '12px',
-            padding: '15px',
-            fontSize: '15px',
-            fontWeight: 500,
-            border: 'none',
-            cursor: 'pointer',
-            letterSpacing: '-0.1px',
-            boxShadow: '0 4px 16px rgba(139,124,248,0.35)',
+            background:
+              'linear-gradient(180deg, rgba(26,107,90,0.30) 0%, rgba(45,139,122,0.50) 55%, rgba(26,46,43,0.85) 100%)',
           }}
-        >
-          Reise planen
-        </button>
+        />
+        {/* Brand */}
+        <div className="absolute top-14 left-6">
+          <span
+            style={{
+              fontSize: '13px',
+              fontWeight: 700,
+              color: 'rgba(255,255,255,0.90)',
+              letterSpacing: '2.5px',
+              textTransform: 'uppercase',
+            }}
+          >
+            Tripsilo
+          </span>
+        </div>
+        {/* Hero headline */}
+        <div className="absolute bottom-10 left-6 right-6">
+          <p style={{ fontSize: '14px', color: 'rgba(255,255,255,0.65)', marginBottom: '5px', fontWeight: 400 }}>
+            Just one trip away from
+          </p>
+          <h1 style={{ fontSize: '38px', fontWeight: 700, color: '#ffffff', lineHeight: 1.1, letterSpacing: '-0.5px', margin: 0 }}>
+            your paradise
+          </h1>
+        </div>
+      </div>
 
-        <p className="mt-6" style={{ fontSize: '12px', color: '#aeaeb2' }}>
-          Tripsilo — Entdecke die Welt
+      {/* Bottom panel */}
+      <div className="flex flex-col px-6 pt-7 pb-10" style={{ background: '#f0f7f6', flex: 1 }}>
+        {/* Drag pill */}
+        <div className="flex justify-center mb-5">
+          <div style={{ width: '36px', height: '4px', background: '#a3d4ce', borderRadius: '2px' }} />
+        </div>
+
+        <p style={{ fontSize: '11px', fontWeight: 700, letterSpacing: '2px', color: '#2d8b7a', textTransform: 'uppercase', marginBottom: '5px' }}>
+          Tripsilo
         </p>
+        <h2 style={{ fontSize: '26px', fontWeight: 700, color: '#1a2e2b', lineHeight: 1.25, letterSpacing: '-0.3px', margin: '0 0 6px' }}>
+          Discover New<br />Travel Experiences
+        </h2>
+        <p style={{ fontSize: '14px', color: '#6b8a85', lineHeight: 1.65, marginBottom: '28px' }}>
+          Dein persönlicher KI-Reiseplaner — maßgeschneiderte Pläne, Geheimtipps und Sprachführer für jedes Ziel.
+        </p>
+
+        <div className="space-y-3">
+          <button onClick={onStart} className="btn-primary transition-all active:scale-[0.98]">
+            Get Started
+          </button>
+          <button onClick={onStart} className="btn-secondary transition-all active:scale-[0.98]">
+            Sign In
+          </button>
+        </div>
       </div>
     </div>
   );

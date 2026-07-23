@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { MapPin, Star, Navigation, Clock, Gem } from 'lucide-react';
+import { Star, Navigation, Clock, Gem } from 'lucide-react';
 
 interface NearbyPlace {
   name: string;
@@ -113,21 +113,23 @@ export function EntdeckenScreen() {
   ];
 
   return (
-    <div className="min-h-screen pb-28" style={{ background: '#fafafa' }}>
-      {/* Header */}
-      <div className="px-5 pt-14 pb-4" style={{ borderBottom: '1px solid #e8e8ed' }}>
-        <p className="section-label mb-1">Tripsilo</p>
-        <div className="flex items-end justify-between">
-          <h1 style={{ fontSize: '28px', fontWeight: 500, color: '#1c1c1e', letterSpacing: '-0.5px' }}>
-            In deiner Nähe
-          </h1>
-          {userLocation && (
-            <div className="flex items-center gap-1 pb-1" style={{ color: '#22c55e', fontSize: '12px' }}>
-              <MapPin size={12} strokeWidth={2} />
-              GPS aktiv
-            </div>
-          )}
+    <div className="min-h-screen pb-28" style={{ background: '#f0f7f6' }}>
+      {/* Header — location style like home */}
+      <div className="px-5 pt-14 pb-5" style={{ background: '#ffffff', borderBottom: '1px solid #e0eeec' }}>
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <p style={{ fontSize: '11px', color: '#6b8a85', textTransform: 'uppercase', letterSpacing: '0.5px', fontWeight: 500 }}>
+              Dein Standort
+            </p>
+            <p style={{ fontSize: '16px', fontWeight: 600, color: '#1a2e2b' }}>
+              {userLocation ? 'GPS aktiv ✓' : locationError ? 'Kein GPS' : 'Suche…'}
+            </p>
+          </div>
+          <div className="avatar"><span>IL</span></div>
         </div>
+        <h1 style={{ fontSize: '26px', fontWeight: 700, color: '#1a2e2b', letterSpacing: '-0.3px', margin: 0 }}>
+          Was möchtest du?
+        </h1>
       </div>
 
       <div className="px-4 pt-4 space-y-3">
@@ -142,7 +144,7 @@ export function EntdeckenScreen() {
           onClick={() => searchNearby(timeSuggestion.type)}
           disabled={!userLocation}
           className="w-full flex items-center justify-between p-4 rounded-2xl transition-all active:scale-[0.98] disabled:opacity-50"
-          style={{ background: '#8b7cf8', cursor: userLocation ? 'pointer' : 'default' }}
+          style={{ background: '#2d8b7a', cursor: userLocation ? 'pointer' : 'default' }}
         >
           <div>
             <p style={{ fontSize: '12px', color: 'rgba(255,255,255,0.7)', marginBottom: '2px' }}>
@@ -163,9 +165,9 @@ export function EntdeckenScreen() {
               disabled={!userLocation}
               className="px-4 py-2 rounded-xl transition-all active:scale-95 disabled:opacity-50"
               style={{
-                background: selectedType === key ? '#8b7cf8' : '#f5f5f7',
-                color: selectedType === key ? '#ffffff' : '#6e6e73',
-                border: `1.5px solid ${selectedType === key ? '#8b7cf8' : '#e8e8ed'}`,
+                background: selectedType === key ? '#2d8b7a' : '#f0f5f4',
+                color: selectedType === key ? '#ffffff' : '#6b8a85',
+                border: `1.5px solid ${selectedType === key ? '#2d8b7a' : '#e0eeec'}`,
                 fontSize: '13px',
                 fontWeight: selectedType === key ? 500 : 400,
                 cursor: userLocation ? 'pointer' : 'default',
@@ -186,7 +188,7 @@ export function EntdeckenScreen() {
             checked={showHidden}
             onChange={(e) => handleHiddenGems(e.target.checked)}
             disabled={!userLocation}
-            style={{ accentColor: '#8b7cf8', width: '16px', height: '16px' }}
+            style={{ accentColor: '#2d8b7a', width: '16px', height: '16px' }}
           />
           <Gem size={15} strokeWidth={1.5} style={{ color: '#d97706', flexShrink: 0 }} />
           <div>
@@ -199,11 +201,16 @@ export function EntdeckenScreen() {
         {loading && (
           <div className="card p-6 flex items-center justify-center gap-3">
             <div className="skeleton w-5 h-5 rounded-full" />
-            <p style={{ fontSize: '14px', color: '#aeaeb2' }}>Suche in deiner Nähe…</p>
+            <p style={{ fontSize: '14px', color: '#9bb5b0' }}>Suche in deiner Nähe…</p>
           </div>
         )}
 
         {/* Results */}
+        {!loading && places.length > 0 && (
+          <p style={{ fontSize: '16px', fontWeight: 700, color: '#1a2e2b', paddingTop: '4px' }}>
+            In deiner Nähe
+          </p>
+        )}
         {!loading && places.map((place, i) => {
           const dist = userLocation ? haversine(userLocation, place.geometry.location) : null;
           const photoUrl = place.photos?.[0]?.photo_reference
@@ -211,61 +218,67 @@ export function EntdeckenScreen() {
             : null;
 
           return (
-            <div key={i} className="card overflow-hidden">
+            <div key={i} className="card overflow-hidden flex" style={{ minHeight: '100px' }}>
               {photoUrl && (
                 <img
                   src={photoUrl}
                   alt={place.name}
-                  className="w-full object-cover"
-                  style={{ height: '140px' }}
+                  className="object-cover flex-shrink-0"
+                  style={{ width: '100px', height: '100px' }}
                   onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
                 />
               )}
-              <div className="p-4">
-                <div className="flex items-start justify-between gap-2 mb-1">
-                  <h3 style={{ fontSize: '15px', fontWeight: 500, color: '#1c1c1e' }}>{place.name}</h3>
-                  {place.opening_hours?.open_now !== undefined && (
-                    <span
-                      style={{
-                        fontSize: '11px',
-                        fontWeight: 500,
-                        flexShrink: 0,
-                        color: place.opening_hours.open_now ? '#22c55e' : '#f472b6',
-                      }}
-                    >
-                      {place.opening_hours.open_now ? 'Geöffnet' : 'Geschlossen'}
-                    </span>
+              <div className="p-3 flex-1 flex flex-col justify-between">
+                <div>
+                  <div className="flex items-start justify-between gap-2 mb-0.5">
+                    <h3 style={{ fontSize: '14px', fontWeight: 600, color: '#1a2e2b', lineHeight: 1.3 }}>{place.name}</h3>
+                    {place.opening_hours?.open_now !== undefined && (
+                      <span
+                        style={{
+                          fontSize: '10px',
+                          fontWeight: 500,
+                          flexShrink: 0,
+                          color: place.opening_hours.open_now ? '#22c55e' : '#ef4444',
+                          background: place.opening_hours.open_now ? '#dcfce7' : '#fee2e2',
+                          borderRadius: '20px',
+                          padding: '2px 7px',
+                        }}
+                      >
+                        {place.opening_hours.open_now ? 'Geöffnet' : 'Geschlossen'}
+                      </span>
+                    )}
+                  </div>
+                  <div className="flex items-center gap-1.5 mb-0.5">
+                    <Star size={11} fill="#f59e0b" style={{ color: '#f59e0b' }} strokeWidth={0} />
+                    <span style={{ fontSize: '12px', fontWeight: 600, color: '#1a2e2b' }}>{place.rating}</span>
+                    <span style={{ fontSize: '11px', color: '#9bb5b0' }}>({place.user_ratings_total})</span>
+                    {dist !== null && (
+                      <span style={{ fontSize: '11px', color: '#2d8b7a', fontWeight: 500 }}>
+                        · {dist < 1000 ? `${dist} m` : `${(dist / 1000).toFixed(1)} km`}
+                      </span>
                   )}
                 </div>
-                <div className="flex items-center gap-2 mb-1">
-                  <Star size={12} fill="#f59e0b" style={{ color: '#f59e0b' }} strokeWidth={0} />
-                  <span style={{ fontSize: '13px', fontWeight: 500, color: '#1c1c1e' }}>{place.rating}</span>
-                  <span style={{ fontSize: '12px', color: '#aeaeb2' }}>({place.user_ratings_total})</span>
-                  {dist !== null && (
-                    <span style={{ fontSize: '12px', color: '#aeaeb2' }}>
-                      · {dist < 1000 ? `${dist} m` : `${(dist / 1000).toFixed(1)} km`}
-                    </span>
-                  )}
+                  <p style={{ fontSize: '11px', color: '#9bb5b0', marginTop: '2px' }}>{place.vicinity}</p>
                 </div>
-                <p style={{ fontSize: '12px', color: '#6e6e73', marginBottom: '12px' }}>{place.vicinity}</p>
                 <button
                   onClick={() =>
                     window.open(
                       `https://www.google.com/maps/dir/?api=1&destination=${place.geometry.location.lat},${place.geometry.location.lng}`
                     )
                   }
-                  className="flex items-center gap-1.5 px-3 py-2 rounded-xl transition-all active:scale-95"
+                  className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl transition-all active:scale-95 self-start"
                   style={{
-                    background: '#f0eeff',
-                    color: '#8b7cf8',
-                    fontSize: '13px',
+                    background: '#e8f5f3',
+                    color: '#2d8b7a',
+                    fontSize: '12px',
                     fontWeight: 500,
                     border: 'none',
                     cursor: 'pointer',
+                    marginTop: '6px',
                   }}
                 >
-                  <Navigation size={13} strokeWidth={1.5} />
-                  Navigation starten
+                  <Navigation size={11} strokeWidth={1.5} />
+                  Navigation
                 </button>
               </div>
             </div>
@@ -274,7 +287,7 @@ export function EntdeckenScreen() {
 
         {!loading && selectedType && places.length === 0 && (
           <div className="card p-6 text-center">
-            <p style={{ fontSize: '14px', color: '#aeaeb2' }}>
+            <p style={{ fontSize: '14px', color: '#9bb5b0' }}>
               {showHidden
                 ? 'Keine versteckten Perlen gefunden. Versuche einen anderen Typ.'
                 : 'Keine Ergebnisse in deiner Nähe.'}

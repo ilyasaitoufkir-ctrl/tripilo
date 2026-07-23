@@ -35,7 +35,7 @@ const slotQuery = (day: DayPlan, slot: 'morning' | 'lunch' | 'evening') =>
   slot === 'lunch' ? day.lunch.restaurant : day[slot].activity;
 
 function Divider() {
-  return <div style={{ height: '1px', background: '#f5f5f7', margin: '12px 0' }} />;
+  return <div style={{ height: '1px', background: '#f0f5f4', margin: '12px 0' }} />;
 }
 
 // ── Place card ─────────────────────────────────────────────────────────────────
@@ -63,7 +63,7 @@ function PlaceCard({
   const todayText = place.opening_hours?.[new Date().getDay() === 0 ? 6 : new Date().getDay() - 1];
 
   return (
-    <div className="mt-3 rounded-xl overflow-hidden" style={{ border: '1px solid #e8e8ed' }}>
+    <div className="mt-3 rounded-xl overflow-hidden" style={{ border: '1px solid #e0eeec' }}>
       {(place.photo ?? fallbackSrc) && (
         <img
           src={place.photo ?? fallbackSrc}
@@ -74,9 +74,9 @@ function PlaceCard({
       )}
       <div className="p-3 space-y-1.5">
         <div className="flex items-start justify-between gap-2">
-          <p style={{ fontSize: '13px', fontWeight: 500, color: '#1c1c1e' }}>{place.name}</p>
+          <p style={{ fontSize: '13px', fontWeight: 500, color: '#1a2e2b' }}>{place.name}</p>
           {place.price_level !== null && (
-            <span style={{ fontSize: '12px', color: '#8b7cf8', fontWeight: 500, flexShrink: 0 }}>
+            <span style={{ fontSize: '12px', color: '#2d8b7a', fontWeight: 500, flexShrink: 0 }}>
               {priceLevelLabel(place.price_level)}
             </span>
           )}
@@ -85,11 +85,11 @@ function PlaceCard({
         {place.rating !== null && (
           <div className="flex items-center gap-1">
             <Star size={11} fill="#f59e0b" style={{ color: '#f59e0b' }} strokeWidth={0} />
-            <span style={{ fontSize: '12px', fontWeight: 500, color: '#1c1c1e' }}>
+            <span style={{ fontSize: '12px', fontWeight: 500, color: '#1a2e2b' }}>
               {place.rating.toFixed(1)}
             </span>
             {place.total_ratings !== null && (
-              <span style={{ fontSize: '12px', color: '#aeaeb2' }}>
+              <span style={{ fontSize: '12px', color: '#9bb5b0' }}>
                 ({place.total_ratings.toLocaleString('de-DE')} Bewertungen)
               </span>
             )}
@@ -98,17 +98,17 @@ function PlaceCard({
 
         {place.address && (
           <div className="flex items-start gap-1">
-            <MapPin size={11} strokeWidth={1.5} style={{ color: '#aeaeb2', flexShrink: 0, marginTop: '2px' }} />
-            <p style={{ fontSize: '12px', color: '#6e6e73' }}>{place.address}</p>
+            <MapPin size={11} strokeWidth={1.5} style={{ color: '#9bb5b0', flexShrink: 0, marginTop: '2px' }} />
+            <p style={{ fontSize: '12px', color: '#6b8a85' }}>{place.address}</p>
           </div>
         )}
 
         {place.phone && (
           <div className="flex items-center gap-1">
-            <Phone size={11} strokeWidth={1.5} style={{ color: '#aeaeb2' }} />
+            <Phone size={11} strokeWidth={1.5} style={{ color: '#9bb5b0' }} />
             <a
               href={`tel:${place.phone}`}
-              style={{ fontSize: '12px', color: '#6e6e73', textDecoration: 'none' }}
+              style={{ fontSize: '12px', color: '#6b8a85', textDecoration: 'none' }}
             >
               {place.phone}
             </a>
@@ -117,8 +117,8 @@ function PlaceCard({
 
         {todayText && (
           <div className="flex items-center gap-1">
-            <span style={{ fontSize: '11px', color: '#aeaeb2' }}>Heute:</span>
-            <span style={{ fontSize: '11px', color: '#6e6e73' }}>
+            <span style={{ fontSize: '11px', color: '#9bb5b0' }}>Heute:</span>
+            <span style={{ fontSize: '11px', color: '#6b8a85' }}>
               {todayText.replace(/^[^:]+:\s*/, '')}
             </span>
           </div>
@@ -132,7 +132,7 @@ function PlaceCard({
               target="_blank"
               rel="noopener noreferrer"
               className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg transition-all active:scale-95"
-              style={{ background: '#f0eeff', border: '1px solid #c4b5fd', color: '#8b7cf8', fontSize: '12px', fontWeight: 500, textDecoration: 'none' }}
+              style={{ background: '#e8f5f3', border: '1px solid #a3d4ce', color: '#2d8b7a', fontSize: '12px', fontWeight: 500, textDecoration: 'none' }}
             >
               <Navigation size={12} strokeWidth={1.5} />
               Navigation
@@ -141,7 +141,7 @@ function PlaceCard({
               <a
                 href={`tel:${place.phone}`}
                 className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg transition-all active:scale-95"
-                style={{ background: '#f5f5f7', border: '1px solid #e8e8ed', color: '#6e6e73', fontSize: '12px', fontWeight: 500, textDecoration: 'none' }}
+                style={{ background: '#f0f5f4', border: '1px solid #e0eeec', color: '#6b8a85', fontSize: '12px', fontWeight: 500, textDecoration: 'none' }}
               >
                 <Phone size={12} strokeWidth={1.5} />
                 Anrufen
@@ -153,7 +153,7 @@ function PlaceCard({
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg transition-all active:scale-95"
-                style={{ background: '#f5f5f7', border: '1px solid #e8e8ed', color: '#6e6e73', fontSize: '12px', fontWeight: 500, textDecoration: 'none' }}
+                style={{ background: '#f0f5f4', border: '1px solid #e0eeec', color: '#6b8a85', fontSize: '12px', fontWeight: 500, textDecoration: 'none' }}
               >
                 <Globe size={12} strokeWidth={1.5} />
                 Website
@@ -166,7 +166,7 @@ function PlaceCard({
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-1 mt-0.5"
-            style={{ fontSize: '12px', fontWeight: 500, color: '#8b7cf8', textDecoration: 'none' }}
+            style={{ fontSize: '12px', fontWeight: 500, color: '#2d8b7a', textDecoration: 'none' }}
           >
             <ExternalLink size={11} strokeWidth={1.5} />
             In Google Maps öffnen
@@ -204,18 +204,18 @@ function SlotBlock({
             <Icon size={15} strokeWidth={1.5} style={{ color: labelColor }} />
             <span className="section-label" style={{ color: labelColor }}>{label}</span>
           </div>
-          <span style={{ fontSize: '13px', color: '#aeaeb2' }}>{cost}€</span>
+          <span style={{ fontSize: '13px', color: '#9bb5b0' }}>{cost}€</span>
         </div>
-        <p style={{ fontSize: '15px', fontWeight: 500, color: '#1c1c1e', marginBottom: '2px' }}>{name}</p>
-        <p style={{ fontSize: '13px', color: '#6e6e73', lineHeight: 1.5 }}>{description}</p>
+        <p style={{ fontSize: '15px', fontWeight: 500, color: '#1a2e2b', marginBottom: '2px' }}>{name}</p>
+        <p style={{ fontSize: '13px', color: '#6b8a85', lineHeight: 1.5 }}>{description}</p>
         <PlaceCard place={placeData} loading={placeLoading} showActions={isRestaurant} fallbackSrc={placeFallbackSrc} />
         {tip && (
           <div
             className="flex items-start gap-2 mt-3 p-2.5 rounded-xl"
-            style={{ background: 'rgba(139,124,248,0.06)' }}
+            style={{ background: 'rgba(45,139,122,0.06)' }}
           >
-            <Lightbulb size={13} strokeWidth={1.5} style={{ color: '#8b7cf8', flexShrink: 0, marginTop: '1px' }} />
-            <p style={{ fontSize: '13px', color: '#6e6e73', lineHeight: 1.5 }}>{tip}</p>
+            <Lightbulb size={13} strokeWidth={1.5} style={{ color: '#2d8b7a', flexShrink: 0, marginTop: '1px' }} />
+            <p style={{ fontSize: '13px', color: '#6b8a85', lineHeight: 1.5 }}>{tip}</p>
           </div>
         )}
       </div>
@@ -235,13 +235,13 @@ function BookingLink({
       target="_blank"
       rel="noopener noreferrer"
       className="flex items-center justify-between px-4 py-3 rounded-xl transition-all active:scale-[0.98]"
-      style={{ background: '#fafafa', border: '1px solid #e8e8ed', textDecoration: 'none' }}
+      style={{ background: '#f0f7f6', border: '1px solid #e0eeec', textDecoration: 'none' }}
     >
       <div className="flex items-center gap-2.5">
-        <Icon size={15} strokeWidth={1.5} style={{ color: '#8b7cf8' }} />
-        <span style={{ fontSize: '14px', color: '#1c1c1e', fontWeight: 400 }}>{label}</span>
+        <Icon size={15} strokeWidth={1.5} style={{ color: '#2d8b7a' }} />
+        <span style={{ fontSize: '14px', color: '#1a2e2b', fontWeight: 400 }}>{label}</span>
       </div>
-      <ExternalLink size={13} strokeWidth={1.5} style={{ color: '#aeaeb2' }} />
+      <ExternalLink size={13} strokeWidth={1.5} style={{ color: '#9bb5b0' }} />
     </a>
   );
 }
@@ -397,7 +397,7 @@ export function PlanScreen({ plan, input, onSave, onNew, onRate, onPacking, isSa
         resolve();
       };
       img.onerror = () => {
-        ctx.fillStyle = '#1c1c1e';
+        ctx.fillStyle = '#1a2e2b';
         ctx.fillRect(0, 0, 1080, 1920);
         drawContent();
         resolve();
@@ -456,7 +456,7 @@ export function PlanScreen({ plan, input, onSave, onNew, onRate, onPacking, isSa
   ] as const;
 
   return (
-    <div className="min-h-screen pb-28" style={{ background: '#fafafa' }}>
+    <div className="min-h-screen pb-28" style={{ background: '#f0f7f6' }}>
       {/* Hero photo */}
       <img
         src={heroImage}
@@ -467,18 +467,18 @@ export function PlanScreen({ plan, input, onSave, onNew, onRate, onPacking, isSa
       />
 
       {/* Destination info */}
-      <div className="px-5 py-5" style={{ borderBottom: '1px solid #e8e8ed' }}>
-        <p style={{ fontSize: '13px', color: '#aeaeb2', marginBottom: '2px' }}>{plan.country}</p>
+      <div className="px-5 py-5" style={{ borderBottom: '1px solid #e0eeec' }}>
+        <p style={{ fontSize: '13px', color: '#9bb5b0', marginBottom: '2px' }}>{plan.country}</p>
         <div className="flex items-start justify-between gap-3">
-          <h1 style={{ fontSize: '28px', fontWeight: 500, color: '#1c1c1e', letterSpacing: '-0.5px', marginBottom: '10px' }}>
+          <h1 style={{ fontSize: '28px', fontWeight: 500, color: '#1a2e2b', letterSpacing: '-0.5px', marginBottom: '10px' }}>
             {plan.destination}
           </h1>
           {weather && (
             <div className="flex items-center gap-1.5 flex-shrink-0 pt-1">
               <img src={weather.icon} alt={weather.desc} style={{ width: '36px', height: '36px' }} />
               <div>
-                <p style={{ fontSize: '18px', fontWeight: 500, color: '#1c1c1e', lineHeight: 1 }}>{weather.temp}°</p>
-                <p style={{ fontSize: '11px', color: '#aeaeb2', marginTop: '1px' }}>{weather.desc}</p>
+                <p style={{ fontSize: '18px', fontWeight: 500, color: '#1a2e2b', lineHeight: 1 }}>{weather.temp}°</p>
+                <p style={{ fontSize: '11px', color: '#9bb5b0', marginTop: '1px' }}>{weather.desc}</p>
               </div>
             </div>
           )}
@@ -491,7 +491,7 @@ export function PlanScreen({ plan, input, onSave, onNew, onRate, onPacking, isSa
             <span
               key={text}
               className="flex items-center gap-1.5 px-3 py-1 rounded-full"
-              style={{ background: '#f0eeff', fontSize: '13px', fontWeight: 400, color: '#8b7cf8' }}
+              style={{ background: '#e8f5f3', fontSize: '13px', fontWeight: 400, color: '#2d8b7a' }}
             >
               <Icon size={13} strokeWidth={1.5} />
               {text}
@@ -499,7 +499,7 @@ export function PlanScreen({ plan, input, onSave, onNew, onRate, onPacking, isSa
           ))}
           <span
             className="px-3 py-1 rounded-full"
-            style={{ background: '#f5f5f7', fontSize: '13px', color: '#6e6e73' }}
+            style={{ background: '#f0f5f4', fontSize: '13px', color: '#6b8a85' }}
           >
             {plan.beste_reisezeit}
           </span>
@@ -515,9 +515,9 @@ export function PlanScreen({ plan, input, onSave, onNew, onRate, onPacking, isSa
               icon: Bookmark,
               onClick: onSave,
               disabled: isSaved,
-              bg: isSaved ? '#f0eeff' : '#fafafa',
-              color: '#8b7cf8',
-              border: '#c4b5fd',
+              bg: isSaved ? '#e8f5f3' : '#fafafa',
+              color: '#2d8b7a',
+              border: '#a3d4ce',
             },
             {
               label: shareState === 'copied' ? 'Kopiert' : 'Teilen',
@@ -525,8 +525,8 @@ export function PlanScreen({ plan, input, onSave, onNew, onRate, onPacking, isSa
               onClick: handleShare,
               disabled: false,
               bg: '#fafafa',
-              color: '#6e6e73',
-              border: '#e8e8ed',
+              color: '#6b8a85',
+              border: '#e0eeec',
             },
             {
               label: 'Bewerten',
@@ -534,8 +534,8 @@ export function PlanScreen({ plan, input, onSave, onNew, onRate, onPacking, isSa
               onClick: onRate,
               disabled: false,
               bg: '#fafafa',
-              color: '#6e6e73',
-              border: '#e8e8ed',
+              color: '#6b8a85',
+              border: '#e0eeec',
             },
           ].map(({ label, icon: Icon, onClick, disabled, bg, color, border }) => (
             <button
@@ -556,7 +556,7 @@ export function PlanScreen({ plan, input, onSave, onNew, onRate, onPacking, isSa
           <button
             onClick={onPacking}
             className="flex-1 py-3 rounded-xl flex items-center justify-center gap-1.5 transition-all active:scale-95"
-            style={{ background: '#f0eeff', border: '1px solid #c4b5fd', color: '#8b7cf8', fontSize: '13px', fontWeight: 400, cursor: 'pointer' }}
+            style={{ background: '#e8f5f3', border: '1px solid #a3d4ce', color: '#2d8b7a', fontSize: '13px', fontWeight: 400, cursor: 'pointer' }}
           >
             <Package size={15} strokeWidth={1.5} />
             Packliste
@@ -564,7 +564,7 @@ export function PlanScreen({ plan, input, onSave, onNew, onRate, onPacking, isSa
           <button
             onClick={exportAsStory}
             className="flex-1 py-3 rounded-xl flex items-center justify-center gap-1.5 transition-all active:scale-95"
-            style={{ background: '#fafafa', border: '1px solid #e8e8ed', color: '#6e6e73', fontSize: '13px', fontWeight: 400, cursor: 'pointer' }}
+            style={{ background: '#f0f7f6', border: '1px solid #e0eeec', color: '#6b8a85', fontSize: '13px', fontWeight: 400, cursor: 'pointer' }}
           >
             <Download size={15} strokeWidth={1.5} />
             Story Export
@@ -579,16 +579,16 @@ export function PlanScreen({ plan, input, onSave, onNew, onRate, onPacking, isSa
               const amount = plan.budget_breakdown[key as keyof typeof plan.budget_breakdown];
               const pct = totalBudget > 0 ? (amount / totalBudget) * 100 : 0;
               return (
-                <div key={key} className="p-3 rounded-xl" style={{ background: '#fafafa', border: '1px solid #f0f0f5' }}>
+                <div key={key} className="p-3 rounded-xl" style={{ background: '#f0f7f6', border: '1px solid #f0f0f5' }}>
                   <div className="flex items-center gap-1.5 mb-2">
-                    <Icon size={13} strokeWidth={1.5} style={{ color: '#8b7cf8' }} />
-                    <span style={{ fontSize: '12px', color: '#6e6e73' }}>{label}</span>
-                    <span className="ml-auto" style={{ fontSize: '13px', fontWeight: 500, color: '#1c1c1e' }}>
+                    <Icon size={13} strokeWidth={1.5} style={{ color: '#2d8b7a' }} />
+                    <span style={{ fontSize: '12px', color: '#6b8a85' }}>{label}</span>
+                    <span className="ml-auto" style={{ fontSize: '13px', fontWeight: 500, color: '#1a2e2b' }}>
                       {amount.toLocaleString('de-DE')}€
                     </span>
                   </div>
-                  <div className="rounded-full overflow-hidden" style={{ height: '3px', background: '#e8e8ed' }}>
-                    <div className="h-full rounded-full" style={{ width: `${pct}%`, background: '#8b7cf8' }} />
+                  <div className="rounded-full overflow-hidden" style={{ height: '3px', background: '#e0eeec' }}>
+                    <div className="h-full rounded-full" style={{ width: `${pct}%`, background: '#2d8b7a' }} />
                   </div>
                 </div>
               );
@@ -610,16 +610,16 @@ export function PlanScreen({ plan, input, onSave, onNew, onRate, onPacking, isSa
                   onClick={() => setExpandedDay(expandedDay === idx ? null : idx)}
                   className="w-full flex items-center gap-3 p-4 text-left"
                 >
-                  <div className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0" style={{ background: '#f0eeff' }}>
-                    <span style={{ fontSize: '13px', fontWeight: 500, color: '#8b7cf8' }}>{day.day}</span>
+                  <div className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0" style={{ background: '#e8f5f3' }}>
+                    <span style={{ fontSize: '13px', fontWeight: 500, color: '#2d8b7a' }}>{day.day}</span>
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p style={{ fontSize: '11px', color: '#aeaeb2', marginBottom: '1px' }}>Tag {day.day}</p>
-                    <p style={{ fontSize: '14px', fontWeight: 500, color: '#1c1c1e' }} className="truncate">{day.title}</p>
+                    <p style={{ fontSize: '11px', color: '#9bb5b0', marginBottom: '1px' }}>Tag {day.day}</p>
+                    <p style={{ fontSize: '14px', fontWeight: 500, color: '#1a2e2b' }} className="truncate">{day.title}</p>
                   </div>
                   {expandedDay === idx
-                    ? <ChevronUp size={16} strokeWidth={1.5} style={{ color: '#aeaeb2', flexShrink: 0 }} />
-                    : <ChevronDown size={16} strokeWidth={1.5} style={{ color: '#aeaeb2', flexShrink: 0 }} />
+                    ? <ChevronUp size={16} strokeWidth={1.5} style={{ color: '#9bb5b0', flexShrink: 0 }} />
+                    : <ChevronDown size={16} strokeWidth={1.5} style={{ color: '#9bb5b0', flexShrink: 0 }} />
                   }
                 </button>
 
@@ -629,17 +629,17 @@ export function PlanScreen({ plan, input, onSave, onNew, onRate, onPacking, isSa
                     <button
                       onClick={() => openDayRoute(getDayActivities(day), dest)}
                       className="w-full flex items-center justify-between p-3 rounded-xl transition-all active:scale-[0.98]"
-                      style={{ background: '#fafafa', border: '1px solid #e8e8ed' }}
+                      style={{ background: '#f0f7f6', border: '1px solid #e0eeec' }}
                     >
-                      <span style={{ fontSize: '13px', color: '#6e6e73' }}>Tagesroute öffnen</span>
-                      <span className="flex items-center gap-1.5" style={{ fontSize: '12px', fontWeight: 500, color: '#8b7cf8' }}>
+                      <span style={{ fontSize: '13px', color: '#6b8a85' }}>Tagesroute öffnen</span>
+                      <span className="flex items-center gap-1.5" style={{ fontSize: '12px', fontWeight: 500, color: '#2d8b7a' }}>
                         <Navigation size={12} strokeWidth={1.5} />
                         Google Maps
                       </span>
                     </button>
 
                     <SlotBlock
-                      icon={Sun} label="Morgen" labelColor="#8b7cf8" bg="#f0eeff"
+                      icon={Sun} label="Morgen" labelColor="#2d8b7a" bg="#e8f5f3"
                       cost={day.morning.cost} name={day.morning.activity}
                       description={day.morning.description} tip={day.morning.tip}
                       placeData={placesData[placeKey(day.day, 'morning')]}
@@ -656,7 +656,7 @@ export function PlanScreen({ plan, input, onSave, onNew, onRate, onPacking, isSa
                       placeFallbackSrc={slotImages[`lunch-${day.day}`] ?? getRestaurantImage(day.lunch.restaurant, dest)}
                     />
                     <SlotBlock
-                      icon={Moon} label="Abend" labelColor="#6e6e73" bg="#f5f5f7"
+                      icon={Moon} label="Abend" labelColor="#6b8a85" bg="#f0f5f4"
                       cost={day.evening.cost} name={day.evening.activity}
                       description={day.evening.description} tip={day.evening.tip}
                       placeData={placesData[placeKey(day.day, 'evening')]}
@@ -673,22 +673,22 @@ export function PlanScreen({ plan, input, onSave, onNew, onRate, onPacking, isSa
         {/* Hotel */}
         <div className="card p-5">
           <div className="flex items-center gap-2 mb-4">
-            <Hotel size={16} strokeWidth={1.5} style={{ color: '#8b7cf8' }} />
+            <Hotel size={16} strokeWidth={1.5} style={{ color: '#2d8b7a' }} />
             <p className="section-label">Hotel</p>
           </div>
           <div className="flex items-start justify-between mb-1">
-            <p style={{ fontSize: '16px', fontWeight: 500, color: '#1c1c1e' }}>{plan.hotel_empfehlung.name}</p>
+            <p style={{ fontSize: '16px', fontWeight: 500, color: '#1a2e2b' }}>{plan.hotel_empfehlung.name}</p>
             <div className="text-right">
-              <p style={{ fontSize: '18px', fontWeight: 500, color: '#8b7cf8' }}>{plan.hotel_empfehlung.preis_pro_nacht}€</p>
-              <p style={{ fontSize: '11px', color: '#aeaeb2' }}>/ Nacht</p>
+              <p style={{ fontSize: '18px', fontWeight: 500, color: '#2d8b7a' }}>{plan.hotel_empfehlung.preis_pro_nacht}€</p>
+              <p style={{ fontSize: '11px', color: '#9bb5b0' }}>/ Nacht</p>
             </div>
           </div>
-          <p style={{ fontSize: '13px', color: '#6e6e73', lineHeight: 1.5 }}>{plan.hotel_empfehlung.beschreibung}</p>
+          <p style={{ fontSize: '13px', color: '#6b8a85', lineHeight: 1.5 }}>{plan.hotel_empfehlung.beschreibung}</p>
           <PlaceCard place={placesData['hotel']} loading={isLoading('hotel')} showActions fallbackSrc={slotImages['hotel'] ?? getHotelImage(dest)} />
           {plan.hotel_empfehlung.tipp && (
-            <div className="flex items-start gap-2 mt-3 p-2.5 rounded-xl" style={{ background: '#f0eeff' }}>
-              <Lightbulb size={13} strokeWidth={1.5} style={{ color: '#8b7cf8', flexShrink: 0, marginTop: '1px' }} />
-              <p style={{ fontSize: '13px', color: '#6e6e73' }}>{plan.hotel_empfehlung.tipp}</p>
+            <div className="flex items-start gap-2 mt-3 p-2.5 rounded-xl" style={{ background: '#e8f5f3' }}>
+              <Lightbulb size={13} strokeWidth={1.5} style={{ color: '#2d8b7a', flexShrink: 0, marginTop: '1px' }} />
+              <p style={{ fontSize: '13px', color: '#6b8a85' }}>{plan.hotel_empfehlung.tipp}</p>
             </div>
           )}
           {/* Booking links */}
@@ -705,7 +705,7 @@ export function PlanScreen({ plan, input, onSave, onNew, onRate, onPacking, isSa
             <p className="section-label mb-4">Geheimtipps</p>
             <div className="space-y-3">
               {plan.geheimtipps.map((tip, i) => (
-                <div key={i} className="rounded-xl overflow-hidden" style={{ border: '1px solid #e8e8ed' }}>
+                <div key={i} className="rounded-xl overflow-hidden" style={{ border: '1px solid #e0eeec' }}>
                   <img
                     src={slotImages[`geheimtipp-${i}`] ?? getActivityImage(tip, dest)}
                     alt={tip}
@@ -714,7 +714,7 @@ export function PlanScreen({ plan, input, onSave, onNew, onRate, onPacking, isSa
                     onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
                   />
                   <div className="flex items-start gap-3 p-3">
-                    <span style={{ fontSize: '12px', fontWeight: 500, color: '#8b7cf8', flexShrink: 0, marginTop: '2px', width: '14px' }}>
+                    <span style={{ fontSize: '12px', fontWeight: 500, color: '#2d8b7a', flexShrink: 0, marginTop: '2px', width: '14px' }}>
                       {i + 1}
                     </span>
                     <p style={{ fontSize: '14px', color: '#374151', lineHeight: 1.6 }}>{tip}</p>
@@ -729,13 +729,13 @@ export function PlanScreen({ plan, input, onSave, onNew, onRate, onPacking, isSa
         {plan.transport_tipps.length > 0 && (
           <div className="card p-5">
             <div className="flex items-center gap-2 mb-4">
-              <Train size={15} strokeWidth={1.5} style={{ color: '#8b7cf8' }} />
+              <Train size={15} strokeWidth={1.5} style={{ color: '#2d8b7a' }} />
               <p className="section-label">Transport</p>
             </div>
             <div className="space-y-2">
               {plan.transport_tipps.map((tip, i) => (
                 <div key={i} className="flex items-start gap-2">
-                  <span style={{ color: '#8b7cf8', fontSize: '14px', flexShrink: 0 }}>–</span>
+                  <span style={{ color: '#2d8b7a', fontSize: '14px', flexShrink: 0 }}>–</span>
                   <p style={{ fontSize: '14px', color: '#374151', lineHeight: 1.5 }}>{tip}</p>
                 </div>
               ))}
@@ -749,7 +749,7 @@ export function PlanScreen({ plan, input, onSave, onNew, onRate, onPacking, isSa
             <AlertCircle size={16} strokeWidth={1.5} style={{ color: '#f472b6', flexShrink: 0, marginTop: '2px' }} />
             <div>
               <p style={{ fontSize: '12px', fontWeight: 500, color: '#f472b6', marginBottom: '2px' }}>Hinweis</p>
-              <p style={{ fontSize: '13px', color: '#6e6e73', lineHeight: 1.5 }}>{plan.warnung}</p>
+              <p style={{ fontSize: '13px', color: '#6b8a85', lineHeight: 1.5 }}>{plan.warnung}</p>
             </div>
           </div>
         )}
@@ -761,16 +761,16 @@ export function PlanScreen({ plan, input, onSave, onNew, onRate, onPacking, isSa
           {/* Flights */}
           <div className="mb-4">
             <div className="flex items-center gap-2 mb-1">
-              <Plane size={13} strokeWidth={1.5} style={{ color: '#8b7cf8' }} />
-              <p style={{ fontSize: '13px', fontWeight: 500, color: '#1c1c1e' }}>Flüge</p>
+              <Plane size={13} strokeWidth={1.5} style={{ color: '#2d8b7a' }} />
+              <p style={{ fontSize: '13px', fontWeight: 500, color: '#1a2e2b' }}>Flüge</p>
             </div>
             {from && (
-              <p style={{ fontSize: '13px', color: '#6e6e73', marginBottom: '2px' }}>
+              <p style={{ fontSize: '13px', color: '#6b8a85', marginBottom: '2px' }}>
                 {from} → {dest}
               </p>
             )}
             {checkin && checkout && (
-              <p style={{ fontSize: '12px', color: '#aeaeb2', marginBottom: '10px' }}>
+              <p style={{ fontSize: '12px', color: '#9bb5b0', marginBottom: '10px' }}>
                 {formatDate(checkin)} – {formatDate(checkout)} · {input.persons} {input.persons === 1 ? 'Person' : 'Personen'}
               </p>
             )}
@@ -786,7 +786,7 @@ export function PlanScreen({ plan, input, onSave, onNew, onRate, onPacking, isSa
                   <BookingLink href={flightLinks.kayak} label="Kayak" icon={Navigation} />
                 </>
               ) : (
-                <p style={{ fontSize: '12px', color: '#aeaeb2', paddingTop: '4px' }}>
+                <p style={{ fontSize: '12px', color: '#9bb5b0', paddingTop: '4px' }}>
                   Abflugstadt und Reisedaten eingeben für mehr Optionen
                 </p>
               )}
@@ -798,16 +798,16 @@ export function PlanScreen({ plan, input, onSave, onNew, onRate, onPacking, isSa
           {/* Hotel */}
           <div className="mb-4">
             <div className="flex items-center gap-2 mb-1">
-              <Hotel size={13} strokeWidth={1.5} style={{ color: '#8b7cf8' }} />
-              <p style={{ fontSize: '13px', fontWeight: 500, color: '#1c1c1e' }}>Hotels</p>
+              <Hotel size={13} strokeWidth={1.5} style={{ color: '#2d8b7a' }} />
+              <p style={{ fontSize: '13px', fontWeight: 500, color: '#1a2e2b' }}>Hotels</p>
             </div>
-            <p style={{ fontSize: '13px', color: '#6e6e73', marginBottom: '2px' }}>
+            <p style={{ fontSize: '13px', color: '#6b8a85', marginBottom: '2px' }}>
               {dest}
               {checkin && checkout && ` · ${input.days} ${input.days === 1 ? 'Nacht' : 'Nächte'}`}
               {` · ${input.persons} ${input.persons === 1 ? 'Person' : 'Personen'}`}
             </p>
             {checkin && checkout && (
-              <p style={{ fontSize: '12px', color: '#aeaeb2', marginBottom: '10px' }}>
+              <p style={{ fontSize: '12px', color: '#9bb5b0', marginBottom: '10px' }}>
                 {formatDate(checkin)} – {formatDate(checkout)}
               </p>
             )}
@@ -825,7 +825,7 @@ export function PlanScreen({ plan, input, onSave, onNew, onRate, onPacking, isSa
               onClick={onSave}
               disabled={isSaved}
               className="flex-1 py-3 rounded-xl flex items-center justify-center gap-1.5 transition-all active:scale-95 disabled:opacity-50"
-              style={{ background: isSaved ? '#f0eeff' : '#fafafa', border: '1px solid #c4b5fd', color: '#8b7cf8', fontSize: '13px', fontWeight: 400, cursor: isSaved ? 'default' : 'pointer' }}
+              style={{ background: isSaved ? '#e8f5f3' : '#fafafa', border: '1px solid #a3d4ce', color: '#2d8b7a', fontSize: '13px', fontWeight: 400, cursor: isSaved ? 'default' : 'pointer' }}
             >
               <Bookmark size={14} strokeWidth={1.5} />
               {isSaved ? 'Gespeichert' : 'Speichern'}
@@ -833,7 +833,7 @@ export function PlanScreen({ plan, input, onSave, onNew, onRate, onPacking, isSa
             <button
               onClick={handleShare}
               className="flex-1 py-3 rounded-xl flex items-center justify-center gap-1.5 transition-all active:scale-95"
-              style={{ background: '#fafafa', border: '1px solid #e8e8ed', color: '#6e6e73', fontSize: '13px', fontWeight: 400, cursor: 'pointer' }}
+              style={{ background: '#f0f7f6', border: '1px solid #e0eeec', color: '#6b8a85', fontSize: '13px', fontWeight: 400, cursor: 'pointer' }}
             >
               {shareState === 'copied' ? <Check size={14} strokeWidth={1.5} /> : <Share2 size={14} strokeWidth={1.5} />}
               {shareState === 'copied' ? 'Kopiert' : 'Teilen'}
@@ -847,7 +847,7 @@ export function PlanScreen({ plan, input, onSave, onNew, onRate, onPacking, isSa
         <button
           onClick={onNew}
           className="w-full flex items-center justify-center gap-2 transition-all active:scale-[0.98]"
-          style={{ background: '#fafafa', border: '1px solid #e8e8ed', borderRadius: '12px', padding: '14px', fontSize: '14px', fontWeight: 400, color: '#6e6e73', cursor: 'pointer' }}
+          style={{ background: '#f0f7f6', border: '1px solid #e0eeec', borderRadius: '12px', padding: '14px', fontSize: '14px', fontWeight: 400, color: '#6b8a85', cursor: 'pointer' }}
         >
           <RefreshCw size={15} strokeWidth={1.5} />
           Neue Reise planen

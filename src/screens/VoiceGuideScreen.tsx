@@ -101,20 +101,20 @@ export function VoiceGuideScreen({ destination }: Props) {
   };
 
   return (
-    <div className="min-h-screen pb-28 flex flex-col" style={{ background: '#fafafa' }}>
+    <div className="min-h-screen pb-28 flex flex-col" style={{ background: '#f0f7f6' }}>
       {/* Header */}
-      <div className="px-5 pt-14 pb-5" style={{ borderBottom: '1px solid #e8e8ed' }}>
+      <div className="px-5 pt-14 pb-5" style={{ borderBottom: '1px solid #e0eeec' }}>
         <p className="section-label mb-1">Tripsilo</p>
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: '#f0eeff' }}>
-            <Mic size={20} strokeWidth={1.5} style={{ color: '#8b7cf8' }} />
+          <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: '#e8f5f3' }}>
+            <Mic size={20} strokeWidth={1.5} style={{ color: '#2d8b7a' }} />
           </div>
           <div>
-            <h1 style={{ fontSize: '22px', fontWeight: 500, color: '#1c1c1e', letterSpacing: '-0.3px' }}>
+            <h1 style={{ fontSize: '22px', fontWeight: 500, color: '#1a2e2b', letterSpacing: '-0.3px' }}>
               Reiseführer
             </h1>
             {destination && (
-              <p style={{ fontSize: '13px', color: '#aeaeb2' }}>{destination}</p>
+              <p style={{ fontSize: '13px', color: '#9bb5b0' }}>{destination}</p>
             )}
           </div>
         </div>
@@ -127,10 +127,10 @@ export function VoiceGuideScreen({ destination }: Props) {
           disabled={loading || isListening}
           className="w-36 h-36 rounded-full flex items-center justify-center transition-all active:scale-95 disabled:cursor-default mb-6"
           style={{
-            background: isListening ? '#f472b6' : '#8b7cf8',
+            background: isListening ? '#f472b6' : '#2d8b7a',
             boxShadow: isListening
               ? '0 0 0 20px rgba(244,114,182,0.12), 0 0 0 40px rgba(244,114,182,0.05)'
-              : '0 8px 32px rgba(139,124,248,0.4)',
+              : '0 8px 32px rgba(45,139,122,0.4)',
             transition: 'all 0.3s ease',
           }}
         >
@@ -142,7 +142,7 @@ export function VoiceGuideScreen({ destination }: Props) {
 
         <p style={{
           fontSize: '16px',
-          color: isListening ? '#f472b6' : loading ? '#8b7cf8' : '#6e6e73',
+          color: isListening ? '#f472b6' : loading ? '#2d8b7a' : '#6b8a85',
           fontWeight: (isListening || loading) ? 500 : 400,
           marginBottom: '32px',
           textAlign: 'center',
@@ -154,7 +154,7 @@ export function VoiceGuideScreen({ destination }: Props) {
         {/* No destination hint */}
         {!destination && !question && !error && (
           <div className="card p-5 w-full text-center">
-            <p style={{ fontSize: '14px', color: '#aeaeb2', lineHeight: 1.6 }}>
+            <p style={{ fontSize: '14px', color: '#9bb5b0', lineHeight: 1.6 }}>
               Plane zuerst eine Reise, dann beantwortet dir dein Guide alle Fragen zum Reiseziel.
             </p>
           </div>
@@ -169,9 +169,9 @@ export function VoiceGuideScreen({ destination }: Props) {
 
         {/* Question */}
         {question && (
-          <div className="w-full p-4 rounded-2xl mb-3" style={{ background: '#f0eeff', border: '1px solid #c4b5fd' }}>
-            <p style={{ fontSize: '11px', color: '#8b7cf8', fontWeight: 500, marginBottom: '4px', textTransform: 'uppercase', letterSpacing: '0.4px' }}>Deine Frage</p>
-            <p style={{ fontSize: '15px', color: '#1c1c1e', fontStyle: 'italic' }}>„{question}"</p>
+          <div className="w-full p-4 rounded-2xl mb-3" style={{ background: '#e8f5f3', border: '1px solid #a3d4ce' }}>
+            <p style={{ fontSize: '11px', color: '#2d8b7a', fontWeight: 500, marginBottom: '4px', textTransform: 'uppercase', letterSpacing: '0.4px' }}>Deine Frage</p>
+            <p style={{ fontSize: '15px', color: '#1a2e2b', fontStyle: 'italic' }}>„{question}"</p>
           </div>
         )}
 
@@ -188,17 +188,17 @@ export function VoiceGuideScreen({ destination }: Props) {
         {answer && !loading && (
           <div className="card p-5 w-full">
             <div className="flex items-center justify-between mb-3">
-              <p style={{ fontSize: '11px', color: '#aeaeb2', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.4px' }}>Dein Guide</p>
+              <p style={{ fontSize: '11px', color: '#9bb5b0', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.4px' }}>Dein Guide</p>
               <button
                 onClick={() => speak(answer)}
                 className="flex items-center gap-1 px-2 py-1 rounded-lg transition-all active:scale-95"
-                style={{ background: '#f0eeff', fontSize: '12px', color: '#8b7cf8', border: 'none', cursor: 'pointer' }}
+                style={{ background: '#e8f5f3', fontSize: '12px', color: '#2d8b7a', border: 'none', cursor: 'pointer' }}
               >
                 <Volume2 size={12} strokeWidth={1.5} />
                 Vorlesen
               </button>
             </div>
-            <p style={{ fontSize: '15px', color: '#1c1c1e', lineHeight: 1.7 }}>{answer}</p>
+            <p style={{ fontSize: '15px', color: '#1a2e2b', lineHeight: 1.7 }}>{answer}</p>
           </div>
         )}
 
@@ -217,7 +217,7 @@ export function VoiceGuideScreen({ destination }: Props) {
                   key={q}
                   onClick={() => { setQuestion(q); askGuide(q); }}
                   className="w-full text-left p-4 rounded-xl transition-all active:scale-[0.99]"
-                  style={{ background: '#ffffff', border: '1px solid #e8e8ed', fontSize: '14px', color: '#374151', cursor: 'pointer' }}
+                  style={{ background: '#ffffff', border: '1px solid #e0eeec', fontSize: '14px', color: '#374151', cursor: 'pointer' }}
                 >
                   {q}
                 </button>

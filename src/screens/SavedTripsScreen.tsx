@@ -72,15 +72,15 @@ const typeLabels: Record<string, string> = {
 
 export function SavedTripsScreen({ savedTrips, onSelect, onDelete, onRate }: Props) {
   return (
-    <div className="min-h-screen pb-28" style={{ background: '#fafafa' }}>
+    <div className="min-h-screen pb-28" style={{ background: '#f0f7f6' }}>
       {/* Header */}
-      <div className="px-5 pt-14 pb-5" style={{ borderBottom: '1px solid #e8e8ed' }}>
+      <div className="px-5 pt-14 pb-5" style={{ borderBottom: '1px solid #e0eeec' }}>
         <p className="section-label mb-1">Tripsilo</p>
         <div className="flex items-end justify-between">
-          <h1 style={{ fontSize: '28px', fontWeight: 500, color: '#1c1c1e', letterSpacing: '-0.5px' }}>
+          <h1 style={{ fontSize: '28px', fontWeight: 500, color: '#1a2e2b', letterSpacing: '-0.5px' }}>
             Meine Reisen
           </h1>
-          <span style={{ fontSize: '13px', color: '#aeaeb2', paddingBottom: '4px' }}>
+          <span style={{ fontSize: '13px', color: '#9bb5b0', paddingBottom: '4px' }}>
             {savedTrips.length} gespeichert
           </span>
         </div>
@@ -91,14 +91,14 @@ export function SavedTripsScreen({ savedTrips, onSelect, onDelete, onRate }: Pro
           <div className="flex flex-col items-center justify-center py-24 text-center">
             <div
               className="w-16 h-16 rounded-2xl flex items-center justify-center mb-5"
-              style={{ background: '#f0eeff' }}
+              style={{ background: '#e8f5f3' }}
             >
-              <Plane size={24} strokeWidth={1.5} style={{ color: '#8b7cf8' }} />
+              <Plane size={24} strokeWidth={1.5} style={{ color: '#2d8b7a' }} />
             </div>
-            <p style={{ fontSize: '16px', fontWeight: 500, color: '#1c1c1e', marginBottom: '6px' }}>
+            <p style={{ fontSize: '16px', fontWeight: 500, color: '#1a2e2b', marginBottom: '6px' }}>
               Noch keine Reisen
             </p>
-            <p style={{ fontSize: '14px', color: '#aeaeb2' }}>
+            <p style={{ fontSize: '14px', color: '#9bb5b0' }}>
               Plane und speichere deine erste Reise.
             </p>
           </div>
@@ -118,26 +118,26 @@ export function SavedTripsScreen({ savedTrips, onSelect, onDelete, onRate }: Pro
                 >
                   <button onClick={() => onSelect(trip)} className="w-full p-5 text-left">
                     <div className="flex items-start justify-between mb-1">
-                      <h2 style={{ fontSize: '20px', fontWeight: 500, color: '#1c1c1e', letterSpacing: '-0.3px' }}>
+                      <h2 style={{ fontSize: '20px', fontWeight: 500, color: '#1a2e2b', letterSpacing: '-0.3px' }}>
                         {trip.plan.destination}
                       </h2>
-                      <Bookmark size={16} strokeWidth={1.5} fill="#8b7cf8" style={{ color: '#8b7cf8', flexShrink: 0, marginTop: '3px' }} />
+                      <Bookmark size={16} strokeWidth={1.5} fill="#2d8b7a" style={{ color: '#2d8b7a', flexShrink: 0, marginTop: '3px' }} />
                     </div>
-                    <p style={{ fontSize: '13px', color: '#aeaeb2', marginBottom: '12px' }}>
+                    <p style={{ fontSize: '13px', color: '#9bb5b0', marginBottom: '12px' }}>
                       {trip.plan.country}
                     </p>
 
                     <div className="flex flex-wrap gap-2 mb-3">
                       <span
                         className="flex items-center gap-1 px-2.5 py-1 rounded-lg"
-                        style={{ background: '#f5f5f7', fontSize: '12px', color: '#6e6e73' }}
+                        style={{ background: '#f0f5f4', fontSize: '12px', color: '#6b8a85' }}
                       >
                         <Calendar size={11} strokeWidth={1.5} />
                         {trip.input.days} {trip.input.days === 1 ? 'Tag' : 'Tage'}
                       </span>
                       <span
                         className="flex items-center gap-1 px-2.5 py-1 rounded-lg"
-                        style={{ background: '#f5f5f7', fontSize: '12px', color: '#6e6e73' }}
+                        style={{ background: '#f0f5f4', fontSize: '12px', color: '#6b8a85' }}
                       >
                         <Euro size={11} strokeWidth={1.5} />
                         {trip.input.budget.toLocaleString('de-DE')}€
@@ -148,7 +148,7 @@ export function SavedTripsScreen({ savedTrips, onSelect, onDelete, onRate }: Pro
                           <span
                             key={t}
                             className="flex items-center gap-1 px-2.5 py-1 rounded-lg"
-                            style={{ background: '#f0eeff', fontSize: '12px', color: '#8b7cf8' }}
+                            style={{ background: '#e8f5f3', fontSize: '12px', color: '#2d8b7a' }}
                           >
                             {Icon && <Icon size={11} strokeWidth={1.5} />}
                             {typeLabels[t] || t}
@@ -157,19 +157,19 @@ export function SavedTripsScreen({ savedTrips, onSelect, onDelete, onRate }: Pro
                       })}
                     </div>
 
-                    <p style={{ fontSize: '12px', color: '#aeaeb2' }}>
+                    <p style={{ fontSize: '12px', color: '#9bb5b0' }}>
                       {new Date(trip.savedAt).toLocaleDateString('de-DE', { day: '2-digit', month: 'long', year: 'numeric' })}
                     </p>
                   </button>
 
                   <div
                     className="flex gap-2 px-5 pb-4"
-                    style={{ borderTop: '1px solid #f5f5f7', paddingTop: '12px' }}
+                    style={{ borderTop: '1px solid #f0f5f4', paddingTop: '12px' }}
                   >
                     <button
                       onClick={() => onRate(trip)}
                       className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl transition-all active:scale-95"
-                      style={{ background: '#f5f5f7', border: '1px solid #e8e8ed', color: '#6e6e73', fontSize: '13px' }}
+                      style={{ background: '#f0f5f4', border: '1px solid #e0eeec', color: '#6b8a85', fontSize: '13px' }}
                     >
                       <Star size={14} strokeWidth={1.5} />
                       Bewerten

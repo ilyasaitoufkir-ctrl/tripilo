@@ -95,27 +95,27 @@ Falls kein Text erkennbar ist, schreibe: "Kein lesbarer Text im Bild gefunden."`
   };
 
   return (
-    <div className="min-h-screen pb-28" style={{ background: '#fafafa' }}>
+    <div className="min-h-screen pb-28" style={{ background: '#f0f7f6' }}>
       {/* Header */}
-      <div className="px-5 pt-14 pb-5" style={{ borderBottom: '1px solid #e8e8ed' }}>
+      <div className="px-5 pt-14 pb-5" style={{ borderBottom: '1px solid #e0eeec' }}>
         <p className="section-label mb-1">Tripsilo</p>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: '#f0eeff' }}>
-              <Camera size={20} strokeWidth={1.5} style={{ color: '#8b7cf8' }} />
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: '#e8f5f3' }}>
+              <Camera size={20} strokeWidth={1.5} style={{ color: '#2d8b7a' }} />
             </div>
             <div>
-              <h1 style={{ fontSize: '22px', fontWeight: 500, color: '#1c1c1e', letterSpacing: '-0.3px' }}>
+              <h1 style={{ fontSize: '22px', fontWeight: 500, color: '#1a2e2b', letterSpacing: '-0.3px' }}>
                 Übersetzer
               </h1>
-              {destination && <p style={{ fontSize: '13px', color: '#aeaeb2' }}>{destination}</p>}
+              {destination && <p style={{ fontSize: '13px', color: '#9bb5b0' }}>{destination}</p>}
             </div>
           </div>
           {(preview || translation) && (
             <button
               onClick={reset}
               className="flex items-center gap-1.5 px-3 py-2 rounded-xl transition-all active:scale-95"
-              style={{ background: '#f5f5f7', color: '#6e6e73', fontSize: '13px', border: 'none', cursor: 'pointer' }}
+              style={{ background: '#f0f5f4', color: '#6b8a85', fontSize: '13px', border: 'none', cursor: 'pointer' }}
             >
               <RotateCcw size={13} strokeWidth={1.5} />
               Neu
@@ -142,17 +142,17 @@ Falls kein Text erkennbar ist, schreibe: "Kein lesbarer Text im Bild gefunden."`
             <button
               onClick={triggerCamera}
               className="w-full flex flex-col items-center gap-3 py-10 rounded-2xl transition-all active:scale-[0.98]"
-              style={{ background: '#f0eeff', border: '2px dashed #c4b5fd', cursor: 'pointer' }}
+              style={{ background: '#e8f5f3', border: '2px dashed #a3d4ce', cursor: 'pointer' }}
             >
               <div
                 className="w-16 h-16 rounded-2xl flex items-center justify-center"
-                style={{ background: '#8b7cf8' }}
+                style={{ background: '#2d8b7a' }}
               >
                 <Camera size={30} strokeWidth={1.5} style={{ color: '#ffffff' }} />
               </div>
               <div className="text-center">
-                <p style={{ fontSize: '17px', fontWeight: 500, color: '#8b7cf8' }}>Foto aufnehmen</p>
-                <p style={{ fontSize: '13px', color: '#a78bfa', marginTop: '3px' }}>
+                <p style={{ fontSize: '17px', fontWeight: 500, color: '#2d8b7a' }}>Foto aufnehmen</p>
+                <p style={{ fontSize: '13px', color: '#4db8a4', marginTop: '3px' }}>
                   Speisekarte, Schild oder Menü fotografieren
                 </p>
               </div>
@@ -163,8 +163,8 @@ Falls kein Text erkennbar ist, schreibe: "Kein lesbarer Text im Bild gefunden."`
               className="w-full flex items-center justify-center gap-2 py-3 rounded-xl transition-all active:scale-95"
               style={{
                 background: '#ffffff',
-                border: '1.5px solid #e8e8ed',
-                color: '#6e6e73',
+                border: '1.5px solid #e0eeec',
+                color: '#6b8a85',
                 fontSize: '14px',
                 cursor: 'pointer',
               }}
@@ -174,7 +174,7 @@ Falls kein Text erkennbar ist, schreibe: "Kein lesbarer Text im Bild gefunden."`
             </button>
 
             <div className="card p-5 text-center">
-              <p style={{ fontSize: '14px', color: '#aeaeb2', lineHeight: 1.65 }}>
+              <p style={{ fontSize: '14px', color: '#9bb5b0', lineHeight: 1.65 }}>
                 Fotografiere eine Speisekarte, ein Schild oder jeglichen Text — Claude übersetzt sofort ins Deutsche mit Erklärungen und Allergen-Markierungen.
               </p>
             </div>
@@ -183,12 +183,12 @@ Falls kein Text erkennbar ist, schreibe: "Kein lesbarer Text im Bild gefunden."`
 
         {/* Image preview */}
         {preview && (
-          <div className="rounded-2xl overflow-hidden" style={{ border: '1px solid #e8e8ed' }}>
+          <div className="rounded-2xl overflow-hidden" style={{ border: '1px solid #e0eeec' }}>
             <img
               src={preview}
               alt="Uploaded"
               className="w-full object-contain"
-              style={{ maxHeight: '280px', background: '#f5f5f7' }}
+              style={{ maxHeight: '280px', background: '#f0f5f4' }}
             />
           </div>
         )}
@@ -196,7 +196,7 @@ Falls kein Text erkennbar ist, schreibe: "Kein lesbarer Text im Bild gefunden."`
         {/* Loading skeleton */}
         {loading && (
           <div className="card p-6 space-y-3">
-            <p style={{ fontSize: '13px', color: '#aeaeb2', textAlign: 'center', marginBottom: '8px' }}>
+            <p style={{ fontSize: '13px', color: '#9bb5b0', textAlign: 'center', marginBottom: '8px' }}>
               Claude übersetzt…
             </p>
             <div className="skeleton h-3 w-full rounded" />
