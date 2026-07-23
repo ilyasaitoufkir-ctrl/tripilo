@@ -23,8 +23,14 @@ export function BottomNav({ screen, onNavigate }: Props) {
 
   return (
     <nav
-      className="fixed bottom-0 left-0 right-0 z-50"
-      style={{ background: '#ffffff', borderTop: '1px solid #e0eeec', boxShadow: '0 -4px 20px rgba(0,0,0,0.05)' }}
+      className="z-50"
+      style={{
+        background: '#ffffff',
+        borderTop: '1px solid #e0eeec',
+        boxShadow: '0 -4px 20px rgba(0,0,0,0.05)',
+        flexShrink: 0,
+        paddingBottom: 'env(safe-area-inset-bottom)',
+      }}
     >
       <div className="flex items-center justify-around max-w-md mx-auto px-1 py-2">
         {tabDefs.map(({ id, key, icon: Icon, activeOn }) => {

@@ -118,7 +118,19 @@ export default function App() {
   const showBottomNav = BOTTOM_NAV_SCREENS.includes(screen);
 
   return (
-    <div style={{ background: '#f8f9ff', minHeight: '100vh' }}>
+    <div
+      style={{
+        position: 'fixed',
+        inset: 0,
+        overflow: 'hidden',
+        display: 'flex',
+        flexDirection: 'column',
+        background: '#f8f9ff',
+        maxWidth: '448px',
+        margin: '0 auto',
+        width: '100%',
+      }}
+    >
       {/* Error toast */}
       {error && (
         <div
@@ -130,7 +142,8 @@ export default function App() {
         </div>
       )}
 
-      {/* Screens */}
+      {/* Scrollable screen content — the only part of the app that scrolls */}
+      <div style={{ flex: 1, overflowY: 'auto', overflowX: 'hidden', WebkitOverflowScrolling: 'touch', overscrollBehaviorY: 'contain' }}>
       {screen === 'welcome' && (
         <WelcomeScreen onStart={() => setScreen('input')} />
       )}
@@ -200,7 +213,9 @@ export default function App() {
         />
       )}
 
-      {/* Bottom Navigation */}
+      </div>
+
+      {/* Bottom Navigation — pinned by the flex column, not overlaying content */}
       {showBottomNav && (
         <BottomNav
           screen={screen}

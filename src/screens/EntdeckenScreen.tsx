@@ -30,12 +30,12 @@ const haversine = (
   return Math.round(R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)));
 };
 
-const typeMap: Record<string, string> = {
-  essen: 'restaurant',
-  cafe: 'cafe',
-  bar: 'bar',
-  aktivität: 'tourist_attraction',
-  museum: 'museum',
+const typeMap: Record<string, string[]> = {
+  essen: ['restaurant'],
+  cafe: ['cafe'],
+  bar: ['bar', 'night_club'],
+  aktivität: ['tourist_attraction', 'amusement_park'],
+  museum: ['museum', 'art_gallery'],
 };
 
 const getTimeSuggestion = (): { text: string; type: string } => {
@@ -57,6 +57,7 @@ export function EntdeckenScreen() {
   const [places, setPlaces] = useState<NearbyPlace[]>([]);
   const [loading, setLoading] = useState(false);
   const [showHidden, setShowHidden] = useState(false);
+  const [searchError, setSearchError] = useState('');
 
   const timeSuggestion = getTimeSuggestion();
 
@@ -124,29 +125,43 @@ export function EntdeckenScreen() {
     setSelectedType(type);
     setPlaces([]);
     setShowHidden(hiddenGems);
+    setSearchError('');
 
-    const placeType = typeMap[type] ?? 'restaurant';
+    const placeTypes = typeMap[type] ?? ['establishment'];
     const radius = hiddenGems ? 2000 : 1500;
 
     try {
-      const url = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${userLocation.lat},${userLocation.lng}&radius=${radius}&type=${placeType}&key=${API_KEY}&language=de&rankby=prominence`;
-      const res = await fetch(PROXY + encodeURIComponent(url));
-      const data = await res.json();
-      const results: NearbyPlace[] = data.results ?? [];
+      const resultsByType = await Promise.all(
+        placeTypes.map(async (placeType) => {
+          const url = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${userLocation.lat},${userLocation.lng}&radius=${radius}&type=${placeType}&key=${API_KEY}&language=de&rankby=prominence`;
+          const res = await fetch(PROXY + encodeURIComponent(url));
+          const data = await res.json();
+          return (data.results ?? []) as NearbyPlace[];
+        })
+      );
+
+      const seen = new Set<string>();
+      const merged = resultsByType.flat().filter((p) => {
+        if (seen.has(p.place_id)) return false;
+        seen.add(p.place_id);
+        return true;
+      });
 
       const filtered = hiddenGems
-        ? results
+        ? merged
             .filter((p) => p.rating >= 4.5 && p.user_ratings_total < 500 && p.user_ratings_total > 20)
             .sort((a, b) => b.rating - a.rating)
             .slice(0, 4)
-        : results
-            .filter((p) => p.rating >= 4.0 && p.user_ratings_total >= 50)
+        : merged
+            .filter((p) => p.rating >= 3.5 && p.user_ratings_total >= 10)
             .sort((a, b) => b.rating - a.rating)
-            .slice(0, 5);
+            .slice(0, 8);
 
-      setPlaces(filtered);
+      // Strict filter found nothing but the raw search did — show the best
+      // unfiltered results rather than an empty "nothing nearby" state.
+      setPlaces(filtered.length > 0 ? filtered : merged.slice(0, 5));
     } catch {
-      // silent fail
+      setSearchError('Suche fehlgeschlagen – bitte nochmal versuchen.');
     } finally {
       setLoading(false);
     }
@@ -170,16 +185,13 @@ export function EntdeckenScreen() {
     <div className="min-h-screen pb-28" style={{ background: '#f0f7f6' }}>
       {/* Header — location style like home */}
       <div className="px-5 pt-14 pb-5" style={{ background: '#ffffff', borderBottom: '1px solid #e0eeec' }}>
-        <div className="flex items-center justify-between mb-4">
-          <div>
-            <p style={{ fontSize: '11px', color: '#6b8a85', textTransform: 'uppercase', letterSpacing: '0.5px', fontWeight: 500 }}>
-              Dein Standort
-            </p>
-            <p style={{ fontSize: '16px', fontWeight: 600, color: '#1a2e2b' }}>
-              {userLocation ? '✓ Standort gefunden' : locationError ? 'Kein GPS' : 'GPS wird ermittelt…'}
-            </p>
-          </div>
-          <div className="avatar"><span>IL</span></div>
+        <div className="mb-4">
+          <p style={{ fontSize: '11px', color: '#6b8a85', textTransform: 'uppercase', letterSpacing: '0.5px', fontWeight: 500 }}>
+            Dein Standort
+          </p>
+          <p style={{ fontSize: '16px', fontWeight: 600, color: '#1a2e2b' }}>
+            {userLocation ? '✓ Standort gefunden' : locationError ? 'Kein GPS' : 'GPS wird ermittelt…'}
+          </p>
         </div>
         <h1 style={{ fontSize: '26px', fontWeight: 700, color: '#1a2e2b', letterSpacing: '-0.3px', margin: 0 }}>
           Was möchtest du?
@@ -372,7 +384,13 @@ export function EntdeckenScreen() {
           );
         })}
 
-        {!loading && selectedType && places.length === 0 && (
+        {searchError && !loading && (
+          <div className="p-4 rounded-2xl" style={{ background: '#fce7f3', border: '1px solid #fbcfe8' }}>
+            <p style={{ fontSize: '14px', color: '#f472b6' }}>{searchError}</p>
+          </div>
+        )}
+
+        {!loading && !searchError && selectedType && places.length === 0 && (
           <div className="card p-6 text-center">
             <p style={{ fontSize: '14px', color: '#9bb5b0' }}>
               {showHidden

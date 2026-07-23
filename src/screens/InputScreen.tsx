@@ -238,10 +238,7 @@ export function InputScreen({ onSubmit }: Props) {
                   </p>
                   <p style={{ fontSize: '16px', fontWeight: 600, color: '#1a2e2b' }}>Hamburg, DE</p>
                 </div>
-                <div className="flex items-center gap-3">
-                  <LangToggle />
-                  <div className="avatar"><span>IL</span></div>
-                </div>
+                <LangToggle />
               </div>
 
               <h2 style={{ fontSize: '28px', fontWeight: 700, color: '#1a2e2b', lineHeight: 1.2, letterSpacing: '-0.5px', marginBottom: '20px' }}>
@@ -570,6 +567,8 @@ export function InputScreen({ onSubmit }: Props) {
           bottom: '64px',
           padding: '16px 16px 8px',
           background: 'linear-gradient(to bottom, transparent, #f0f7f6 40%)',
+          maxWidth: '448px',
+          margin: '0 auto',
         }}
       >
         <div className="flex gap-2">
