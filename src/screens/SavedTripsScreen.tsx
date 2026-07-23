@@ -2,7 +2,7 @@ import {
   Bookmark, Trash2, Calendar, Euro, Plane, Star,
   Waves, Mountain, Landmark, Music2, UtensilsCrossed, Users,
   Zap, Sparkles, Trophy, ShoppingBag, Heart, Car, Backpack, Gem,
-  Compass, Building2, Snowflake, Ship, Camera, Leaf, MapPin,
+  Compass, Building2, Snowflake, Ship, Camera, Leaf,
 } from 'lucide-react';
 import type { SavedTrip } from '../types';
 

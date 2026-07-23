@@ -8,7 +8,7 @@ import {
 } from 'lucide-react';
 import type { TripPlan, TripInput, DayPlan } from '../types';
 import { searchPlace, priceLevelLabel, type PlaceInfo } from '../services/places';
-import { getFlightLinks, getHotelLinks, getFlightFallback, getHotelFallback } from '../services/booking';
+import { getFlightLinks, getHotelLinks, getFlightFallback } from '../services/booking';
 import { openDayRoute } from '../components/MapView';
 
 interface Props {
