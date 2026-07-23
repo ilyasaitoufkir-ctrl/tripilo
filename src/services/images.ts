@@ -72,6 +72,8 @@ const CATEGORY_IMAGES: Record<string, string> = {
 
 const UNSPLASH_KEY = import.meta.env.VITE_UNSPLASH_KEY as string;
 
+export const getFallbackImage = (type: string): string => getCategoryImage(type);
+
 export const getCategoryImage = (text: string): string => {
   const lower = text.toLowerCase();
   const match = Object.keys(CATEGORY_IMAGES).find(k => k !== 'default' && lower.includes(k));

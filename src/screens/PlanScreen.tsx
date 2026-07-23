@@ -9,7 +9,7 @@ import {
 import type { TripPlan, TripInput, DayPlan } from '../types';
 import { searchPlace, priceLevelLabel, type PlaceInfo } from '../services/places';
 import { getFlightLinks, getHotelLinks, getFlightFallback } from '../services/booking';
-import { getActivityImage, getDestinationImage, getDestinationImageAsync, getRestaurantImage, getHotelImage } from '../services/images';
+import { getActivityImage, getDestinationImage, getDestinationImageAsync, getActivityImageAsync, getRestaurantImage, getHotelImage } from '../services/images';
 import { openDayRoute } from '../components/MapView';
 
 interface Weather {
@@ -254,6 +254,7 @@ export function PlanScreen({ plan, input, onSave, onNew, onRate, onPacking, isSa
   const [shareState, setShareState] = useState<'idle' | 'copied'>('idle');
   const [heroImage, setHeroImage] = useState<string>(() => getDestinationImage(plan.destination));
   const [weather, setWeather] = useState<Weather | null>(null);
+  const [slotImages, setSlotImages] = useState<Record<string, string>>({});
 
   const totalBudget = Object.values(plan.budget_breakdown).reduce((a, b) => a + b, 0);
   const dest = plan.destination;
@@ -280,6 +281,25 @@ export function PlanScreen({ plan, input, onSave, onNew, onRate, onPacking, isSa
   useEffect(() => {
     getDestinationImageAsync(dest).then(setHeroImage);
   }, [dest]);
+
+  // Load activity images async (Unsplash API if key set)
+  useEffect(() => {
+    const entries: { key: string; activity: string }[] = [];
+    plan.days.forEach((day) => {
+      entries.push({ key: `morning-${day.day}`, activity: day.morning.activity });
+      entries.push({ key: `evening-${day.day}`, activity: day.evening.activity });
+    });
+    plan.geheimtipps.forEach((tip, i) => {
+      entries.push({ key: `geheimtipp-${i}`, activity: tip });
+    });
+    Promise.all(
+      entries.map(({ key, activity }) =>
+        getActivityImageAsync(activity, dest).then((url) => ({ key, url }))
+      )
+    ).then((results) => {
+      setSlotImages(Object.fromEntries(results.map(({ key, url }) => [key, url])));
+    });
+  }, [plan, dest]);
 
   // Load weather
   useEffect(() => {
@@ -595,7 +615,7 @@ export function PlanScreen({ plan, input, onSave, onNew, onRate, onPacking, isSa
                       description={day.morning.description} tip={day.morning.tip}
                       placeData={placesData[placeKey(day.day, 'morning')]}
                       placeLoading={isLoading(placeKey(day.day, 'morning'))}
-                      imageSrc={getActivityImage(day.morning.activity, dest)}
+                      imageSrc={slotImages[`morning-${day.day}`] ?? getActivityImage(day.morning.activity, dest)}
                     />
                     <SlotBlock
                       icon={Coffee} label="Mittag" labelColor="#f472b6" bg="#fce7f3"
@@ -612,7 +632,7 @@ export function PlanScreen({ plan, input, onSave, onNew, onRate, onPacking, isSa
                       description={day.evening.description} tip={day.evening.tip}
                       placeData={placesData[placeKey(day.day, 'evening')]}
                       placeLoading={isLoading(placeKey(day.day, 'evening'))}
-                      imageSrc={getActivityImage(day.evening.activity, dest)}
+                      imageSrc={slotImages[`evening-${day.day}`] ?? getActivityImage(day.evening.activity, dest)}
                     />
                   </div>
                 )}
@@ -658,7 +678,7 @@ export function PlanScreen({ plan, input, onSave, onNew, onRate, onPacking, isSa
               {plan.geheimtipps.map((tip, i) => (
                 <div key={i} className="rounded-xl overflow-hidden" style={{ border: '1px solid #e8e8ed' }}>
                   <img
-                    src={getActivityImage(tip, dest)}
+                    src={slotImages[`geheimtipp-${i}`] ?? getActivityImage(tip, dest)}
                     alt={tip}
                     className="w-full object-cover"
                     style={{ height: '120px' }}
