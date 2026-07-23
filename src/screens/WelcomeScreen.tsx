@@ -22,7 +22,7 @@ export function WelcomeScreen({ onStart }: Props) {
   );
 
   return (
-    <div className="relative" style={{ minHeight: '100%', height: '100vh' }}>
+    <div className="relative" style={{ minHeight: '100%', height: '100vh', overflow: 'hidden', touchAction: 'none' }}>
       {/* Full-bleed hero image */}
       <img src={hero} alt="Travel" className="absolute inset-0 w-full h-full object-cover" />
       <div

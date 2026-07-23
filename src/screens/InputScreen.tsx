@@ -77,8 +77,10 @@ function Chip({ label, active, onClick }: { label: string; active: boolean; onCl
   return (
     <button
       onClick={onClick}
-      className="flex items-center justify-center px-3 py-2 rounded-xl transition-all active:scale-95"
+      className="flex items-center justify-center transition-all active:scale-95"
       style={{
+        padding: '8px 14px',
+        borderRadius: '20px',
         background: active ? '#e8f5f3' : '#f0f5f4',
         border: `1.5px solid ${active ? '#a3d4ce' : '#e0eeec'}`,
         color: active ? '#2d8b7a' : '#6b8a85',
@@ -440,7 +442,7 @@ export function InputScreen({ onSubmit }: Props) {
           <>
             <StepTitle>{t.tripType}</StepTitle>
             <p style={{ fontSize: '13px', color: '#9bb5b0', marginBottom: '16px', marginTop: '-16px' }}>{lang === 'en' ? 'Multiple allowed' : 'Mehrere möglich'}</p>
-            <div className="grid grid-cols-2 gap-2">
+            <div className="flex flex-wrap gap-2">
               {travelTypeOptions.map(({ key, label }) => (
                 <Chip
                   key={key}
@@ -465,7 +467,7 @@ export function InputScreen({ onSubmit }: Props) {
 
             <div className="card p-5 mb-3">
               <p className="section-label mb-3">Was magst du essen?</p>
-              <div className="grid grid-cols-2 gap-2">
+              <div className="flex flex-wrap gap-2">
                 {cuisineOptions.map((c) => (
                   <Chip key={c} label={c} active={cuisines.includes(c)} onClick={() => toggleMulti(cuisines, c, setCuisines)} />
                 ))}
@@ -474,7 +476,7 @@ export function InputScreen({ onSubmit }: Props) {
 
             <div className="card p-5">
               <p className="section-label mb-3">Unterkunft</p>
-              <div className="grid grid-cols-2 gap-2">
+              <div className="flex flex-wrap gap-2">
                 {accommodationOptions.map((a) => (
                   <Chip key={a} label={a} active={accommodation === a} onClick={() => setAccommodation(accommodation === a ? '' : a)} />
                 ))}
@@ -513,7 +515,7 @@ export function InputScreen({ onSubmit }: Props) {
 
             <div className="card p-5">
               <p className="section-label mb-3">Was möchtest du vermeiden?</p>
-              <div className="grid grid-cols-2 gap-2">
+              <div className="flex flex-wrap gap-2">
                 {avoidOptions.map((a) => (
                   <Chip key={a} label={a} active={avoid.includes(a)} onClick={() => toggleMulti(avoid, a, setAvoid)} />
                 ))}
@@ -529,10 +531,10 @@ export function InputScreen({ onSubmit }: Props) {
 
   // ── Render ────────────────────────────────────────────────────────────────────
   return (
-    <div className="min-h-screen" style={{ background: '#f0f7f6' }}>
+    <div style={{ height: '100%', display: 'flex', flexDirection: 'column', overflow: 'hidden', background: '#f0f7f6' }}>
       {/* Header + progress — only for steps 2+ */}
       {step > 1 && (
-        <div className="px-5 pt-14 pb-2" style={{ borderBottom: '1px solid #e0eeec', background: '#ffffff' }}>
+        <div className="px-5 pt-14 pb-2" style={{ borderBottom: '1px solid #e0eeec', background: '#ffffff', flexShrink: 0 }}>
           <p className="section-label mb-3">Tripsilo</p>
           <div style={{ height: '3px', background: '#e0eeec', borderRadius: '2px', marginBottom: '8px' }}>
             <div
@@ -551,24 +553,25 @@ export function InputScreen({ onSubmit }: Props) {
         </div>
       )}
 
-      {/* Step content */}
-      <div
-        key={step}
-        className={dir === 'fwd' ? 'step-enter' : 'step-enter-back'}
-        style={{ padding: step === 1 ? '0' : '28px 16px 160px' }}
-      >
-        {renderStep()}
+      {/* Scrollable step content */}
+      <div style={{ flex: 1, overflowY: 'auto', overflowX: 'hidden', WebkitOverflowScrolling: 'touch', overscrollBehaviorY: 'contain' }}>
+        <div
+          key={step}
+          className={dir === 'fwd' ? 'step-enter' : 'step-enter-back'}
+          style={{ padding: step === 1 ? '0' : '28px 16px 24px' }}
+        >
+          {renderStep()}
+        </div>
       </div>
 
-      {/* Navigation buttons — fixed above BottomNav */}
+      {/* Navigation buttons — always visible, never overlaps content */}
       <div
-        className="fixed left-0 right-0"
         style={{
-          bottom: '64px',
-          padding: '16px 16px 8px',
-          background: 'linear-gradient(to bottom, transparent, #f0f7f6 40%)',
-          maxWidth: '448px',
-          margin: '0 auto',
+          padding: '16px 20px',
+          paddingBottom: 'calc(16px + env(safe-area-inset-bottom))',
+          background: '#ffffff',
+          borderTop: '1px solid #e0eeec',
+          flexShrink: 0,
         }}
       >
         <div className="flex gap-2">
