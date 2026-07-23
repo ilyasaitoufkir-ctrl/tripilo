@@ -1,4 +1,4 @@
-import { Plane, Bookmark, Star, Mic } from 'lucide-react';
+import { Plane, MapPin, Camera, HelpCircle, Mic } from 'lucide-react';
 import type { Screen } from '../types';
 
 interface Props {
@@ -9,13 +9,14 @@ interface Props {
 }
 
 const tabs = [
-  { id: 'input' as Screen, label: 'Planen',       icon: Plane,    activeOn: ['input', 'plan', 'loading'] as Screen[] },
-  { id: 'saved' as Screen, label: 'Gespeichert',  icon: Bookmark, activeOn: ['saved'] as Screen[] },
-  { id: 'guide' as Screen, label: 'Guide',         icon: Mic,      activeOn: ['guide'] as Screen[] },
-  { id: 'rating' as Screen, label: 'Bewertungen', icon: Star,     activeOn: ['rating'] as Screen[] },
+  { id: 'input'      as Screen, label: 'Planen',     icon: Plane,       activeOn: ['input', 'plan', 'loading', 'packing', 'saved', 'rating'] as Screen[] },
+  { id: 'entdecken'  as Screen, label: 'Entdecken',  icon: MapPin,      activeOn: ['entdecken'] as Screen[] },
+  { id: 'translator' as Screen, label: 'Übersetzer', icon: Camera,      activeOn: ['translator'] as Screen[] },
+  { id: 'quiz'       as Screen, label: 'Quiz',       icon: HelpCircle,  activeOn: ['quiz'] as Screen[] },
+  { id: 'guide'      as Screen, label: 'Guide',      icon: Mic,         activeOn: ['guide'] as Screen[] },
 ] as const;
 
-export function BottomNav({ screen, onNavigate, savedCount, ratingsCount }: Props) {
+export function BottomNav({ screen, onNavigate }: Props) {
   return (
     <nav
       className="fixed bottom-0 left-0 right-0 z-50"
@@ -27,30 +28,20 @@ export function BottomNav({ screen, onNavigate, savedCount, ratingsCount }: Prop
     >
       <div className="flex items-center justify-around max-w-md mx-auto px-1 py-2">
         {tabs.map(({ id, label, icon: Icon, activeOn }) => {
-          const isActive = activeOn.includes(screen);
-          const badge = id === 'saved' ? savedCount : id === 'rating' ? ratingsCount : 0;
+          const isActive = (activeOn as readonly Screen[]).includes(screen);
           return (
             <button
               key={id}
               onClick={() => onNavigate(id)}
-              className="flex flex-col items-center gap-1 px-4 py-2 rounded-2xl transition-all"
+              className="flex flex-col items-center gap-0.5 px-2 py-2 rounded-2xl transition-all"
               style={{
                 background: isActive ? '#f0eeff' : 'transparent',
                 color: isActive ? '#8b7cf8' : '#aeaeb2',
+                minWidth: '56px',
               }}
             >
-              <div className="relative">
-                <Icon size={20} strokeWidth={isActive ? 2 : 1.5} />
-                {badge > 0 && (
-                  <span
-                    className="absolute -top-1 -right-2 w-4 h-4 rounded-full flex items-center justify-center text-white"
-                    style={{ background: '#8b7cf8', fontSize: '9px', fontWeight: 500 }}
-                  >
-                    {badge > 9 ? '9+' : badge}
-                  </span>
-                )}
-              </div>
-              <span style={{ fontSize: '10px', fontWeight: isActive ? 500 : 400 }}>{label}</span>
+              <Icon size={20} strokeWidth={isActive ? 2 : 1.5} />
+              <span style={{ fontSize: '9px', fontWeight: isActive ? 500 : 400 }}>{label}</span>
             </button>
           );
         })}

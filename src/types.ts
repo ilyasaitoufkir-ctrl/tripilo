@@ -101,4 +101,7 @@ export type Screen =
   | 'saved'
   | 'rating'
   | 'packing'
-  | 'guide';
+  | 'guide'
+  | 'entdecken'
+  | 'translator'
+  | 'quiz';

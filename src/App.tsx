@@ -7,6 +7,9 @@ import { PackingListScreen } from './screens/PackingListScreen';
 import { VoiceGuideScreen } from './screens/VoiceGuideScreen';
 import { SavedTripsScreen } from './screens/SavedTripsScreen';
 import { RatingScreen } from './screens/RatingScreen';
+import { EntdeckenScreen } from './screens/EntdeckenScreen';
+import { TranslatorScreen } from './screens/TranslatorScreen';
+import { CityQuizScreen } from './screens/CityQuizScreen';
 import { BottomNav } from './components/BottomNav';
 import { generateTripPlan } from './api';
 import type { Screen, TripInput, TripPlan, SavedTrip, TripRating } from './types';
@@ -19,7 +22,10 @@ const load = <T,>(key: string, fallback: T): T => {
   catch { return fallback; }
 };
 
-const BOTTOM_NAV_SCREENS: Screen[] = ['input', 'plan', 'saved', 'rating', 'guide'];
+const BOTTOM_NAV_SCREENS: Screen[] = [
+  'input', 'plan', 'loading', 'saved', 'rating', 'packing',
+  'guide', 'entdecken', 'translator', 'quiz',
+];
 
 export default function App() {
   const [screen, setScreen] = useState<Screen>('welcome');
@@ -163,6 +169,16 @@ export default function App() {
 
       {screen === 'guide' && (
         <VoiceGuideScreen destination={currentPlan?.destination ?? ''} />
+      )}
+
+      {screen === 'entdecken' && <EntdeckenScreen />}
+
+      {screen === 'translator' && (
+        <TranslatorScreen destination={currentPlan?.destination ?? ''} />
+      )}
+
+      {screen === 'quiz' && (
+        <CityQuizScreen destination={currentPlan?.destination ?? ''} />
       )}
 
       {screen === 'saved' && (
