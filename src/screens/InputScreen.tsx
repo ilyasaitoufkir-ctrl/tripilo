@@ -1,125 +1,162 @@
 import { useState } from 'react';
-import {
-  MapPin, Plane, Waves, Mountain, Landmark, Music2, UtensilsCrossed, Users,
-  Zap, Sparkles, Trophy, ShoppingBag, Heart, Car, Backpack, Gem,
-  Compass, Building2, Snowflake, Ship, Camera, Leaf, CalendarDays,
-} from 'lucide-react';
+import { MapPin, Plane, ChevronLeft, Shuffle, CalendarDays } from 'lucide-react';
 import type { TripInput } from '../types';
 
 interface Props {
   onSubmit: (input: TripInput) => void;
 }
 
-const travelTypeOptions: { key: string; label: string; icon: React.ElementType }[] = [
-  { key: 'strand',      label: 'Strand',      icon: Waves },
-  { key: 'natur',       label: 'Natur',        icon: Mountain },
-  { key: 'kultur',      label: 'Kultur',       icon: Landmark },
-  { key: 'staedte',     label: 'Städtetrip',   icon: Building2 },
-  { key: 'food',        label: 'Food',         icon: UtensilsCrossed },
-  { key: 'party',       label: 'Party',        icon: Music2 },
-  { key: 'abenteuer',   label: 'Abenteuer',    icon: Zap },
-  { key: 'wellness',    label: 'Wellness',     icon: Sparkles },
-  { key: 'sport',       label: 'Sport',        icon: Trophy },
-  { key: 'shopping',    label: 'Shopping',     icon: ShoppingBag },
-  { key: 'romantik',    label: 'Romantik',     icon: Heart },
-  { key: 'roadtrip',    label: 'Road Trip',    icon: Car },
-  { key: 'backpacking', label: 'Backpacking',  icon: Backpack },
-  { key: 'luxus',       label: 'Luxus',        icon: Gem },
-  { key: 'trekking',    label: 'Trekking',     icon: Compass },
-  { key: 'familie',     label: 'Familie',      icon: Users },
-  { key: 'winter',      label: 'Winter',       icon: Snowflake },
-  { key: 'kreuzfahrt',  label: 'Kreuzfahrt',   icon: Ship },
-  { key: 'fotografie',  label: 'Fotografie',   icon: Camera },
-  { key: 'yoga',        label: 'Yoga & Retreat', icon: Leaf },
+const TOTAL_STEPS = 6;
+
+const surpriseDestinations = [
+  'Barcelona', 'Bali', 'Bangkok', 'New York', 'Tokyo', 'Lissabon',
+  'Marokko', 'Santorini', 'Island', 'Dubai', 'Rom', 'Amsterdam',
+  'Singapur', 'Kapstadt', 'Miami', 'Sydney', 'Kopenhagen', 'Phuket',
+  'Venedig', 'Paris', 'Istanbul', 'Rio de Janeiro',
 ];
 
-const ageGroups = ['16–25', '26–35', '36–50', '51–65', '65+'];
+const travelTypeOptions = [
+  { key: 'strand',      label: 'Strand & Meer' },
+  { key: 'natur',       label: 'Berge & Natur' },
+  { key: 'staedte',     label: 'Städtetrip' },
+  { key: 'kultur',      label: 'Kultur' },
+  { key: 'party',       label: 'Party & Nightlife' },
+  { key: 'food',        label: 'Food & Genuss' },
+  { key: 'sport',       label: 'Sporturlaub' },
+  { key: 'sportevents', label: 'Sport Events' },
+  { key: 'wellness',    label: 'Wellness & Spa' },
+  { key: 'abenteuer',   label: 'Abenteuer' },
+  { key: 'roadtrip',    label: 'Roadtrip' },
+  { key: 'familie',     label: 'Familienurlaub' },
+  { key: 'romantik',    label: 'Romantik' },
+  { key: 'festival',    label: 'Festival' },
+  { key: 'backpacking', label: 'Backpacking' },
+  { key: 'luxus',       label: 'Luxusurlaub' },
+  { key: 'tauchen',     label: 'Tauchen' },
+  { key: 'ski',         label: 'Skiurlaub' },
+];
 
 const cuisineOptions = [
-  'Mediterran', 'Asiatisch', 'Japanisch', 'Indisch', 'Mexikanisch',
-  'Amerikanisch', 'Französisch', 'Italienisch', 'Griechisch', 'Türkisch',
-  'Arabisch', 'Vegan', 'Seafood', 'Lokal & Traditionell',
-];
-
-const avoidOptions = [
-  'Touristenfallen', 'Massentourismus', 'Alkohol', 'Nachtleben',
-  'Extremsport', 'Lange Fußwege', 'Überfüllte Orte', 'Tierattraktionen',
-  'Kinderunfreundliches', 'Sprachbarrieren',
+  'Authentische Küche', 'Street Food', 'Fine Dining', 'Vegetarisch',
+  'Seafood', 'Fast Food', 'Sushi', 'Halal',
 ];
 
 const accommodationOptions = [
-  'Hotel', 'Hostel', 'Airbnb / Apartment', 'Resort',
-  'Boutique Hotel', 'Camping', 'Glamping', 'Villa',
+  'Luxushotel', 'Boutique Hotel', 'Budget Hotel', 'Hostel', 'Airbnb', 'Resort',
 ];
 
-function SectionCard({ children }: { children: React.ReactNode }) {
-  return <div className="card p-5">{children}</div>;
+const avoidOptions = [
+  'Touristenfallen', 'Volle Orte', 'Teure Restaurants', 'Partys & Lärm',
+  'Lange Fußwege', 'Straßenessen',
+];
+
+const departureCities = ['Hamburg', 'Berlin', 'München', 'Frankfurt', 'Köln', 'Wien', 'Zürich'];
+
+// ── Small helpers ──────────────────────────────────────────────────────────────
+function StepTitle({ children }: { children: React.ReactNode }) {
+  return (
+    <h2 style={{ fontSize: '26px', fontWeight: 500, color: '#1c1c1e', letterSpacing: '-0.5px', lineHeight: 1.2, marginBottom: '24px' }}>
+      {children}
+    </h2>
+  );
 }
 
-function SectionLabel({ text }: { text: string }) {
-  return <p className="section-label mb-3">{text}</p>;
-}
-
-function ChipGrid({ children }: { children: React.ReactNode }) {
-  return <div className="flex flex-wrap gap-2">{children}</div>;
-}
-
-function Chip({
-  label, active, onClick, icon: Icon,
-}: {
-  label: string; active: boolean; onClick: () => void; icon?: React.ElementType;
-}) {
+function Chip({ label, active, onClick }: { label: string; active: boolean; onClick: () => void }) {
   return (
     <button
       onClick={onClick}
-      className="flex items-center gap-1.5 px-3 py-1.5 rounded-full transition-all active:scale-95"
+      className="flex items-center justify-center px-3 py-2 rounded-xl transition-all active:scale-95"
       style={{
         background: active ? '#f0eeff' : '#f5f5f7',
-        border: `1px solid ${active ? '#c4b5fd' : '#e8e8ed'}`,
+        border: `1.5px solid ${active ? '#c4b5fd' : '#e8e8ed'}`,
         color: active ? '#8b7cf8' : '#6e6e73',
         fontSize: '13px',
         fontWeight: active ? 500 : 400,
         cursor: 'pointer',
       }}
     >
-      {Icon && <Icon size={12} strokeWidth={1.5} />}
       {label}
     </button>
   );
 }
 
+function Stepper({
+  value, min, max, onChange, label, unit,
+}: {
+  value: number; min: number; max: number; onChange: (v: number) => void;
+  label: string; unit: string;
+}) {
+  return (
+    <div className="card p-5">
+      <p className="section-label mb-4">{label}</p>
+      <div className="flex items-center justify-between">
+        <button
+          onClick={() => onChange(Math.max(min, value - 1))}
+          className="w-12 h-12 rounded-xl flex items-center justify-center transition-all active:scale-90"
+          style={{ background: '#f5f5f7', border: '1px solid #e8e8ed', color: '#1c1c1e', fontSize: '20px', fontWeight: 300 }}
+        >
+          −
+        </button>
+        <div className="text-center">
+          <span style={{ fontSize: '44px', fontWeight: 300, color: '#1c1c1e', letterSpacing: '-2px' }}>{value}</span>
+          <span style={{ fontSize: '18px', fontWeight: 300, color: '#6e6e73', marginLeft: '6px' }}>{unit}</span>
+        </div>
+        <button
+          onClick={() => onChange(Math.min(max, value + 1))}
+          className="w-12 h-12 rounded-xl flex items-center justify-center transition-all active:scale-90"
+          style={{ background: '#f5f5f7', border: '1px solid #e8e8ed', color: '#1c1c1e', fontSize: '20px', fontWeight: 300 }}
+        >
+          +
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ── Main component ─────────────────────────────────────────────────────────────
 export function InputScreen({ onSubmit }: Props) {
-  const [destination, setDestination] = useState('');
-  const [budget, setBudget] = useState(2000);
-  const [days, setDays] = useState(7);
-  const [persons, setPersons] = useState(2);
-  const [selectedTypes, setSelectedTypes] = useState<string[]>(['strand']);
-  const [ageGroup, setAgeGroup] = useState('');
-  const [cuisines, setCuisines] = useState<string[]>([]);
-  const [accommodation, setAccommodation] = useState('');
-  const [avoid, setAvoid] = useState<string[]>([]);
-  const [departureCity, setDepartureCity] = useState('');
-  const [customCity, setCustomCity] = useState('');
+  const [step, setStep]           = useState(1);
+  const [dir, setDir]             = useState<'fwd' | 'back'>('fwd');
+
+  // Form state
+  const [destination, setDestination]     = useState('');
+  const [departureCity, setDepartureCity] = useState('Hamburg');
+  const [customCity, setCustomCity]       = useState('');
   const [departureDate, setDepartureDate] = useState('');
-  const [returnDate, setReturnDate] = useState('');
+  const [returnDate, setReturnDate]       = useState('');
+  const [days, setDays]                   = useState(7);
+  const [persons, setPersons]             = useState(2);
+  const [age, setAge]                     = useState(25);
+  const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
+  const [cuisines, setCuisines]           = useState<string[]>([]);
+  const [accommodation, setAccommodation] = useState('');
+  const [budget, setBudget]               = useState(2000);
+  const [avoid, setAvoid]                 = useState<string[]>([]);
 
   const today = new Date().toISOString().split('T')[0];
-  const departureCities = ['Hamburg', 'Berlin', 'München', 'Frankfurt', 'Köln', 'Wien', 'Zürich'];
 
   const toggleMulti = (arr: string[], val: string, set: (v: string[]) => void) =>
     set(arr.includes(val) ? arr.filter((x) => x !== val) : [...arr, val]);
 
-  const canSubmit = destination.trim().length > 0 && selectedTypes.length > 0;
+  const canProceed = () => {
+    if (step === 1) return destination.trim().length > 0;
+    if (step === 4) return selectedTypes.length > 0;
+    return true;
+  };
+
+  const go = (direction: 'fwd' | 'back') => {
+    setDir(direction);
+    setStep((s) => s + (direction === 'fwd' ? 1 : -1));
+  };
 
   const handleSubmit = () => {
-    if (!canSubmit) return;
     onSubmit({
       destination: destination.trim(),
       budget,
       days,
       persons,
       travelTypes: selectedTypes,
-      ageGroup: ageGroup || undefined,
+      ageGroup: String(age),
       cuisines: cuisines.length ? cuisines : undefined,
       accommodation: accommodation || undefined,
       avoid: avoid.length ? avoid : undefined,
@@ -129,283 +166,287 @@ export function InputScreen({ onSubmit }: Props) {
     });
   };
 
-  return (
-    <div className="min-h-screen pb-28" style={{ background: '#fafafa' }}>
-      <div className="px-5 pt-14 pb-6">
-        <p className="section-label mb-1">Tripsilo</p>
-        <h1 style={{ fontSize: '28px', fontWeight: 500, color: '#1c1c1e', letterSpacing: '-0.5px', lineHeight: 1.2 }}>
-          Reise planen
-        </h1>
-      </div>
-
-      <div className="px-4 space-y-3">
-        {/* Destination */}
-        <SectionCard>
-          <SectionLabel text="Wohin?" />
-          <div className="flex items-center gap-3">
-            <MapPin size={18} strokeWidth={1.5} style={{ color: '#8b7cf8', flexShrink: 0 }} />
-            <input
-              type="text"
-              value={destination}
-              onChange={(e) => setDestination(e.target.value)}
-              placeholder="z.B. Barcelona, Bali, New York..."
-              className="w-full outline-none"
-              style={{ fontSize: '16px', fontWeight: 400, color: '#1c1c1e', background: 'transparent', border: 'none' }}
-            />
-          </div>
-        </SectionCard>
-
-        {/* Budget */}
-        <SectionCard>
-          <SectionLabel text="Budget" />
-          <div className="flex items-end justify-between mb-4">
-            <div className="flex items-baseline gap-1">
-              <span style={{ fontSize: '36px', fontWeight: 300, color: '#1c1c1e', letterSpacing: '-1px' }}>
-                {budget.toLocaleString('de-DE')}
-              </span>
-              <span style={{ fontSize: '18px', fontWeight: 300, color: '#6e6e73' }}>€</span>
-            </div>
-            {persons > 1 && (
-              <span style={{ fontSize: '13px', color: '#aeaeb2', paddingBottom: '4px' }}>
-                {Math.round(budget / persons).toLocaleString('de-DE')}€ / Person
-              </span>
-            )}
-          </div>
-          <input
-            type="range" min={100} max={10000} step={100}
-            value={budget} onChange={(e) => setBudget(Number(e.target.value))}
-          />
-          <div className="flex justify-between mt-2">
-            <span style={{ fontSize: '12px', color: '#aeaeb2' }}>100€</span>
-            <span style={{ fontSize: '12px', color: '#aeaeb2' }}>10.000€</span>
-          </div>
-        </SectionCard>
-
-        {/* Days + Persons */}
-        <div className="grid grid-cols-2 gap-3">
-          <SectionCard>
-            <SectionLabel text="Dauer" />
-            <div className="flex items-baseline gap-1 mb-3">
-              <span style={{ fontSize: '32px', fontWeight: 300, color: '#1c1c1e', letterSpacing: '-1px' }}>{days}</span>
-              <span style={{ fontSize: '16px', fontWeight: 300, color: '#6e6e73' }}>{days === 1 ? 'Tag' : 'Tage'}</span>
-            </div>
-            <input
-              type="range" min={1} max={30} step={1}
-              value={days} onChange={(e) => setDays(Number(e.target.value))}
-            />
-            <div className="flex justify-between mt-1">
-              <span style={{ fontSize: '11px', color: '#aeaeb2' }}>1</span>
-              <span style={{ fontSize: '11px', color: '#aeaeb2' }}>30</span>
-            </div>
-          </SectionCard>
-
-          <SectionCard>
-            <SectionLabel text="Personen" />
-            <div className="flex flex-col items-center gap-2 pt-1">
-              <span style={{ fontSize: '32px', fontWeight: 300, color: '#1c1c1e', letterSpacing: '-1px' }}>{persons}</span>
-              <div className="flex gap-2">
-                <button
-                  onClick={() => setPersons(Math.max(1, persons - 1))}
-                  className="w-8 h-8 rounded-lg flex items-center justify-center transition-all active:scale-90"
-                  style={{ background: '#f5f5f7', border: '1px solid #e8e8ed', color: '#1c1c1e', fontSize: '16px' }}
-                >
-                  −
-                </button>
-                <button
-                  onClick={() => setPersons(Math.min(20, persons + 1))}
-                  className="w-8 h-8 rounded-lg flex items-center justify-center transition-all active:scale-90"
-                  style={{ background: '#f5f5f7', border: '1px solid #e8e8ed', color: '#1c1c1e', fontSize: '16px' }}
-                >
-                  +
-                </button>
+  // ── Step content ──────────────────────────────────────────────────────────────
+  const renderStep = () => {
+    switch (step) {
+      case 1:
+        return (
+          <>
+            <StepTitle>Wohin möchtest du reisen?</StepTitle>
+            <div className="card p-4 mb-3">
+              <div className="flex items-center gap-3">
+                <MapPin size={18} strokeWidth={1.5} style={{ color: '#8b7cf8', flexShrink: 0 }} />
+                <input
+                  type="text"
+                  value={destination}
+                  onChange={(e) => setDestination(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && canProceed() && go('fwd')}
+                  placeholder="z.B. Barcelona, Bali, New York..."
+                  className="w-full outline-none"
+                  style={{ fontSize: '16px', color: '#1c1c1e', background: 'transparent', border: 'none' }}
+                  autoFocus
+                />
               </div>
             </div>
-          </SectionCard>
-        </div>
+            <button
+              onClick={() => {
+                const r = surpriseDestinations[Math.floor(Math.random() * surpriseDestinations.length)];
+                setDestination(r);
+              }}
+              className="w-full flex items-center justify-center gap-2 py-3 rounded-xl transition-all active:scale-95"
+              style={{ background: '#fafafa', border: '1px solid #e8e8ed', color: '#6e6e73', fontSize: '14px', cursor: 'pointer' }}
+            >
+              <Shuffle size={15} strokeWidth={1.5} />
+              Überrasch mich!
+            </button>
+          </>
+        );
 
-        {/* Travel Types */}
-        <SectionCard>
-          <SectionLabel text="Reiseart — mehrere wählbar" />
-          <div className="grid grid-cols-3 gap-2">
-            {travelTypeOptions.map(({ key, label, icon: Icon }) => {
-              const active = selectedTypes.includes(key);
-              return (
-                <button
+      case 2:
+        return (
+          <>
+            <StepTitle>Wann reist du?</StepTitle>
+
+            {/* Departure city */}
+            <div className="card p-5 mb-3">
+              <p className="section-label mb-3">Abflugstadt</p>
+              <div className="flex flex-wrap gap-2">
+                {departureCities.map((c) => (
+                  <Chip
+                    key={c}
+                    label={c}
+                    active={departureCity === c}
+                    onClick={() => { setDepartureCity(c); setCustomCity(''); }}
+                  />
+                ))}
+                <Chip
+                  label="Andere"
+                  active={departureCity === 'Andere'}
+                  onClick={() => setDepartureCity('Andere')}
+                />
+              </div>
+              {departureCity === 'Andere' && (
+                <input
+                  type="text"
+                  value={customCity}
+                  onChange={(e) => setCustomCity(e.target.value)}
+                  placeholder="Stadt eingeben..."
+                  className="w-full outline-none mt-3"
+                  style={{ fontSize: '15px', color: '#1c1c1e', background: 'transparent', border: 'none', borderBottom: '1px solid #e8e8ed', paddingBottom: '6px' }}
+                />
+              )}
+            </div>
+
+            {/* Dates */}
+            <div className="card p-5 mb-3">
+              <div className="flex items-center gap-2 mb-3">
+                <CalendarDays size={13} strokeWidth={1.5} style={{ color: '#8b7cf8' }} />
+                <p className="section-label">Reisedaten (optional)</p>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <p style={{ fontSize: '11px', color: '#aeaeb2', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Hinreise</p>
+                  <input
+                    type="date" value={departureDate} min={today}
+                    onChange={(e) => { setDepartureDate(e.target.value); if (returnDate && returnDate < e.target.value) setReturnDate(''); }}
+                    className="w-full outline-none"
+                    style={{ fontSize: '14px', color: '#1c1c1e', background: 'transparent', border: '1px solid #e8e8ed', borderRadius: '10px', padding: '8px 10px' }}
+                  />
+                </div>
+                <div>
+                  <p style={{ fontSize: '11px', color: '#aeaeb2', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Rückreise</p>
+                  <input
+                    type="date" value={returnDate} min={departureDate || today}
+                    onChange={(e) => setReturnDate(e.target.value)}
+                    className="w-full outline-none"
+                    style={{ fontSize: '14px', color: '#1c1c1e', background: 'transparent', border: '1px solid #e8e8ed', borderRadius: '10px', padding: '8px 10px' }}
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Days */}
+            <Stepper value={days} min={1} max={30} onChange={setDays} label="Wie viele Tage?" unit={days === 1 ? 'Tag' : 'Tage'} />
+          </>
+        );
+
+      case 3:
+        return (
+          <>
+            <StepTitle>Wer reist mit?</StepTitle>
+            <div className="space-y-3">
+              <Stepper value={persons} min={1} max={20} onChange={setPersons} label="Personen" unit={persons === 1 ? 'Person' : 'Personen'} />
+              <Stepper value={age} min={16} max={99} onChange={setAge} label="Dein Alter" unit="Jahre" />
+            </div>
+          </>
+        );
+
+      case 4:
+        return (
+          <>
+            <StepTitle>Was für eine Reise?</StepTitle>
+            <p style={{ fontSize: '13px', color: '#aeaeb2', marginBottom: '16px', marginTop: '-16px' }}>Mehrere möglich</p>
+            <div className="grid grid-cols-2 gap-2">
+              {travelTypeOptions.map(({ key, label }) => (
+                <Chip
                   key={key}
+                  label={label}
+                  active={selectedTypes.includes(key)}
                   onClick={() => toggleMulti(selectedTypes, key, setSelectedTypes)}
-                  className="flex flex-col items-center gap-1.5 py-3 rounded-2xl transition-all active:scale-95"
-                  style={{
-                    background: active ? '#f0eeff' : '#fafafa',
-                    border: `1px solid ${active ? '#c4b5fd' : '#e8e8ed'}`,
-                    color: active ? '#8b7cf8' : '#6e6e73',
-                    fontSize: '12px',
-                    fontWeight: active ? 500 : 400,
-                    cursor: 'pointer',
-                  }}
-                >
-                  <Icon size={15} strokeWidth={1.5} />
-                  {label}
-                </button>
-              );
-            })}
-          </div>
-          {selectedTypes.length === 0 && (
-            <p className="text-center mt-3" style={{ fontSize: '13px', color: '#f472b6' }}>
-              Mindestens eine Reiseart wählen
-            </p>
-          )}
-        </SectionCard>
-
-        {/* Age Group */}
-        <SectionCard>
-          <SectionLabel text="Altersgruppe (optional)" />
-          <ChipGrid>
-            {ageGroups.map((a) => (
-              <Chip
-                key={a}
-                label={a}
-                active={ageGroup === a}
-                onClick={() => setAgeGroup(ageGroup === a ? '' : a)}
-              />
-            ))}
-          </ChipGrid>
-        </SectionCard>
-
-        {/* Cuisine */}
-        <SectionCard>
-          <SectionLabel text="Küchenpräferenzen (optional)" />
-          <ChipGrid>
-            {cuisineOptions.map((c) => (
-              <Chip
-                key={c}
-                label={c}
-                active={cuisines.includes(c)}
-                onClick={() => toggleMulti(cuisines, c, setCuisines)}
-              />
-            ))}
-          </ChipGrid>
-        </SectionCard>
-
-        {/* Accommodation */}
-        <SectionCard>
-          <SectionLabel text="Unterkunft (optional)" />
-          <ChipGrid>
-            {accommodationOptions.map((a) => (
-              <Chip
-                key={a}
-                label={a}
-                active={accommodation === a}
-                onClick={() => setAccommodation(accommodation === a ? '' : a)}
-              />
-            ))}
-          </ChipGrid>
-        </SectionCard>
-
-        {/* Avoid */}
-        <SectionCard>
-          <SectionLabel text="Vermeiden (optional)" />
-          <ChipGrid>
-            {avoidOptions.map((a) => (
-              <Chip
-                key={a}
-                label={a}
-                active={avoid.includes(a)}
-                onClick={() => toggleMulti(avoid, a, setAvoid)}
-              />
-            ))}
-          </ChipGrid>
-        </SectionCard>
-
-        {/* Departure city */}
-        <SectionCard>
-          <div className="flex items-center gap-2 mb-3">
-            <Plane size={13} strokeWidth={1.5} style={{ color: '#8b7cf8' }} />
-            <SectionLabel text="Abflugstadt (optional)" />
-          </div>
-          <ChipGrid>
-            {departureCities.map((c) => (
-              <Chip
-                key={c}
-                label={c}
-                active={departureCity === c}
-                onClick={() => { setDepartureCity(departureCity === c ? '' : c); setCustomCity(''); }}
-              />
-            ))}
-            <Chip
-              label="Andere"
-              active={departureCity === 'Andere'}
-              onClick={() => setDepartureCity(departureCity === 'Andere' ? '' : 'Andere')}
-            />
-          </ChipGrid>
-          {departureCity === 'Andere' && (
-            <input
-              type="text"
-              value={customCity}
-              onChange={(e) => setCustomCity(e.target.value)}
-              placeholder="z.B. Stuttgart, Hannover..."
-              className="w-full outline-none mt-3"
-              style={{ fontSize: '15px', color: '#1c1c1e', background: 'transparent', border: 'none', borderBottom: '1px solid #e8e8ed', paddingBottom: '6px' }}
-            />
-          )}
-        </SectionCard>
-
-        {/* Travel dates */}
-        <SectionCard>
-          <div className="flex items-center gap-2 mb-3">
-            <CalendarDays size={13} strokeWidth={1.5} style={{ color: '#8b7cf8' }} />
-            <SectionLabel text="Reisedaten (optional)" />
-          </div>
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <p style={{ fontSize: '11px', color: '#aeaeb2', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Hinflug</p>
-              <input
-                type="date"
-                value={departureDate}
-                min={today}
-                onChange={(e) => {
-                  setDepartureDate(e.target.value);
-                  if (returnDate && returnDate < e.target.value) setReturnDate('');
-                }}
-                className="w-full outline-none"
-                style={{ fontSize: '14px', color: '#1c1c1e', background: 'transparent', border: '1px solid #e8e8ed', borderRadius: '10px', padding: '8px 10px' }}
-              />
+                />
+              ))}
             </div>
-            <div>
-              <p style={{ fontSize: '11px', color: '#aeaeb2', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Rückflug</p>
-              <input
-                type="date"
-                value={returnDate}
-                min={departureDate || today}
-                onChange={(e) => setReturnDate(e.target.value)}
-                className="w-full outline-none"
-                style={{ fontSize: '14px', color: '#1c1c1e', background: 'transparent', border: '1px solid #e8e8ed', borderRadius: '10px', padding: '8px 10px' }}
-              />
-            </div>
-          </div>
-        </SectionCard>
+            {selectedTypes.length === 0 && (
+              <p className="text-center mt-4" style={{ fontSize: '13px', color: '#f472b6' }}>
+                Mindestens eine Reiseart wählen
+              </p>
+            )}
+          </>
+        );
 
-        {/* Submit */}
-        <button
-          onClick={handleSubmit}
-          disabled={!canSubmit}
-          className="w-full transition-all active:scale-[0.98]"
-          style={{
-            background: canSubmit ? '#8b7cf8' : '#e8e8ed',
-            color: canSubmit ? '#ffffff' : '#aeaeb2',
-            borderRadius: '12px',
-            padding: '15px',
-            fontSize: '15px',
-            fontWeight: 500,
-            border: 'none',
-            cursor: canSubmit ? 'pointer' : 'not-allowed',
-            letterSpacing: '-0.1px',
-          }}
-        >
-          <span className="flex items-center justify-center gap-2">
-            <Plane size={17} strokeWidth={1.5} />
-            Plan erstellen
-          </span>
-        </button>
+      case 5:
+        return (
+          <>
+            <StepTitle>Essen & Unterkunft</StepTitle>
+
+            <div className="card p-5 mb-3">
+              <p className="section-label mb-3">Was magst du essen?</p>
+              <div className="grid grid-cols-2 gap-2">
+                {cuisineOptions.map((c) => (
+                  <Chip key={c} label={c} active={cuisines.includes(c)} onClick={() => toggleMulti(cuisines, c, setCuisines)} />
+                ))}
+              </div>
+            </div>
+
+            <div className="card p-5">
+              <p className="section-label mb-3">Unterkunft</p>
+              <div className="grid grid-cols-2 gap-2">
+                {accommodationOptions.map((a) => (
+                  <Chip key={a} label={a} active={accommodation === a} onClick={() => setAccommodation(accommodation === a ? '' : a)} />
+                ))}
+              </div>
+            </div>
+          </>
+        );
+
+      case 6:
+        return (
+          <>
+            <StepTitle>Budget & Präferenzen</StepTitle>
+
+            <div className="card p-5 mb-3">
+              <p className="section-label mb-4">Dein Budget</p>
+              <div className="flex items-baseline gap-1 mb-4">
+                <span style={{ fontSize: '40px', fontWeight: 300, color: '#1c1c1e', letterSpacing: '-1px' }}>
+                  {budget.toLocaleString('de-DE')}
+                </span>
+                <span style={{ fontSize: '20px', fontWeight: 300, color: '#6e6e73' }}>€</span>
+                {persons > 1 && (
+                  <span style={{ fontSize: '13px', color: '#aeaeb2', marginLeft: 'auto', paddingBottom: '4px' }}>
+                    ≈ {Math.round(budget / persons).toLocaleString('de-DE')}€ / Person
+                  </span>
+                )}
+              </div>
+              <input
+                type="range" min={100} max={10000} step={100}
+                value={budget} onChange={(e) => setBudget(Number(e.target.value))}
+              />
+              <div className="flex justify-between mt-2">
+                <span style={{ fontSize: '12px', color: '#aeaeb2' }}>100€</span>
+                <span style={{ fontSize: '12px', color: '#aeaeb2' }}>10.000€</span>
+              </div>
+            </div>
+
+            <div className="card p-5">
+              <p className="section-label mb-3">Was möchtest du vermeiden?</p>
+              <div className="grid grid-cols-2 gap-2">
+                {avoidOptions.map((a) => (
+                  <Chip key={a} label={a} active={avoid.includes(a)} onClick={() => toggleMulti(avoid, a, setAvoid)} />
+                ))}
+              </div>
+            </div>
+          </>
+        );
+
+      default:
+        return null;
+    }
+  };
+
+  // ── Render ────────────────────────────────────────────────────────────────────
+  return (
+    <div className="min-h-screen" style={{ background: '#fafafa' }}>
+      {/* Header + progress */}
+      <div className="px-5 pt-14 pb-2" style={{ borderBottom: '1px solid #f5f5f7' }}>
+        <p className="section-label mb-3">Tripsilo</p>
+        <div style={{ height: '3px', background: '#e8e8ed', borderRadius: '2px', marginBottom: '8px' }}>
+          <div
+            style={{
+              height: '100%',
+              width: `${(step / TOTAL_STEPS) * 100}%`,
+              background: '#8b7cf8',
+              borderRadius: '2px',
+              transition: 'width 0.3s ease',
+            }}
+          />
+        </div>
+        <p style={{ fontSize: '12px', color: '#aeaeb2', paddingBottom: '12px' }}>
+          Schritt {step} von {TOTAL_STEPS}
+        </p>
+      </div>
+
+      {/* Step content — key forces remount → animation */}
+      <div
+        key={step}
+        className={dir === 'fwd' ? 'step-enter' : 'step-enter-back'}
+        style={{ padding: '28px 16px 160px' }}
+      >
+        {renderStep()}
+      </div>
+
+      {/* Navigation buttons — fixed above BottomNav */}
+      <div
+        className="fixed left-0 right-0"
+        style={{
+          bottom: '64px',
+          padding: '16px 16px 8px',
+          background: 'linear-gradient(to bottom, transparent, #fafafa 40%)',
+        }}
+      >
+        <div className="flex gap-2">
+          {step > 1 && (
+            <button
+              onClick={() => go('back')}
+              className="flex items-center justify-center gap-1.5 py-3.5 rounded-xl transition-all active:scale-95"
+              style={{ background: '#f5f5f7', border: '1px solid #e8e8ed', color: '#6e6e73', fontSize: '14px', fontWeight: 400, cursor: 'pointer', width: '52px', flexShrink: 0 }}
+            >
+              <ChevronLeft size={18} strokeWidth={1.5} />
+            </button>
+          )}
+          <button
+            onClick={step === TOTAL_STEPS ? handleSubmit : () => go('fwd')}
+            disabled={!canProceed()}
+            className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-xl transition-all active:scale-[0.98] disabled:opacity-40"
+            style={{
+              background: canProceed() ? '#8b7cf8' : '#e8e8ed',
+              color: canProceed() ? '#ffffff' : '#aeaeb2',
+              fontSize: '15px',
+              fontWeight: 500,
+              border: 'none',
+              cursor: canProceed() ? 'pointer' : 'not-allowed',
+              letterSpacing: '-0.1px',
+            }}
+          >
+            {step === TOTAL_STEPS ? (
+              <>
+                <Plane size={16} strokeWidth={1.5} />
+                Plan erstellen
+              </>
+            ) : (
+              'Weiter'
+            )}
+          </button>
+        </div>
       </div>
     </div>
   );
