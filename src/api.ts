@@ -49,9 +49,20 @@ export async function generateTripPlan(input: TripInput): Promise<TripPlan> {
   if (input.accommodation)     lines.push(`Unterkunft: ${input.accommodation}`);
   if (input.avoid?.length)     lines.push(`Bitte vermeiden: ${input.avoid.join(', ')}`);
 
+  const isFitness = types.some((t) => ['sport', 'sportevents', 'trekking'].includes(t));
+  const fitnessContext = isFitness ? `
+
+Fitness-Integration (Pflicht da Sporturlaub gewählt):
+- Morgens IMMER eine sportliche Aktivität (Laufen, Schwimmen, Radfahren, Yoga, Workout)
+- Konkrete Laufstrecken oder Sportstätten in ${input.destination} empfehlen
+- Fitnessstudios, Outdoor-Sport-Spots und Yoga-Studios nennen
+- Restaurants bevorzugen die gesunde Bowls, Smoothies, hochwertige Proteinmahlzeiten anbieten
+- Abendaktivitäten sportlich halten (Yoga, Stretching, leichte Wanderung)
+- Beispiele Morgen: "Laufen entlang der Promenade (8km)", "Outdoor CrossFit am Strand", "Schwimmen im Meer"` : '';
+
   const prompt = `Erstelle einen detaillierten, personalisierten Reiseplan auf Deutsch:
 
-${lines.join('\n')}
+${lines.join('\n')}${fitnessContext}
 
 Erstelle einen Plan als JSON:
 {

@@ -1,4 +1,4 @@
-import { Plane, Bookmark, Star } from 'lucide-react';
+import { Plane, Bookmark, Star, Mic } from 'lucide-react';
 import type { Screen } from '../types';
 
 interface Props {
@@ -9,9 +9,10 @@ interface Props {
 }
 
 const tabs = [
-  { id: 'input' as Screen, label: 'Planen',     icon: Plane,    activeOn: ['input', 'plan', 'loading'] as Screen[] },
-  { id: 'saved' as Screen, label: 'Gespeichert', icon: Bookmark, activeOn: ['saved'] as Screen[] },
-  { id: 'rating' as Screen, label: 'Bewertungen', icon: Star,    activeOn: ['rating'] as Screen[] },
+  { id: 'input' as Screen, label: 'Planen',       icon: Plane,    activeOn: ['input', 'plan', 'loading'] as Screen[] },
+  { id: 'saved' as Screen, label: 'Gespeichert',  icon: Bookmark, activeOn: ['saved'] as Screen[] },
+  { id: 'guide' as Screen, label: 'Guide',         icon: Mic,      activeOn: ['guide'] as Screen[] },
+  { id: 'rating' as Screen, label: 'Bewertungen', icon: Star,     activeOn: ['rating'] as Screen[] },
 ] as const;
 
 export function BottomNav({ screen, onNavigate, savedCount, ratingsCount }: Props) {
@@ -24,7 +25,7 @@ export function BottomNav({ screen, onNavigate, savedCount, ratingsCount }: Prop
         boxShadow: '0 -1px 0 rgba(0,0,0,0.04)',
       }}
     >
-      <div className="flex items-center justify-around max-w-md mx-auto px-2 py-2">
+      <div className="flex items-center justify-around max-w-md mx-auto px-1 py-2">
         {tabs.map(({ id, label, icon: Icon, activeOn }) => {
           const isActive = activeOn.includes(screen);
           const badge = id === 'saved' ? savedCount : id === 'rating' ? ratingsCount : 0;
@@ -32,7 +33,7 @@ export function BottomNav({ screen, onNavigate, savedCount, ratingsCount }: Prop
             <button
               key={id}
               onClick={() => onNavigate(id)}
-              className="flex flex-col items-center gap-1 px-6 py-2 rounded-2xl transition-all"
+              className="flex flex-col items-center gap-1 px-4 py-2 rounded-2xl transition-all"
               style={{
                 background: isActive ? '#f0eeff' : 'transparent',
                 color: isActive ? '#8b7cf8' : '#aeaeb2',
@@ -49,7 +50,7 @@ export function BottomNav({ screen, onNavigate, savedCount, ratingsCount }: Prop
                   </span>
                 )}
               </div>
-              <span style={{ fontSize: '11px', fontWeight: isActive ? 500 : 400 }}>{label}</span>
+              <span style={{ fontSize: '10px', fontWeight: isActive ? 500 : 400 }}>{label}</span>
             </button>
           );
         })}

@@ -100,4 +100,5 @@ export type Screen =
   | 'plan'
   | 'saved'
   | 'rating'
-  | 'packing';
+  | 'packing'
+  | 'guide';

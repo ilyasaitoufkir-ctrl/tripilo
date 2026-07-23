@@ -325,65 +325,90 @@ export function PlanScreen({ plan, input, onSave, onNew, onRate, onPacking, isSa
   }, [dest]);
 
   // Story export
-  const exportAsStory = () => {
+  const exportAsStory = async () => {
     const canvas = document.createElement('canvas');
     canvas.width = 1080;
     canvas.height = 1920;
     const ctx = canvas.getContext('2d')!;
 
-    const draw = () => {
-      // Overlay
-      ctx.fillStyle = 'rgba(0,0,0,0.55)';
+    // Fetch specific landmark image for this city
+    const landmarkImage = await getMatchingImage(
+      `${dest} famous landmark sight`,
+      dest,
+      'city'
+    );
+
+    const drawContent = () => {
+      // Gradient overlay from bottom
+      const gradient = ctx.createLinearGradient(0, 600, 0, 1920);
+      gradient.addColorStop(0, 'rgba(0,0,0,0)');
+      gradient.addColorStop(0.4, 'rgba(0,0,0,0.7)');
+      gradient.addColorStop(1, 'rgba(0,0,0,0.95)');
+      ctx.fillStyle = gradient;
       ctx.fillRect(0, 0, 1080, 1920);
-      // Logo
-      ctx.fillStyle = 'rgba(255,255,255,0.6)';
-      ctx.font = '400 36px Arial, sans-serif';
-      ctx.fillText('Tripsilo', 80, 120);
-      // Destination
+      // City name
       ctx.fillStyle = '#ffffff';
-      ctx.font = `700 ${dest.length > 10 ? '80' : '100'}px Arial, sans-serif`;
-      ctx.fillText(dest, 80, 360);
+      const fontSize = dest.length > 12 ? 86 : 120;
+      ctx.font = `800 ${fontSize}px Arial, sans-serif`;
+      ctx.fillText(dest, 80, 1100);
       // Country
-      ctx.font = '400 44px Arial, sans-serif';
-      ctx.fillStyle = 'rgba(255,255,255,0.75)';
-      ctx.fillText(plan.country, 80, 430);
-      // Highlights
-      ctx.font = '400 38px Arial, sans-serif';
-      ctx.fillStyle = 'rgba(255,255,255,0.9)';
-      plan.days.slice(0, 4).forEach((day, i) => {
-        ctx.fillText(`→ ${day.morning.activity}`, 80, 600 + i * 90);
-      });
-      // Budget badge
-      ctx.fillStyle = '#8b7cf8';
+      ctx.font = '300 52px Arial, sans-serif';
+      ctx.fillStyle = 'rgba(255,255,255,0.8)';
+      ctx.fillText(plan.country || '', 80, 1175);
+      // Days
+      ctx.font = '500 44px Arial, sans-serif';
+      ctx.fillStyle = 'rgba(255,255,255,0.7)';
+      ctx.fillText(`${input.days} Tage`, 80, 1260);
+      // Divider
+      ctx.strokeStyle = 'rgba(255,255,255,0.3)';
+      ctx.lineWidth = 1;
       ctx.beginPath();
-      ctx.roundRect(80, 1680, 500, 80, 40);
-      ctx.fill();
-      ctx.fillStyle = '#ffffff';
+      ctx.moveTo(80, 1310);
+      ctx.lineTo(1000, 1310);
+      ctx.stroke();
+      // Unique activities (max 5)
+      const acts: string[] = [];
+      plan.days.slice(0, 5).forEach((day) => {
+        if (day.morning?.activity) acts.push(day.morning.activity);
+        if (day.evening?.activity) acts.push(day.evening.activity);
+      });
+      const unique = [...new Set(acts)].slice(0, 5);
+      ctx.font = '400 38px Arial, sans-serif';
+      ctx.fillStyle = 'rgba(255,255,255,0.85)';
+      unique.forEach((a, i) => {
+        const label = a.length > 36 ? a.slice(0, 33) + '…' : a;
+        ctx.fillText(`· ${label}`, 80, 1380 + i * 70);
+      });
+      // Branding
       ctx.font = '600 36px Arial, sans-serif';
-      ctx.fillText(`${input.budget.toLocaleString('de-DE')}€ · ${input.days} Tage`, 110, 1730);
-      // Download
-      const link = document.createElement('a');
-      link.download = `tripsilo-${dest.toLowerCase().replace(/\s+/g, '-')}.png`;
-      link.href = canvas.toDataURL('image/png');
-      link.click();
+      ctx.fillStyle = 'rgba(255,255,255,0.5)';
+      ctx.fillText('tripsilo.app', 80, 1870);
     };
 
-    const img = new Image();
-    img.crossOrigin = 'anonymous';
-    img.onload = () => {
-      // Scale + center crop
-      const scale = Math.max(1080 / img.width, 1920 / img.height);
-      const sw = img.width * scale;
-      const sh = img.height * scale;
-      ctx.drawImage(img, (1080 - sw) / 2, (1920 - sh) / 2, sw, sh);
-      draw();
-    };
-    img.onerror = () => {
-      ctx.fillStyle = '#1c1c1e';
-      ctx.fillRect(0, 0, 1080, 1920);
-      draw();
-    };
-    img.src = heroImage;
+    await new Promise<void>((resolve) => {
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      img.onload = () => {
+        const scale = Math.max(1080 / img.width, 1920 / img.height);
+        const sw = img.width * scale;
+        const sh = img.height * scale;
+        ctx.drawImage(img, (1080 - sw) / 2, (1920 - sh) / 2, sw, sh);
+        drawContent();
+        resolve();
+      };
+      img.onerror = () => {
+        ctx.fillStyle = '#1c1c1e';
+        ctx.fillRect(0, 0, 1080, 1920);
+        drawContent();
+        resolve();
+      };
+      img.src = landmarkImage;
+    });
+
+    const link = document.createElement('a');
+    link.download = `tripsilo-${dest.toLowerCase().replace(/\s+/g, '-')}.png`;
+    link.href = canvas.toDataURL('image/png');
+    link.click();
   };
 
   useEffect(() => {

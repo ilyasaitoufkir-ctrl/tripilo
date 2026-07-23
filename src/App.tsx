@@ -4,6 +4,7 @@ import { InputScreen } from './screens/InputScreen';
 import { LoadingScreen } from './screens/LoadingScreen';
 import { PlanScreen } from './screens/PlanScreen';
 import { PackingListScreen } from './screens/PackingListScreen';
+import { VoiceGuideScreen } from './screens/VoiceGuideScreen';
 import { SavedTripsScreen } from './screens/SavedTripsScreen';
 import { RatingScreen } from './screens/RatingScreen';
 import { BottomNav } from './components/BottomNav';
@@ -18,7 +19,7 @@ const load = <T,>(key: string, fallback: T): T => {
   catch { return fallback; }
 };
 
-const BOTTOM_NAV_SCREENS: Screen[] = ['input', 'plan', 'saved', 'rating'];
+const BOTTOM_NAV_SCREENS: Screen[] = ['input', 'plan', 'saved', 'rating', 'guide'];
 
 export default function App() {
   const [screen, setScreen] = useState<Screen>('welcome');
@@ -158,6 +159,10 @@ export default function App() {
           input={currentInput}
           onBack={() => setScreen('plan')}
         />
+      )}
+
+      {screen === 'guide' && (
+        <VoiceGuideScreen destination={currentPlan?.destination ?? ''} />
       )}
 
       {screen === 'saved' && (
