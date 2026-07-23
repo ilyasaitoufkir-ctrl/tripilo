@@ -9,6 +9,7 @@ import {
 import type { TripPlan, TripInput, DayPlan } from '../types';
 import { searchPlace, priceLevelLabel, type PlaceInfo } from '../services/places';
 import { getFlightLinks, getHotelLinks, getFlightFallback } from '../services/booking';
+import { getActivityImage, getDestinationImage, getRestaurantImage, getHotelImage } from '../services/images';
 import { openDayRoute } from '../components/MapView';
 
 interface Props {
@@ -31,11 +32,12 @@ function Divider() {
 
 // ── Place card ─────────────────────────────────────────────────────────────────
 function PlaceCard({
-  place, loading, showActions = false,
+  place, loading, showActions = false, fallbackSrc,
 }: {
   place: PlaceInfo | null | undefined;
   loading: boolean;
   showActions?: boolean;
+  fallbackSrc?: string;
 }) {
   if (loading) {
     return (
@@ -54,11 +56,11 @@ function PlaceCard({
 
   return (
     <div className="mt-3 rounded-xl overflow-hidden" style={{ border: '1px solid #e8e8ed' }}>
-      {place.photo && (
+      {(place.photo ?? fallbackSrc) && (
         <img
-          src={place.photo}
+          src={place.photo ?? fallbackSrc}
           alt={place.name}
-          className="w-full h-32 object-cover"
+          className="w-full h-36 object-cover"
           onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
         />
       )}
@@ -169,34 +171,46 @@ function PlaceCard({
 
 // ── Activity slot ──────────────────────────────────────────────────────────────
 function SlotBlock({
-  icon: Icon, label, labelColor, cost, name, description, tip, placeData, placeLoading, bg, isRestaurant,
+  icon: Icon, label, labelColor, cost, name, description, tip,
+  placeData, placeLoading, bg, isRestaurant, imageSrc, placeFallbackSrc,
 }: {
   icon: React.ElementType; label: string; labelColor: string; cost: number;
   name: string; description: string; tip?: string;
   placeData: PlaceInfo | null | undefined; placeLoading: boolean; bg: string;
-  isRestaurant?: boolean;
+  isRestaurant?: boolean; imageSrc?: string; placeFallbackSrc?: string;
 }) {
   return (
-    <div className="p-4 rounded-2xl" style={{ background: bg }}>
-      <div className="flex items-center justify-between mb-2">
-        <div className="flex items-center gap-2">
-          <Icon size={15} strokeWidth={1.5} style={{ color: labelColor }} />
-          <span className="section-label" style={{ color: labelColor }}>{label}</span>
-        </div>
-        <span style={{ fontSize: '13px', color: '#aeaeb2' }}>{cost}€</span>
-      </div>
-      <p style={{ fontSize: '15px', fontWeight: 500, color: '#1c1c1e', marginBottom: '2px' }}>{name}</p>
-      <p style={{ fontSize: '13px', color: '#6e6e73', lineHeight: 1.5 }}>{description}</p>
-      <PlaceCard place={placeData} loading={placeLoading} showActions={isRestaurant} />
-      {tip && (
-        <div
-          className="flex items-start gap-2 mt-3 p-2.5 rounded-xl"
-          style={{ background: 'rgba(139,124,248,0.06)' }}
-        >
-          <Lightbulb size={13} strokeWidth={1.5} style={{ color: '#8b7cf8', flexShrink: 0, marginTop: '1px' }} />
-          <p style={{ fontSize: '13px', color: '#6e6e73', lineHeight: 1.5 }}>{tip}</p>
-        </div>
+    <div className="rounded-2xl overflow-hidden" style={{ boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}>
+      {imageSrc && (
+        <img
+          src={imageSrc}
+          alt={name}
+          className="w-full object-cover"
+          style={{ height: '140px' }}
+          onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
+        />
       )}
+      <div className="p-4" style={{ background: bg }}>
+        <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center gap-2">
+            <Icon size={15} strokeWidth={1.5} style={{ color: labelColor }} />
+            <span className="section-label" style={{ color: labelColor }}>{label}</span>
+          </div>
+          <span style={{ fontSize: '13px', color: '#aeaeb2' }}>{cost}€</span>
+        </div>
+        <p style={{ fontSize: '15px', fontWeight: 500, color: '#1c1c1e', marginBottom: '2px' }}>{name}</p>
+        <p style={{ fontSize: '13px', color: '#6e6e73', lineHeight: 1.5 }}>{description}</p>
+        <PlaceCard place={placeData} loading={placeLoading} showActions={isRestaurant} fallbackSrc={placeFallbackSrc} />
+        {tip && (
+          <div
+            className="flex items-start gap-2 mt-3 p-2.5 rounded-xl"
+            style={{ background: 'rgba(139,124,248,0.06)' }}
+          >
+            <Lightbulb size={13} strokeWidth={1.5} style={{ color: '#8b7cf8', flexShrink: 0, marginTop: '1px' }} />
+            <p style={{ fontSize: '13px', color: '#6e6e73', lineHeight: 1.5 }}>{tip}</p>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
@@ -300,7 +314,7 @@ export function PlanScreen({ plan, input, onSave, onNew, onRate, isSaved }: Prop
     <div className="min-h-screen pb-28" style={{ background: '#fafafa' }}>
       {/* Hero photo */}
       <img
-        src={`https://source.unsplash.com/1600x700/?${encodeURIComponent(dest)},travel`}
+        src={getDestinationImage(dest)}
         alt={dest}
         className="w-full object-cover"
         style={{ height: '220px' }}
@@ -454,6 +468,7 @@ export function PlanScreen({ plan, input, onSave, onNew, onRate, isSaved }: Prop
                       description={day.morning.description} tip={day.morning.tip}
                       placeData={placesData[placeKey(day.day, 'morning')]}
                       placeLoading={isLoading(placeKey(day.day, 'morning'))}
+                      imageSrc={getActivityImage(day.morning.activity, dest)}
                     />
                     <SlotBlock
                       icon={Coffee} label="Mittag" labelColor="#f472b6" bg="#fce7f3"
@@ -462,6 +477,7 @@ export function PlanScreen({ plan, input, onSave, onNew, onRate, isSaved }: Prop
                       placeData={placesData[placeKey(day.day, 'lunch')]}
                       placeLoading={isLoading(placeKey(day.day, 'lunch'))}
                       isRestaurant
+                      placeFallbackSrc={getRestaurantImage(day.lunch.restaurant, dest)}
                     />
                     <SlotBlock
                       icon={Moon} label="Abend" labelColor="#6e6e73" bg="#f5f5f7"
@@ -469,6 +485,7 @@ export function PlanScreen({ plan, input, onSave, onNew, onRate, isSaved }: Prop
                       description={day.evening.description} tip={day.evening.tip}
                       placeData={placesData[placeKey(day.day, 'evening')]}
                       placeLoading={isLoading(placeKey(day.day, 'evening'))}
+                      imageSrc={getActivityImage(day.evening.activity, dest)}
                     />
                   </div>
                 )}
@@ -491,7 +508,7 @@ export function PlanScreen({ plan, input, onSave, onNew, onRate, isSaved }: Prop
             </div>
           </div>
           <p style={{ fontSize: '13px', color: '#6e6e73', lineHeight: 1.5 }}>{plan.hotel_empfehlung.beschreibung}</p>
-          <PlaceCard place={placesData['hotel']} loading={isLoading('hotel')} showActions />
+          <PlaceCard place={placesData['hotel']} loading={isLoading('hotel')} showActions fallbackSrc={getHotelImage(dest)} />
           {plan.hotel_empfehlung.tipp && (
             <div className="flex items-start gap-2 mt-3 p-2.5 rounded-xl" style={{ background: '#f0eeff' }}>
               <Lightbulb size={13} strokeWidth={1.5} style={{ color: '#8b7cf8', flexShrink: 0, marginTop: '1px' }} />
@@ -512,11 +529,20 @@ export function PlanScreen({ plan, input, onSave, onNew, onRate, isSaved }: Prop
             <p className="section-label mb-4">Geheimtipps</p>
             <div className="space-y-3">
               {plan.geheimtipps.map((tip, i) => (
-                <div key={i} className="flex items-start gap-3">
-                  <span style={{ fontSize: '12px', fontWeight: 500, color: '#8b7cf8', flexShrink: 0, marginTop: '2px', width: '14px' }}>
-                    {i + 1}
-                  </span>
-                  <p style={{ fontSize: '14px', color: '#374151', lineHeight: 1.6 }}>{tip}</p>
+                <div key={i} className="rounded-xl overflow-hidden" style={{ border: '1px solid #e8e8ed' }}>
+                  <img
+                    src={getActivityImage(tip, dest)}
+                    alt={tip}
+                    className="w-full object-cover"
+                    style={{ height: '120px' }}
+                    onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
+                  />
+                  <div className="flex items-start gap-3 p-3">
+                    <span style={{ fontSize: '12px', fontWeight: 500, color: '#8b7cf8', flexShrink: 0, marginTop: '2px', width: '14px' }}>
+                      {i + 1}
+                    </span>
+                    <p style={{ fontSize: '14px', color: '#374151', lineHeight: 1.6 }}>{tip}</p>
+                  </div>
                 </div>
               ))}
             </div>
