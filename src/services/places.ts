@@ -28,13 +28,17 @@ export const searchPlace = async (query: string, destination: string): Promise<P
     console.log('Results:', data.results?.length);
     console.log('First result:', data.results?.[0]?.name, data.results?.[0]?.formatted_address);
 
-    // Prefer a result whose address contains the destination city
-    const place =
-      data.results?.find((r: { formatted_address?: string }) =>
-        r.formatted_address?.toLowerCase().includes(destination.toLowerCase())
-      ) ?? data.results?.[0];
+    // Only accept results whose address contains the destination city
+    const cityLower = destination.toLowerCase();
+    const place = data.results?.find((r: { formatted_address?: string; name?: string }) =>
+      r.formatted_address?.toLowerCase().includes(cityLower) ||
+      r.name?.toLowerCase().includes(cityLower)
+    );
 
-    if (!place) return null;
+    if (!place) {
+      console.log(`No place found in ${destination} for: ${searchQuery}`);
+      return null;
+    }
 
     const mapsQuery = encodeURIComponent(searchQuery);
     const info: PlaceInfo = {
