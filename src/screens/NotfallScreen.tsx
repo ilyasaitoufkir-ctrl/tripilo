@@ -36,16 +36,38 @@ const emergencies = [
 
 const emergencyLabel = (key: string) => emergencies.find((e) => e.key === key)?.label ?? key;
 
+// Emergencies can't end in a dead "retry?" screen — if the AI call fails
+// (network, refusal, unparseable response), fall back to baseline info that
+// works anywhere rather than leaving the user with nothing.
+const FALLBACK_INFO: EmergencyInfo = {
+  sofort_massnahmen: [
+    'Ruhig bleiben',
+    'Europäischen Notruf 112 anrufen (Polizei, Rettung, Feuerwehr)',
+    'Deutsche Botschaft oder Konsulat kontaktieren',
+  ],
+  wichtige_nummern: [
+    { name: 'Europäischer Notruf', nummer: '112' },
+    { name: 'Auswärtiges Amt (Bürgerservice)', nummer: '+49 30 5000 2000' },
+  ],
+  deutsche_botschaft: {
+    adresse: 'Adresse variiert je nach Land – aktuelle Kontaktdaten auf auswaertiges-amt.de/de/aussenpolitik/laender prüfen',
+    notfallnummer: '+49 30 5000 2000',
+    oeffnungszeiten: '',
+  },
+  tipps: ['Reisedokumente digital (z.B. per E-Mail an dich selbst) und in Papierform separat aufbewahren'],
+  was_nicht_tun: ['Nicht in Panik geraten'],
+};
+
 export function NotfallScreen({ destination }: Props) {
   const [selected, setSelected] = useState<string | null>(null);
   const [info, setInfo] = useState<EmergencyInfo | null>(null);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [usedFallback, setUsedFallback] = useState(false);
 
   const getEmergencyInfo = async (type: string) => {
     setSelected(type);
     setLoading(true);
-    setError('');
+    setUsedFallback(false);
     setInfo(null);
     try {
       const result = await askClaudeJSON<EmergencyInfo>(
@@ -76,7 +98,9 @@ Nur JSON! Praktische Sofort-Hilfe für deutschen Touristen in ${destination || '
       );
       setInfo(result);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Fehler beim Laden der Hilfe.');
+      console.error('Notfall error:', err);
+      setInfo(FALLBACK_INFO);
+      setUsedFallback(true);
     } finally {
       setLoading(false);
     }
@@ -126,16 +150,20 @@ Nur JSON! Praktische Sofort-Hilfe für deutschen Touristen in ${destination || '
           </div>
         )}
 
-        {error && !loading && (
-          <div className="card p-5" style={{ background: '#fce7f3', border: '1px solid #fbcfe8' }}>
-            <p style={{ fontSize: '14px', color: '#f472b6', marginBottom: '10px' }}>{error}</p>
-            <button
-              onClick={() => selected && getEmergencyInfo(selected)}
-              className="px-3 py-1.5 rounded-lg transition-all active:scale-95"
-              style={{ background: '#ffffff', border: '1px solid #fbcfe8', color: '#f472b6', fontSize: '12px', fontWeight: 500, cursor: 'pointer' }}
-            >
-              Nochmal versuchen
-            </button>
+        {usedFallback && !loading && (
+          <div className="card p-4" style={{ background: '#fff8e7', border: '1px solid #fde68a' }}>
+            <div className="flex items-center justify-between gap-3">
+              <p style={{ fontSize: '13px', color: '#92400e' }}>
+                Passende Infos für {destination || 'dein Reiseland'} konnten nicht geladen werden – hier die wichtigsten Basis-Kontakte.
+              </p>
+              <button
+                onClick={() => selected && getEmergencyInfo(selected)}
+                className="flex-shrink-0 px-3 py-1.5 rounded-lg transition-all active:scale-95"
+                style={{ background: '#ffffff', border: '1px solid #fde68a', color: '#92400e', fontSize: '12px', fontWeight: 500, cursor: 'pointer' }}
+              >
+                Nochmal
+              </button>
+            </div>
           </div>
         )}
 

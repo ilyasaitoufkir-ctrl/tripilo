@@ -1,6 +1,6 @@
 const MODEL = 'claude-haiku-4-5-20251001';
 
-// Shared by the JSON-answer AI tools (Visa, Notfall, Kultur): send a prompt,
+// Shared by the JSON-answer AI tools (Visa, Notfall): send a prompt,
 // get back a parsed object. Centralizes the error handling those screens all
 // need — a raw `JSON.parse` on an unchecked response silently wedges the
 // screen in its loading state the moment Claude wraps the answer in prose.

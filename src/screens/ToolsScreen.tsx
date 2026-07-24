@@ -1,4 +1,4 @@
-import { Plane, ShieldAlert, Compass, Camera, Utensils, HelpCircle, Mic, ChevronRight } from 'lucide-react';
+import { Plane, ShieldAlert, HelpCircle, Mic, ChevronRight } from 'lucide-react';
 import type { Screen } from '../types';
 
 interface Props {
@@ -6,12 +6,10 @@ interface Props {
   onNavigate: (screen: Screen) => void;
 }
 
+// Scanner already has its own bottom-nav tab, so it isn't listed here.
 const tools = [
   { screen: 'visa' as Screen, icon: Plane, label: 'Visa & Einreise', desc: 'Einreisebestimmungen & Impfungen' },
   { screen: 'notfall' as Screen, icon: ShieldAlert, label: 'Notfall Hilfe', desc: 'Sofort-Hilfe im Ernstfall' },
-  { screen: 'kultur' as Screen, icon: Compass, label: 'Kultureller Kompass', desc: 'Etikette, Trinkgeld & Tabus' },
-  { screen: 'ar' as Screen, icon: Camera, label: 'Stadtführer', desc: 'Kamera auf ein Gebäude richten' },
-  { screen: 'translator' as Screen, icon: Utensils, label: 'Speisekarte übersetzen', desc: 'Menü fotografieren & verstehen' },
   { screen: 'quiz' as Screen, icon: HelpCircle, label: 'Stadt Quiz', desc: 'Teste dein Wissen' },
   { screen: 'guide' as Screen, icon: Mic, label: 'Reise-Guide fragen', desc: 'Sprich mit deinem Guide' },
 ];

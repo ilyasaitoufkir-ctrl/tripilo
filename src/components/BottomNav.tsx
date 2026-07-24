@@ -1,4 +1,4 @@
-import { Plane, MapPin, Bookmark, Wrench } from 'lucide-react';
+import { Plane, MapPin, Camera, Bookmark, LayoutGrid } from 'lucide-react';
 import type { Screen } from '../types';
 import { useLanguage } from '../context/LanguageContext';
 
@@ -10,13 +10,11 @@ interface Props {
 }
 
 const tabDefs = [
-  { id: 'input'     as Screen, key: 'planTrip', icon: Plane,   activeOn: ['input', 'plan', 'loading', 'packing', 'rating'] as Screen[] },
-  { id: 'entdecken' as Screen, key: 'discover', icon: MapPin,  activeOn: ['entdecken'] as Screen[] },
-  { id: 'saved'     as Screen, key: 'saved',    icon: Bookmark, activeOn: ['saved'] as Screen[] },
-  {
-    id: 'tools' as Screen, key: 'tools', icon: Wrench,
-    activeOn: ['tools', 'visa', 'notfall', 'kultur', 'ar', 'translator', 'quiz', 'guide'] as Screen[],
-  },
+  { id: 'input'     as Screen, key: 'planTrip', icon: Plane,     activeOn: ['input', 'plan', 'loading', 'packing', 'rating'] as Screen[] },
+  { id: 'entdecken' as Screen, key: 'discover', icon: MapPin,    activeOn: ['entdecken'] as Screen[] },
+  { id: 'scanner'   as Screen, key: 'scanner',  icon: Camera,    activeOn: ['scanner'] as Screen[] },
+  { id: 'saved'     as Screen, key: 'saved',    icon: Bookmark,  activeOn: ['saved'] as Screen[] },
+  { id: 'tools'     as Screen, key: 'tools',    icon: LayoutGrid, activeOn: ['tools', 'visa', 'notfall', 'quiz', 'guide'] as Screen[] },
 ] as const;
 
 export function BottomNav({ screen, onNavigate }: Props) {

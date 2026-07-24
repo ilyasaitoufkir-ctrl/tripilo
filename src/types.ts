@@ -103,10 +103,8 @@ export type Screen =
   | 'packing'
   | 'guide'
   | 'entdecken'
-  | 'translator'
   | 'quiz'
   | 'tools'
   | 'visa'
   | 'notfall'
-  | 'kultur'
-  | 'ar';
+  | 'scanner';
