@@ -156,7 +156,7 @@ export default function App() {
         <InputScreen onSubmit={handleStart} />
       )}
 
-      {screen === 'loading' && <LoadingScreen />}
+      {screen === 'loading' && <LoadingScreen destination={currentInput?.destination} />}
 
       {screen === 'plan' && currentPlan && currentInput && (
         <PlanScreen
