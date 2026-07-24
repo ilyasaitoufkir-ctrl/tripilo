@@ -1,0 +1,222 @@
+{
+  "city": "Hamburg",
+  "country": "Deutschland",
+  "description": "Die Perle des Nordens – Hafenstadt mit Charme",
+  "best_time": "Mai bis September",
+  "language": "Deutsch",
+  "currency": "Euro",
+
+  "practical_tips": [
+    "HVV Tageskarte kaufen – 1-2 Ringe ca. 8€, Gruppe bis 5 Personen 16€",
+    "Hamburg Card kaufen wenn viele Attraktionen geplant",
+    "Regenjacke immer dabei – Hamburger Wetter ist wechselhaft",
+    "Viele Restaurants haben montags Ruhetag",
+    "Fahrrad ideal für die Stadt – viele Verleihe verfügbar",
+    "Mit HVV Tageskarte auch Fähren nutzbar"
+  ],
+
+  "sehenswuerdigkeiten": [
+    {
+      "name": "Elbphilharmonie",
+      "type": "Kultur",
+      "description": "Weltklasse Konzerthaus mit kostenloser Plaza im 8. Stock – atemberaubende Aussicht über Hamburg",
+      "tip": "Plaza Ticket kostenlos online reservieren – unbedingt vorher buchen!",
+      "price": "Plaza kostenlos / Konzerte ab 15€",
+      "duration": "1-2 Stunden"
+    },
+    {
+      "name": "Speicherstadt & HafenCity",
+      "type": "Geschichte",
+      "description": "UNESCO Weltkulturerbe – alte Lagerhäuser jetzt mit Museen, Cafés und moderner Architektur",
+      "tip": "Abends besonders schön beleuchtet – unbedingt nach Sonnenuntergang besuchen",
+      "price": "Kostenlos (außen)",
+      "duration": "1-2 Stunden"
+    },
+    {
+      "name": "Hamburger Fischmarkt",
+      "type": "Erlebnis",
+      "description": "Legendärer Markt jeden Sonntag früh morgens – Hamburger Institution seit Jahrhunderten",
+      "tip": "Nur sonntags 5-9:30 Uhr – perfekt nach einer Partynacht auf der Reeperbahn",
+      "price": "Kostenlos",
+      "duration": "1 Stunde"
+    },
+    {
+      "name": "Chocoversum",
+      "type": "Museum",
+      "description": "Schokoladenmuseum – erlebe den Weg der Kakaobohne und kreiere deine eigene Schokoladentafel",
+      "tip": "Mit leerem Magen hingehen! Perfekt bei Regenwetter",
+      "price": "ab 16€",
+      "duration": "1-2 Stunden"
+    },
+    {
+      "name": "Hamburg Dungeon",
+      "type": "Erlebnis",
+      "description": "90-minütiger Rundgang durch die dunkle Geschichte Hamburgs mit Schauspielern und Spezialeffekten",
+      "tip": "Mit Hamburg Card gibt es Rabatt – nichts für schwache Nerven!",
+      "price": "ab 22€",
+      "duration": "90 Minuten"
+    },
+    {
+      "name": "Planetarium Hamburg",
+      "type": "Museum",
+      "description": "Eines der ältesten und modernsten Planetarien weltweit im alten Wasserturm im Stadtpark",
+      "tip": "Vor dem Besuch Picknick im Stadtpark machen",
+      "price": "ab 10€",
+      "duration": "1-2 Stunden"
+    },
+    {
+      "name": "Tierpark Hagenbeck",
+      "type": "Ausflug",
+      "description": "Erster Tierpark ohne Gitter weltweit – über 1850 Tiere mit Safari-Feeling",
+      "tip": "Fütterungszeiten vorher checken – perfekt mit Kindern",
+      "price": "ab 18€",
+      "duration": "3-4 Stunden"
+    },
+    {
+      "name": "Dialog im Dunkeln",
+      "type": "Museum",
+      "description": "Außergewöhnliche Ausstellung – erlebe die Welt ohne Sehfähigkeit mit blindem Guide",
+      "tip": "Einzigartige Erfahrung – unbedingt ausprobieren wenn in Hamburg",
+      "price": "ab 19€",
+      "duration": "1-2 Stunden"
+    }
+  ],
+
+  "aktivitaeten": [
+    {
+      "name": "Hafenrundfahrt",
+      "type": "Tour",
+      "description": "Bootstour durch den größten Hafen Deutschlands mit Live-Kommentar",
+      "tip": "HADAG Fähre Linie 62 ist viel günstiger als Touristenboote – gleiche Strecke!",
+      "price": "ab 3,50€ mit HVV Ticket",
+      "duration": "1 Stunde"
+    },
+    {
+      "name": "SUP auf der Alster",
+      "type": "Sport",
+      "description": "Stand Up Paddling auf der Außenalster – mitten in der Stadt, toller Blick auf Hamburg",
+      "tip": "Sport- und Badekleidung nicht vergessen – viele Verleihe am Alsterufer",
+      "price": "ab 12€/Stunde",
+      "duration": "2-3 Stunden"
+    },
+    {
+      "name": "Kanufahren auf der Alster",
+      "type": "Sport",
+      "description": "Mit dem Kanu durch die Alsterkanäle – Hamburg aus einer ganz anderen Perspektive",
+      "tip": "KanuHelden bieten tolle geführte Touren an",
+      "price": "ab 12€/Stunde",
+      "duration": "2-3 Stunden"
+    },
+    {
+      "name": "Musical besuchen",
+      "type": "Kultur",
+      "description": "Hamburg ist Musical Hauptstadt Deutschlands – König der Löwen, Pretty Woman, Heiße Ecke",
+      "tip": "Heiße Ecke ist absolute Empfehlung auch für Nicht-Musical-Fans! Früh buchen!",
+      "price": "ab 30€",
+      "duration": "2-3 Stunden"
+    },
+    {
+      "name": "FC St. Pauli oder HSV Spiel",
+      "type": "Sport",
+      "description": "Hamburg hat zwei Fußballvereine – St. Pauli für intensiveres Erlebnis, HSV für leichtere Ticketverfügbarkeit",
+      "tip": "St. Pauli Millerntor hat einzigartige Atmosphäre – Stadionführung auch ohne Spiel möglich",
+      "price": "ab 15€",
+      "duration": "3 Stunden"
+    },
+    {
+      "name": "Reeperbahn Tour",
+      "type": "Nightlife",
+      "description": "Geführte Tour über die berühmte Ausgehmeile St. Paulis",
+      "tip": "Sex & Crime auf St. Pauli Tour sehr empfehlenswert – skurrile Geschichte der Reeperbahn",
+      "price": "ab 15€",
+      "duration": "2 Stunden"
+    }
+  ],
+
+  "hotels": [
+    {
+      "name": "Henri Hotel",
+      "neighborhood": "Innenstadt",
+      "price_level": "€€€",
+      "description": "Perfekte Lage im Zentrum für Sightseeing, kleiner Spa Bereich",
+      "tip": "Ideal für Erstbesucher – alles fußläufig erreichbar"
+    },
+    {
+      "name": "25hours Hotel Altes Hafenamt",
+      "neighborhood": "HafenCity",
+      "price_level": "€€€",
+      "description": "Modernes Design Hotel mit Panoramafenstern und Blick auf den Hafen",
+      "tip": "Perfekt für Paare und Design-Liebhaber"
+    },
+    {
+      "name": "Chez Ronny",
+      "neighborhood": "St. Pauli",
+      "price_level": "€€",
+      "description": "Boutique Hotel direkt in St. Pauli – ideal für Nachtleben",
+      "tip": "Günstigste Option mit bester Lage für Ausgehfreudige"
+    }
+  ],
+
+  "neighborhoods": [
+    {
+      "name": "Schanzenviertel",
+      "vibe": "Alternativ, jung, kreativ",
+      "best_for": "Bars, Restaurants, Street Art, Vintage Shopping",
+      "tip": "Schulterblatt ist die Hauptstraße – einfach flanieren und entdecken"
+    },
+    {
+      "name": "Altona",
+      "vibe": "Lokal, entspannt, multikulturell",
+      "best_for": "Lokale Restaurants, Elbe, Fischmarkt",
+      "tip": "Elbstrand bei Sonnenuntergang absolut perfekt"
+    },
+    {
+      "name": "HafenCity",
+      "vibe": "Modern, stylisch, urban",
+      "best_for": "Elbphilharmonie, Speicherstadt, moderne Architektur",
+      "tip": "Abends spazieren gehen wenn alles beleuchtet ist"
+    },
+    {
+      "name": "St. Pauli",
+      "vibe": "Bunt, lebendig, Nachtleben",
+      "best_for": "Reeperbahn, Bars, Clubs, FC St. Pauli",
+      "tip": "Tagsüber entspannt, nachts pulsierend – für jeden was dabei"
+    }
+  ],
+
+  "hidden_gems": [
+    {
+      "name": "Treppenviertel Blankenese",
+      "type": "Sehenswürdigkeit",
+      "description": "Malerisches Villenviertel mit verwunschenen Treppen und Elblick – kaum Touristen",
+      "tip": "Am besten morgens besuchen wenn es noch ruhig ist",
+      "price": "Kostenlos"
+    },
+    {
+      "name": "HADAG Fähre Linie 62",
+      "type": "Geheimtipp",
+      "description": "Günstigste Hafenrundfahrt der Stadt – reguläre Fährlinie durch den Hafen",
+      "tip": "Mit HVV Tageskarte nutzbar – gleiche Strecke wie teure Touristenboote!",
+      "price": "Im HVV Ticket inklusive"
+    },
+    {
+      "name": "Sternschanzenpark",
+      "type": "Natur",
+      "description": "Grüner Stadtpark mit Wasserturm – beliebter Treffpunkt der echten Hamburger",
+      "tip": "Picknick mitbringen und Wasserturm von außen anschauen",
+      "price": "Kostenlos"
+    }
+  ],
+
+  "reiseberichte": [
+    {
+      "title": "48 Stunden Hamburg",
+      "summary": "Das perfekte Wochenende in der Hansestadt",
+      "highlights": [
+        "Freitagabend: Speicherstadt beleuchtet + Abendessen im Schanzenviertel",
+        "Samstag: Elbphilharmonie Plaza + Hafenrundfahrt mit Linie 62 + Reeperbahn",
+        "Sonntag früh: Fischmarkt ab 5 Uhr dann entspannt Heimreise"
+      ]
+    }
+  ]
+}

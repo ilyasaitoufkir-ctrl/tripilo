@@ -1,0 +1,206 @@
+{
+  "city": "Barcelona",
+  "country": "Spanien",
+  "description": "Die Weltstadt am Mittelmeer – Gaudí, Strand und pulsierendes Leben",
+  "best_time": "April bis Juni und September bis Oktober",
+  "language": "Spanisch & Katalanisch",
+  "currency": "Euro",
+
+  "practical_tips": [
+    "Sagrada Familia und Park Güell Tickets WOCHEN im Voraus buchen – oft ausverkauft!",
+    "Barcelona Pass kaufen wenn viele Attraktionen geplant – spart Zeit und Geld",
+    "Auf Taschendiebe achten besonders auf den Ramblas",
+    "Mittagessen zwischen 14-16 Uhr – Abendessen erst ab 21 Uhr typisch spanisch",
+    "Stadtstrand Barceloneta kostenlos und gut erreichbar",
+    "T-Casual Metroticket kaufen – 10 Fahrten günstiger als Einzeltickets"
+  ],
+
+  "sehenswuerdigkeiten": [
+    {
+      "name": "Sagrada Família",
+      "type": "Architektur",
+      "description": "Gaudís unvollendetes Meisterwerk – die beeindruckendste Kirche der Welt, Fertigstellung ca. 2026",
+      "tip": "Tickets zwingend online im Voraus kaufen – manchmal 2 Wochen vorher ausverkauft!",
+      "price": "ab 26€",
+      "duration": "1-2 Stunden"
+    },
+    {
+      "name": "Park Güell",
+      "type": "Park",
+      "description": "Gaudís berühmter Park mit Mosaiken, bunten Bänken und dem Salamander – UNESCO Weltkulturerbe",
+      "tip": "Pro Stunde begrenzte Besucheranzahl – unbedingt Ticket vorher kaufen!",
+      "price": "ab 10€",
+      "duration": "1-2 Stunden"
+    },
+    {
+      "name": "Casa Batlló",
+      "type": "Architektur",
+      "description": "Gaudís schönstes Wohngebäude inspiriert von Georg und dem Drachen – faszinierende Mosaike und Farben",
+      "tip": "Abends besonders schön wenn Fassade beleuchtet – Magic Nights Ticket empfohlen",
+      "price": "ab 35€",
+      "duration": "1-2 Stunden"
+    },
+    {
+      "name": "Casa Milà (La Pedrera)",
+      "type": "Architektur",
+      "description": "Gaudís Steinbruch mit einzigartiger Dachterrasse und ungewöhnlichen Schornsteinen",
+      "tip": "Dachterrasse bei Sonnenuntergang besonders schön",
+      "price": "ab 25€",
+      "duration": "1-2 Stunden"
+    },
+    {
+      "name": "Camp Nou",
+      "type": "Sport",
+      "description": "Stadion des FC Barcelona – Führung durch Umkleidekabinen, Trophäen und das Spielfeld",
+      "tip": "Camp Nou Experience Tour buchen für komplettes Erlebnis",
+      "price": "ab 26€",
+      "duration": "1-2 Stunden"
+    },
+    {
+      "name": "Barri Gòtic",
+      "type": "Geschichte",
+      "description": "Das gotische Viertel mit Kathedrale, Plaça Reial und verwunschenen Gassen",
+      "tip": "Abends durch die schmalen Gassen schlendern – magische Atmosphäre",
+      "price": "Kostenlos",
+      "duration": "2-3 Stunden"
+    },
+    {
+      "name": "Mercat de la Boqueria",
+      "type": "Markt",
+      "description": "Farbenfroher Frischmarkt an den Ramblas – katalanische Küche pur",
+      "tip": "Morgens hingehen bevor Touristenansturm beginnt – Frühstück hier starten",
+      "price": "Kostenlos (Eintritt)",
+      "duration": "1 Stunde"
+    },
+    {
+      "name": "Palau de la Música Catalana",
+      "type": "Kultur",
+      "description": "UNESCO Meisterwerk des Modernismus mit atemberaubenden Buntglasfenstern",
+      "tip": "Konzert besuchen für vollstes Erlebnis – Führungen auch möglich",
+      "price": "ab 20€",
+      "duration": "1 Stunde"
+    },
+    {
+      "name": "Montjuïc",
+      "type": "Aussichtspunkt",
+      "description": "Berühmter Berg mit Castell, Seilbahn, Joan Miró Museum und Font Mágica",
+      "tip": "Font Mágica Springbrunnen Show abends kostenlos – sehr beeindruckend!",
+      "price": "Seilbahn ab 9€",
+      "duration": "3-4 Stunden"
+    },
+    {
+      "name": "Picasso Museum",
+      "type": "Museum",
+      "description": "Über 4000 Kunstwerke Picassos im Viertel La Ribera",
+      "tip": "Dienstags oft günstigere Eintrittspreise – früh hingehen",
+      "price": "ab 12€",
+      "duration": "1-2 Stunden"
+    },
+    {
+      "name": "Hospital de Sant Pau",
+      "type": "Architektur",
+      "description": "Größter Komplex katalanischer Modernarchitektur – weniger touristisch als andere Highlights",
+      "tip": "Geheimtipp! Weniger Touristen als Sagrada Família aber genauso beeindruckend",
+      "price": "ab 15€",
+      "duration": "1 Stunde"
+    },
+    {
+      "name": "Tibidabo",
+      "type": "Aussichtspunkt",
+      "description": "512m hoher Berg mit Vergnügungspark, Kirche und phänomenalem Stadtblick",
+      "tip": "Mit Zahnradbahn hochfahren – bester Panoramablick über ganz Barcelona",
+      "price": "ab 15€",
+      "duration": "3-4 Stunden"
+    }
+  ],
+
+  "aktivitaeten": [
+    {
+      "name": "Radtour durch Barcelona",
+      "type": "Sport",
+      "description": "Die Stadt ideal auf dem Fahrrad erkunden mit deutschsprachigem Guide",
+      "tip": "Beste Art um viele Highlights effizient zu sehen",
+      "price": "ab 25€",
+      "duration": "3 Stunden"
+    },
+    {
+      "name": "Bootsfahrt vom Port Vell",
+      "type": "Tour",
+      "description": "Vom Hafen aus Barcelona vom Wasser aus erleben",
+      "tip": "Bei Sonnenuntergang besonders schön",
+      "price": "ab 15€",
+      "duration": "1-2 Stunden"
+    },
+    {
+      "name": "Parc de la Ciutadella",
+      "type": "Natur",
+      "description": "Wunderschöner Stadtpark mit Brunnen, Zoo und Arc de Triomf",
+      "tip": "Picknick mitbringen – Barcelonesen lieben diesen Park",
+      "price": "Kostenlos",
+      "duration": "1-2 Stunden"
+    }
+  ],
+
+  "hidden_gems": [
+    {
+      "name": "Bunkers del Carmel",
+      "type": "Aussichtspunkt",
+      "description": "Alte Bunkeranlagen mit dem besten und kostenlosesten Panoramablick über Barcelona",
+      "tip": "Bei Sonnenuntergang hingehen – weniger Touristen als Tibidabo",
+      "price": "Kostenlos"
+    },
+    {
+      "name": "Hospital de Sant Pau",
+      "type": "Architektur",
+      "description": "Beeindruckende Modernismus Architektur kaum bekannt bei Touristen",
+      "tip": "Morgens hingehen – fast immer weniger voll als andere Attraktionen",
+      "price": "ab 15€"
+    },
+    {
+      "name": "El Born Viertel",
+      "type": "Stadtviertel",
+      "description": "Trendiges Viertel mit kleinen Bars, lokalen Restaurants und Picasso Museum",
+      "tip": "Abends hier essen statt auf den Ramblas – echter und günstiger",
+      "price": "Kostenlos"
+    }
+  ],
+
+  "neighborhoods": [
+    {
+      "name": "Barri Gòtic",
+      "vibe": "Historisch, romantisch, touristisch",
+      "best_for": "Sightseeing, Geschichte, Kathedrale",
+      "tip": "Abends durch die Gassen – tagsüber sehr voll"
+    },
+    {
+      "name": "El Born",
+      "vibe": "Trendig, lokal, kreativ",
+      "best_for": "Lokale Bars, Picasso Museum, Shopping",
+      "tip": "Hier essen statt Ramblas – authentischer und günstiger"
+    },
+    {
+      "name": "Eixample",
+      "vibe": "Modern, elegant, Gaudí",
+      "best_for": "Sagrada Família, Casa Batlló, Shopping",
+      "tip": "Hier übernachten für zentrale Lage zu Gaudí Werken"
+    },
+    {
+      "name": "Barceloneta",
+      "vibe": "Strand, Meer, entspannt",
+      "best_for": "Strand, Seafood, Hafen",
+      "tip": "Morgens Strand, mittags Seafood Restaurant"
+    }
+  ],
+
+  "reiseberichte": [
+    {
+      "title": "3 Tage Barcelona",
+      "summary": "Das perfekte Barcelona Wochenende",
+      "highlights": [
+        "Tag 1: Sagrada Família + Park Güell + Abendessen El Born",
+        "Tag 2: Casa Batlló + Montjuïc + Font Mágica abends",
+        "Tag 3: Boqueria Markt + Barri Gòtic + Barceloneta Strand"
+      ]
+    }
+  ]
+}
