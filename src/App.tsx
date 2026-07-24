@@ -11,6 +11,11 @@ import { RatingScreen } from './screens/RatingScreen';
 import { EntdeckenScreen } from './screens/EntdeckenScreen';
 import { TranslatorScreen } from './screens/TranslatorScreen';
 import { CityQuizScreen } from './screens/CityQuizScreen';
+import { ToolsScreen } from './screens/ToolsScreen';
+import { VisaCheckScreen } from './screens/VisaCheckScreen';
+import { NotfallScreen } from './screens/NotfallScreen';
+import { KulturKompassScreen } from './screens/KulturKompassScreen';
+import { ARGuideScreen } from './screens/ARGuideScreen';
 import { BottomNav } from './components/BottomNav';
 import { generateTripPlan } from './api';
 import type { Screen, TripInput, TripPlan, SavedTrip, TripRating } from './types';
@@ -26,6 +31,7 @@ const load = <T,>(key: string, fallback: T): T => {
 const BOTTOM_NAV_SCREENS: Screen[] = [
   'input', 'plan', 'loading', 'saved', 'rating', 'packing',
   'guide', 'entdecken', 'translator', 'quiz',
+  'tools', 'visa', 'notfall', 'kultur', 'ar',
 ];
 
 export default function App() {
@@ -195,6 +201,24 @@ export default function App() {
       {screen === 'quiz' && (
         <CityQuizScreen destination={currentPlan?.destination ?? ''} />
       )}
+
+      {screen === 'tools' && (
+        <ToolsScreen destination={currentPlan?.destination ?? ''} onNavigate={setScreen} />
+      )}
+
+      {screen === 'visa' && (
+        <VisaCheckScreen destination={currentPlan?.destination ?? ''} />
+      )}
+
+      {screen === 'notfall' && (
+        <NotfallScreen destination={currentPlan?.destination ?? ''} />
+      )}
+
+      {screen === 'kultur' && (
+        <KulturKompassScreen destination={currentPlan?.destination ?? ''} />
+      )}
+
+      {screen === 'ar' && <ARGuideScreen />}
 
       {screen === 'saved' && (
         <SavedTripsScreen

@@ -80,16 +80,20 @@ export function TranslatorScreen({ destination }: Props) {
                   type: 'text',
                   text: `Du bist ein Reise-Übersetzer${destination ? ` spezialisiert auf ${destination}` : ''}.
 
-Erkenne alle Texte in diesem Bild (Speisekarte, Schild, Menü, Beschriftung o.ä.) und übersetze alles vollständig ins Deutsche.
+Erkenne alles auf diesem Bild und übersetze vollständig ins Deutsche.
 
-Für Speisekarten: Erkläre kurz was das Gericht ist und markiere:
-🌱 vegetarisch/vegan · 🌶️ scharf · ⚠️ Nüsse/Allergene · 🐟 Meeresfrüchte
+Falls es eine Speisekarte oder ein Gericht ist, antworte in dieser Struktur:
+1. ÜBERSETZUNG: Jeden Eintrag ins Deutsche übersetzen
+2. ERKLÄRUNG: Kurz was das Gericht ist
+3. ALLERGENE, wo zutreffend: 🌱 Vegetarisch · 🌿 Vegan · 🌶️ Scharf · ⚠️ Nüsse · 🐟 Fisch/Meeresfrüchte · 🥛 Laktose · 🌾 Gluten
+4. EMPFEHLUNG: Welches Gericht empfiehlst du und warum?
+5. PREIS-EINSCHÄTZUNG: Ist der Preis fair, falls Preise sichtbar sind?
 
-Format:
+Falls es ein Schild, Menü ohne Speisen oder sonstiger Text ist:
 **[Original-Text]** → [Übersetzung]
 [Kurze Erklärung falls nötig]
 
-Falls kein Text erkennbar ist, schreibe: "Kein lesbarer Text im Bild gefunden."`,
+Antworte auf Deutsch, übersichtlich formatiert. Falls kein Text erkennbar ist, schreibe: "Kein lesbarer Text im Bild gefunden."`,
                 },
               ],
             },

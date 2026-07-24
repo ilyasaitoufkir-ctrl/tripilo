@@ -50,6 +50,7 @@ export const translations = {
     surpriseMe2: 'Überrasch mich!',
     searching: 'Suche Ziele...',
     inYourArea: 'In deiner Nähe',
+    tools: 'Tools',
   },
   en: {
     findPlace: 'Find Your Favorite Place',
@@ -102,6 +103,7 @@ export const translations = {
     surpriseMe2: 'Surprise me!',
     searching: 'Searching...',
     inYourArea: 'Nearby',
+    tools: 'Tools',
   },
 } as const;
 

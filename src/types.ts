@@ -104,4 +104,9 @@ export type Screen =
   | 'guide'
   | 'entdecken'
   | 'translator'
-  | 'quiz';
+  | 'quiz'
+  | 'tools'
+  | 'visa'
+  | 'notfall'
+  | 'kultur'
+  | 'ar';
